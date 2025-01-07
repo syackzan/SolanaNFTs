@@ -1,6 +1,9 @@
 const express = require('express');
-const axios = require('axios');
 const cors = require('cors');
+require('dotenv').config();
+const connectDB = require('./config/db'); // MongoDB connection
+const routes = require('./routes'); // All routes combined
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -8,43 +11,14 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-require('dotenv').config();
+// Database connection
+connectDB();
 
-// Proxy endpoint
-app.post('/api/upload', async (req, res) => {
-  try {
-    console.log(`Trying to upload with API Key: ${process.env.TUSK_API_KEY}`);
-    const response = await axios.post('https://docs.tusky.io/uploads', req.body, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': process.env.TUSK_API_KEY,
-      },
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error('Upload failed with the following error:');
-    if (error.response) {
-      // The server responded with a status code outside the 2xx range
-      console.error(`Status: ${error.response.status}`);
-      console.error(`Headers: ${JSON.stringify(error.response.headers)}`);
-      console.error(`Data: ${JSON.stringify(error.response.data)}`);
-    } else if (error.request) {
-      // The request was made, but no response was received
-      console.error('No response received from the server.');
-      console.error(error.request);
-    } else {
-      // Something else happened during the request setup
-      console.error('Error setting up the request:', error.message);
-    }
+// API routes
+app.use('/api', routes);
 
-    // Respond with a detailed error message
-    res.status(error.response?.status || 500).json({
-      error: error.message,
-      details: error.response?.data || 'No additional details available.',
-    });
-  }
-});
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
