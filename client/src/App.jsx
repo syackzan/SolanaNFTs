@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Homepage from './components/pages/Homepage';
+import LandingPage from './components/pages/LandingPage';
 
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -15,7 +16,8 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Homepage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/dashboard" element={<Homepage />} />
         </Routes>
       </Router>
     </>

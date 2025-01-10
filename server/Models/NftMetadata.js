@@ -37,6 +37,14 @@ const NftMetadataSchema = new mongoose.Schema({
     metadataUri: {
       type: String,
       required: false
+    },
+    creator: {
+      type: String,
+      required: false
+    },
+    created: {
+      type: Number,
+      required: false
     }
   }
 });

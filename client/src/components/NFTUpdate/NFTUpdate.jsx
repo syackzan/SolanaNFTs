@@ -50,10 +50,9 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 backgroundColor: "#1E1E1E",
                 color: "#FFFFFF",
                 padding: "20px",
-                height: "100vh",
+                // height: "100vh",
                 overflowY: "auto",
                 boxShadow: "2px 0 5px rgba(0, 0, 0, 0.5)",
-                marginTop: "60px",
                 overflow: "hidden",
             }}
         >

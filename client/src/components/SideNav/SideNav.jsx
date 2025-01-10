@@ -8,26 +8,30 @@ const SideNav = ({
     handleStoreChange,
     handleAttributeChange,
     handleImageChange,
-    addToDB,
+    addOrUpdateToDB,
     page,
-    lockMetadata,
+    createOffchainMetadata,
     deleteMetadata,
     isDisabled,
     setIsDisabled
 }) => {
 
-    
+
     const [isCreating, setIsCreating] = useState(false);
     const [isCreated, setIsCreated] = useState(false);
 
     const typeOptions = [
-        'equipment',
+        'armor',
+        'weapon',
         'skin',
         'accesories'
     ]
 
     const armorOptions = [
-        'chest'
+        'light',
+        'medium',
+        'heavy',
+        'colossal'
     ]
 
     const weaponOptions = [
@@ -80,7 +84,6 @@ const SideNav = ({
                 height: '100vh',
                 overflowY: 'auto',
                 boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
-                marginTop: '60px',
                 overflowX: 'hidden'
             }}
         >
@@ -95,7 +98,11 @@ const SideNav = ({
                     return;
                 }
 
-                setIsDisabled(true);
+                //Disables user from creating multiple new DB entries
+                if (page === 'create') {
+                    setIsDisabled(true);
+                }
+
                 setIsCreating(true);
 
                 // Check if the form is valid
@@ -104,7 +111,7 @@ const SideNav = ({
                     try {
                         setIsCreating(false);
                         setIsCreated(true);
-                        addToDB(); // Call the addToDB function if the form is valid
+                        addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
                     } catch (e) {
                         alert('Failed creating NFT Data', e);
                         setIsDisabled(false);
@@ -116,7 +123,6 @@ const SideNav = ({
             }}
                 style={{
                     display: 'flex', flexDirection: 'column', gap: '20px'
-
                 }}>
                 {/* Store Info */}
                 <div>
@@ -146,6 +152,23 @@ const SideNav = ({
                                             <option value="yes">Yes</option>
                                             <option value="no">No</option>
                                         </select>
+                                    ) : key === 'creator' ? (
+                                        <input
+                                            type="text"
+                                            value={value || ''}
+                                            placeholder='Connect Wallet'
+                                            required
+                                            onChange={(e) => handleStoreChange(key, e.target.value)}
+                                            disabled={true}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #555',
+                                                backgroundColor: '#2E2E2E',
+                                                color: '#FFF',
+                                            }}
+                                        />
                                     ) : (
                                         <input
                                             type="number"
@@ -246,7 +269,8 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    disabled={!!storeInfo.metadataUri} //disabled
+                                    // disabled={!!storeInfo.metadataUri} //disabled
+                                    disabled={true} //Always Solana for now
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -275,7 +299,8 @@ const SideNav = ({
                                     }}
                                 >
                                     <option value="">Select...</option>
-                                    <option value="equipment">Equipment</option>
+                                    <option value="weapon">Weapon</option>
+                                    <option value="armor">Armor</option>
                                     <option value="skin">Skin</option>
                                     <option value="accessories">Accessory</option>
                                 </select>
@@ -303,10 +328,10 @@ const SideNav = ({
                                                     {skin.charAt(0).toUpperCase() + skin.slice(1)} {/* Capitalize the first letter */}
                                                 </option>
                                             ));
-                                        } else if (type === 'equipment') {
-                                            return equipmentOptions.map((equipment, i) => (
-                                                <option key={i} value={equipment}>
-                                                    {equipment.charAt(0).toUpperCase() + equipment.slice(1)} {/* Capitalize the first letter */}
+                                        } else if (type === 'weapon') {
+                                            return weaponOptions.map((weapon, i) => (
+                                                <option key={i} value={weapon}>
+                                                    {weapon.charAt(0).toUpperCase() + weapon.slice(1)} {/* Capitalize the first letter */}
                                                 </option>
                                             ));
                                         } else if (type === 'armor') {
@@ -372,7 +397,7 @@ const SideNav = ({
                     type="submit"
                     className='button-click'
                     style={{ marginTop: '0px' }}
-                    // disabled={isDisabled} // Add the disabled attribute
+                    disabled={isDisabled} // Add the disabled attribute
                 >
                     {page === 'create' ? (
                         <>
@@ -399,7 +424,7 @@ const SideNav = ({
                     ) : (
                         <button
                             className="button-click metadata-button"
-                            onClick={lockMetadata}
+                            onClick={createOffchainMetadata}
                         >
                             Lock Metadata
                         </button>
@@ -429,7 +454,7 @@ const SideNav = ({
                     ) : (
                         <button
                             className="button-click metadata-button"
-                            onClick={lockMetadata}
+                            onClick={createOffchainMetadata}
                         >
                             Lock Metadata
                         </button>

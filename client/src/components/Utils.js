@@ -5,11 +5,11 @@ import { PinataSDK } from "pinata-web3";
 const pinata = new PinataSDK({
     pinataJwt: import.meta.env.VITE_PINATA_JWT,
     pinataGateway: import.meta.env.VITE_PINATA_GATEWAY,
-  });
+});
 
 export const uploadMetadata = async (metadata) => {
 
-    try{
+    try {
 
         const upload = await pinata.upload.json(metadata);
 
@@ -18,10 +18,10 @@ export const uploadMetadata = async (metadata) => {
 
         return metadataUri;
 
-    }catch(e){
+    } catch (e) {
         console.log(`Failed Transaction: ${e}`);
     }
-    
+
 }
 
 export const uploadIcon = async (image) => {
@@ -52,3 +52,29 @@ export const uploadIcon = async (image) => {
         console.error('Error uploading image:', error);
     }
 }
+
+export const fetchData = async () => {
+    const url = 'https://booh-brawler-msmetanin-booh-world.vercel.app/user?wallet=wejdf23p9ijre3e2h9jf290uhf2dwfadssdfdsf2erf';
+    // const token = import.meta.env.VITE_TOKEN_BEARER;
+    const token = 'bUU4cVd5cnJzSUY2UVZ4RTdOaUQ3TkVsb0w4OGppVEVvd1hpWElSUjFOeGJjT0xuemowQjN3SUl5MVVTemU3Rg=='
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET', // or 'POST', 'PUT', etc.
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json', // Adjust based on your API
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+};
+
