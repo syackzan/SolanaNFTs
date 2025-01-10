@@ -69,6 +69,8 @@ const Homepage = () => {
     const [image, setImage] = useState(null);
     const [metadataURI, setMetadataURI] = useState('');
     const [refetchNFTs, setRefetchNFTs] = useState(false);
+    const [newMetadata, setNewMetadata] = useState(null);
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const [info, setInfo] = useState({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
     const [attributes, setAttributes] = useState([
@@ -95,7 +97,8 @@ const Homepage = () => {
     const [storeInfo, setStoreInfo] = useState({
         available: '',
         price: '',
-        season: ''
+        season: '',
+        metadataUri: '',
     })
 
     const resetMetadata = () => {
@@ -122,8 +125,10 @@ const Homepage = () => {
         setStoreInfo({
             available: '',
             price: '',
-            season: ''
+            season: '',
+            metadataUri: '',
         })
+        setNewMetadata(null);
     }
 
     const wallet = useWallet();
@@ -202,7 +207,7 @@ const Homepage = () => {
         }
     };
 
-    const createMetadataJSON = async () => {
+    const combineNewMetadataJSON = async () => {
         // Upload the image
         const iconResp = await uploadIcon(image);
         const imageURL = iconResp.url;
@@ -211,6 +216,12 @@ const Homepage = () => {
 
         //Set info.image to proper URL
         setInfo({ ...info, image: imageURL });
+
+        //Use Immediate value
+        const hardInfo = {
+            ...info,
+            image: imageURL
+        }
 
         //Set properties image to proper URL
         setProperties({
@@ -223,7 +234,31 @@ const Homepage = () => {
             category: "image"
         });
 
+
         console.log(info);
+
+        //Use immediate value
+        const hardProperties = {
+            files: [
+                {
+                    uri: imageURL,
+                    type: "image/png"
+                }
+            ],
+            category: "image"
+        }
+
+        const metadataCombined = {
+            ...hardInfo,
+            attributes,
+            properties: hardProperties,
+            storeInfo,
+        }
+
+        return metadataCombined;
+    }
+
+    const combineUpdateMetadataJSON = async () => {
 
         const metadataCombined = {
             ...info,
@@ -235,13 +270,11 @@ const Homepage = () => {
         return metadataCombined;
     }
 
-    const createUpdateMetadataJSON = async () => {
-
+    const combineUpdateMetadataJSONLock = async () => {
         const metadataCombined = {
             ...info,
             attributes,
             properties,
-            storeInfo,
         }
 
         return metadataCombined;
@@ -396,26 +429,74 @@ const Homepage = () => {
     const addToDB = async () => {
 
         try {
-
+            const API_KEY_FAIL = 'asdfasd'
+            const API_KEY_TRUE = import.meta.env.VITE_SERVE_KEY
             if (page === 'create') {
-                const metadataForDB = await createMetadataJSON();
-                const response = await axios.post('http://localhost:5000/api/nft/create', metadataForDB);
-                console.log('NFT Metadata created successfully:', response.data);
+                const metadataForDB = await combineNewMetadataJSON();
+                const response = await axios.post(
+                    'http://localhost:5000/api/nft/create',
+                    metadataForDB,
+                    { headers: { 'x-api-key': API_KEY_TRUE } });
+
+                setNewMetadata(response.data);
+                console.log('NFT Metadata created successfully', response.data);
+
+                return true;
             }
 
             if (page === 'update') {
                 //Combine Metadata
-                const updateDataForDB = await createUpdateMetadataJSON();
+                const updateDataForDB = await combineUpdateMetadataJSON();
 
                 //Remove ID from metadata
-                const response = await axios.patch(`http://localhost:5000/api/nft/update/${updateDataForDB._id}`, updateDataForDB);
+                const response = await axios.patch(`http://localhost:5000/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY_TRUE } });
                 console.log('Update Successfull,', response.data);
 
                 setRefetchNFTs(!refetchNFTs);
+
+                return true;
             }
 
         } catch (error) {
             console.error('Error creating NFT metadata:', error.response?.data || error.message);
+        }
+    }
+
+    const lockMetadata = async () => {
+
+        const API_KEY_TRUE = import.meta.env.VITE_SERVE_KEY
+
+        const metadataForJSONUpload = await combineUpdateMetadataJSONLock();
+
+        // // create new const with json data
+        const metadataUri = await uploadMetadata(metadataForJSONUpload);
+
+        // const testId = '677e660b55719a1629eae7bf'
+
+        // const testUri = `${import.meta.env.VITE_METADATA_URI}bafkreidgzmheh2iw3plpclmtii3rjdgd4dplcejxd7xhdfnrceuumwaev4`
+
+        let objectId;
+        if (page === 'create') {
+            objectId = newMetadata._id
+        } else {
+            objectId = info._id
+        }
+
+        const response = await axios.patch(
+            `http://localhost:5000/api/nft/locknft/${objectId}`,
+            { metadataUri: metadataUri }, // Send data as an object in the request body
+            { headers: { 'x-api-key': API_KEY_TRUE } } // Include API key in headers
+        );
+
+        console.log('Update Successfull,', response.data);
+
+        setRefetchNFTs(!refetchNFTs);
+
+        if (response.status >= 200 && response.status < 300) {
+            alert("Metadata Locked Successfully");
+            resetMetadata();
+        } else {
+            alert("Metadata failed to lock");
         }
     }
 
@@ -429,27 +510,33 @@ const Homepage = () => {
     }
 
     const updateMetadata = async () => {
+        const API_KEY_TRUE = import.meta.env.VITE_SERVE_KEY
+
         const test_id = '6779125c1f57bea446943b1f';
         const updateData = { name: 'Spear' };
 
         try {
-            const response = await axios.patch(`http://localhost:5000/api/nft/update/${test_id}`, updateData);
+            const response = await axios.patch(`http://localhost:5000/api/nft/update/${test_id}`,
+                updateData,
+                { headers: { 'x-api-key': API_KEY_TRUE } });
             console.log('Update Successfull,', response.data);
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
         }
     }
 
-    const deleteMetadata = async () => {
-        const test_delete_id = '677d38beaf09a827e3fd976d';
+    const deleteMetadata = async (id) => {
+        const test_delete_id = '677e527e55719a1629eae573';
 
         try {
-            const response = await axios.delete(`http://localhost:5000/api/nft/delete/${test_delete_id}`);
+            const response = await axios.delete(`http://localhost:5000/api/nft/delete/${info._id}`);
             console.log('Update Successfull,', response.data);
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
         }
 
+        setRefetchNFTs(!refetchNFTs);
+        resetMetadata();
     }
 
     return (
@@ -480,10 +567,11 @@ const Homepage = () => {
                     <button onClick={getMetadata}>Get</button>
                     <button onClick={updateMetadata}>Update</button>
                     <button onClick={deleteMetadata}>Delete</button>
+                    <button onClick={lockMetadata}>Lock</button>
                 </div>
                 <div className="d-flex justify-content-center gap-3">
-                    <button className="darkmode-button" onClick={() => { setPage('create'), resetMetadata() }}>Create</button>
-                    <button className="darkmode-button" onClick={() => { setPage('update'), resetMetadata() }}>Update</button>
+                    <button className="darkmode-button" onClick={() => { setPage('create'), resetMetadata(), setIsDisabled(false) }}>Create</button>
+                    <button className="darkmode-button" onClick={() => { setPage('update'), resetMetadata(), setIsDisabled(false) }}>Update</button>
                 </div>
             </div>
             <div className="d-flex">
@@ -495,9 +583,13 @@ const Homepage = () => {
                     handleAttributeChange={handleAttributeChange}
                     handleImageChange={handleImageChange}
                     addToDB={addToDB}
-                    page={page} />
-                {page === "create" && <NFTPreview info={info} attributes={attributes} storeInfo={storeInfo} image={image}  />}
-                {page === "update" && <NFTUpdate setInfo={setInfo} setAttributes={setAttributes} setProperties={setProperties} setStoreInfo={setStoreInfo} refetchNFTs={refetchNFTs} />}
+                    page={page}
+                    lockMetadata={lockMetadata}
+                    deleteMetadata={deleteMetadata}
+                    isDisabled={isDisabled}
+                    setIsDisabled={setIsDisabled} />
+                {page === "create" && <NFTPreview info={info} attributes={attributes} storeInfo={storeInfo} image={image} />}
+                {page === "update" && <NFTUpdate setInfo={setInfo} setAttributes={setAttributes} setProperties={setProperties} setStoreInfo={setStoreInfo} refetchNFTs={refetchNFTs} deleteMetadata={deleteMetadata} />}
             </div>
         </div>
 

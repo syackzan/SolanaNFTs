@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs }) => {
+import { FaLock } from "react-icons/fa";
+import { FaLockOpen } from "react-icons/fa";
+
+const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, deleteMetadata }) => {
     const [nfts, setNfts] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button
 
@@ -87,7 +90,10 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
 
                     return (
                         <div>
-                            <div>Price: ${nft.storeInfo.price}</div>
+                            <div className="d-flex justify-content-between" style={{marginBottom: '5px'}}>
+                                <div>Price: ${nft.storeInfo.price}</div>
+                                {nft.storeInfo.metadataUri ? (<div><FaLock/></div>) : (<div><FaLockOpen /></div>)}
+                            </div>
                             <button key={index}
                                 className={`${rarityClass} ${isSelected ? "selected" : ""}`}
                                 style={{ marginBottom: "20px" }}

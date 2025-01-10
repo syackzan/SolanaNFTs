@@ -22,9 +22,22 @@ const NftMetadataSchema = new mongoose.Schema({
     category: { type: String, required: true },
   },
   storeInfo: {
-    available: {type: Boolean, required: true},
-    price: {type: Number, required: true},
-    season: {type: Number, required: true}
+    available: {
+      type: Boolean,
+      required: [function () { return this.isNew; }, 'Store availability is required.'],
+    },
+    price: {
+      type: Number,
+      required: [function () { return this.isNew; }, 'Price is required.'],
+    },
+    season: {
+      type: Number,
+      required: [function () { return this.isNew; }, 'Season is required.'],
+    },
+    metadataUri: {
+      type: String,
+      required: false
+    }
   }
 });
 

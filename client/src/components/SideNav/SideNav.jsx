@@ -10,7 +10,15 @@ const SideNav = ({
     handleImageChange,
     addToDB,
     page,
+    lockMetadata,
+    deleteMetadata,
+    isDisabled,
+    setIsDisabled
 }) => {
+
+    
+    const [isCreating, setIsCreating] = useState(false);
+    const [isCreated, setIsCreated] = useState(false);
 
     const typeOptions = [
         'equipment',
@@ -55,6 +63,12 @@ const SideNav = ({
         'legendary'
     ]
 
+    function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    const title = page === 'create' ? 'Create Solana NFT Metadata' : 'Update Solana NFT Metadata';
+
     return (
         <div
             className="sidenav"
@@ -70,8 +84,8 @@ const SideNav = ({
                 overflowX: 'hidden'
             }}
         >
-            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Create a Solana NFT Metadata</h2>
-            <form onSubmit={(e) => {
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>{title}</h2>
+            <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
 
@@ -81,9 +95,21 @@ const SideNav = ({
                     return;
                 }
 
+                setIsDisabled(true);
+                setIsCreating(true);
+
                 // Check if the form is valid
                 if (form.checkValidity()) {
-                    addToDB(); // Call the addToDB function if the form is valid
+
+                    try {
+                        setIsCreating(false);
+                        setIsCreated(true);
+                        addToDB(); // Call the addToDB function if the form is valid
+                    } catch (e) {
+                        alert('Failed creating NFT Data', e);
+                        setIsDisabled(false);
+                    }
+
                 } else {
                     form.reportValidity(); // Show validation errors for required fields
                 }
@@ -92,8 +118,59 @@ const SideNav = ({
                     display: 'flex', flexDirection: 'column', gap: '20px'
 
                 }}>
+                {/* Store Info */}
+                <div>
+                    <h4>Store Info</h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        {Object.entries(storeInfo)
+                            .filter(([key]) => key !== 'metadataUri') // Filter out metadataUri
+                            .map(([key, value], index) => (
+                                <div key={index} style={{ flex: '1 1 48%' }}>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '5px' }}>{key}</label>
+                                    {key === 'available' ? (
+                                        <select
+                                            value={value === true ? "yes" : value === false ? "no" : ""}
+                                            onChange={(e) => handleStoreChange(key, e.target.value === "yes")}
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #555',
+                                                backgroundColor: '#2E2E2E',
+                                                color: '#FFF',
+                                            }}
+                                            placeholder='Select...'
+                                        >
+                                            <option value=''>Select...</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    ) : (
+                                        <input
+                                            type="number"
+                                            value={value || ''}
+                                            placeholder={key === 'price' ? '$' : 'ex. 1'}
+                                            required
+                                            onChange={(e) => handleStoreChange(key, e.target.value)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #555',
+                                                backgroundColor: '#2E2E2E',
+                                                color: '#FFF',
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                    </div>
+                </div>
+
                 {/* NFT Name */}
                 <div>
+                    <h4>Metadata</h4>
                     <label htmlFor="name" style={{ display: 'block', marginBottom: '5px' }}>NFT Name:</label>
                     <input
                         type="text"
@@ -103,6 +180,7 @@ const SideNav = ({
                         onChange={(e) => handleInputChange(e)}
                         required
                         placeholder="EX: Axe"
+                        disabled={!!storeInfo.metadataUri} //disabled
                         style={{
                             width: '100%',
                             padding: '10px',
@@ -113,56 +191,6 @@ const SideNav = ({
                         }}
                     />
                 </div>
-
-                {/* Store Info */}
-                <div>
-                    <h4>Store Info</h4>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                        {Object.entries(storeInfo).map(([key, value], index) => (
-                            <div key={index} style={{ flex: '1 1 48%' }}>
-                                <label className="form-label" style={{ display: 'block', marginBottom: '5px' }}>{key}</label>
-                                {key === 'available' ? (
-                                    <select
-                                        value={value === true ? "yes" : value === false ? "no" : ""}
-                                        onChange={(e) => handleStoreChange(key, e.target.value === "yes")}
-                                        required
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px',
-                                            borderRadius: '4px',
-                                            border: '1px solid #555',
-                                            backgroundColor: '#2E2E2E',
-                                            color: '#FFF',
-                                        }}
-                                        placeholder='Select...'
-                                    >
-                                        {/* <option value="">Select...</option> */}
-                                        <option value=''>Select...</option>
-                                        <option value="yes">Yes</option>
-                                        <option value="no">No</option>
-                                    </select>
-                                ) : (
-                                    <input
-                                        type="number"
-                                        value={value || ''}
-                                        placeholder={key === 'price' ? '$' : 'ex. 1'}
-                                        required
-                                        onChange={(e) => handleStoreChange(key, e.target.value)}
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px',
-                                            borderRadius: '4px',
-                                            border: '1px solid #555',
-                                            backgroundColor: '#2E2E2E',
-                                            color: '#FFF',
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
                 {/* Description */}
                 <div>
                     <label htmlFor="description" style={{ display: 'block', marginBottom: '5px' }}>Description:</label>
@@ -173,6 +201,7 @@ const SideNav = ({
                         onChange={(e) => handleInputChange(e)}
                         required
                         placeholder="Describe your NFT"
+                        disabled={!!storeInfo.metadataUri} //disabled
                         style={{
                             width: '100%',
                             padding: '10px',
@@ -217,6 +246,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!!storeInfo.metadataUri} //disabled
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -234,6 +264,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!!storeInfo.metadataUri} //disabled
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -252,6 +283,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!!storeInfo.metadataUri} //disabled
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -298,6 +330,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!!storeInfo.metadataUri} //disabled
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -319,6 +352,7 @@ const SideNav = ({
                                     value={attribute.value}
                                     placeholder="Value"
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!!storeInfo.metadataUri} //disabled
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -336,23 +370,72 @@ const SideNav = ({
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    style={{
-                        width: '100%',
-                        padding: '12px',
-                        borderRadius: '4px',
-                        backgroundColor: '#3A3A3A',
-                        color: '#FFF',
-                        border: 'none',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.3s',
-                    }}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = '#505050')}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = '#3A3A3A')}
+                    className='button-click'
+                    style={{ marginTop: '0px' }}
+                    // disabled={isDisabled} // Add the disabled attribute
                 >
-                    Generate NFT Metadata
+                    {page === 'create' ? (
+                        <>
+                            {isCreating ? (
+                                <div className="d-flex justify-content-center gap-3 align-items-center">
+                                    <div>Creating...</div>
+                                    <div class='loader'></div>
+                                </div>
+                            ) : isCreated ? (
+                                <div>Metadata Created!</div>
+                            ) : (
+                                <div>Generate NFT Metadata</div>
+                            )}
+                        </>
+                    ) : (
+                        <div>Update NFT Metadata</div>
+                    )}
                 </button>
             </form>
+            {page === "create" && isCreated && (
+                <>
+                    {storeInfo.metadataUri ? (
+                        <>Locked</>
+                    ) : (
+                        <button
+                            className="button-click metadata-button"
+                            onClick={lockMetadata}
+                        >
+                            Lock Metadata
+                        </button>
+                    )}
+                    <button
+                        className="button-click"
+                        onClick={() => setIsCreated(false)}
+                    >
+                        Create New (Reset)
+                    </button>
+                </>
+            )}
+            {page === "update" && (
+                <>
+                    {storeInfo.metadataUri ? (
+                        <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
+                            <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
+                                View Locked Data
+                            </a>
+                            <button
+                                className="button-click metadata-button"
+                                onClick={deleteMetadata}
+                            >
+                                Delete Metadata
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            className="button-click metadata-button"
+                            onClick={lockMetadata}
+                        >
+                            Lock Metadata
+                        </button>
+                    )}
+                </>
+            )}
         </div>
     );
 };

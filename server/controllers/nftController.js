@@ -58,6 +58,39 @@ exports.updateNftMetadata = async (req, res) => {
   }
 };
 
+exports.updateMetadataUri = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract the NFT ID from request parameters
+    const { metadataUri } = req.body; // Extract metadataUri from request body
+
+    console.log(id);
+    console.log("hello");
+    console.log(metadataUri);
+
+    // Ensure metadataUri is provided
+    if (!metadataUri) {
+      return res.status(400).json({ message: 'metadataUri is required' });
+    }
+
+    // Update the storeInfo.metadataUri field
+    const updatedNft = await NftMetadata.findByIdAndUpdate(
+      id,
+      { $set: { 'storeInfo.metadataUri': metadataUri } }, // Update only metadataUri
+      { new: true, runValidators: true, context: 'query' } // Return updated document and run validation
+    );
+
+    // Handle case where NFT does not exist
+    if (!updatedNft) {
+      return res.status(404).json({ message: 'NFT not found' });
+    }
+
+    res.status(200).json(updatedNft); // Respond with the updated document
+  } catch (error) {
+    console.error('Error updating metadataUri:', error);
+    res.status(400).json({ error: error.message }); // Respond with a 400 status and the error message
+  }
+};
+
 exports.deleteNftMetadata = async (req, res) => {
   try {
     const deletedMetadata = await NftMetadata.findByIdAndDelete(req.params.id);

@@ -2,6 +2,9 @@ import React from 'react';
 
 import tempImage from '../../assets/itemBGs/tempImage.png';
 
+import { FaLock } from "react-icons/fa";
+import { FaLockOpen } from "react-icons/fa";
+
 const NFTPreview = ({
     info,
     attributes,
@@ -38,8 +41,11 @@ const NFTPreview = ({
                 overflow: 'hidden'
             }}
         >
-            <div>
-                <div>Price: ${storeInfo.price}</div>
+            <div style={{display: 'inline-block'}}>
+                <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
+                    <div>Price: ${storeInfo.price}</div>
+                    {storeInfo.metadataUri ? (<div><FaLock /></div>) : (<div><FaLockOpen /></div>)}
+                </div>
                 <button className={rarityClass} >
                     <div className="d-flex justify-content-between" style={{ marginBottom: '10px' }}>
                         <div className={bannerClass}>{subType}</div>
