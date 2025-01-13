@@ -37,39 +37,76 @@ const NFTPreview = ({
                 boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
             }}
         >
-            <div style={{display: 'inline-block'}}>
+            <div style={{ display: 'inline-block' }}>
                 <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
                     <div>Price: ${storeInfo.price}</div>
                     {storeInfo.metadataUri ? (<div><FaLock /></div>) : (<div><FaLockOpen /></div>)}
                 </div>
                 <button className={rarityClass} >
-                    <div className="d-flex justify-content-between" style={{ marginBottom: '10px' }}>
-                        <div className={bannerClass}>{subType}</div>
-                        <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                    <div className='d-flex' style={{ marginBottom: '10px' }}>
+                        <div className="d-flex justify-content-center align-items-center">
+                            <img
+                                src={image ? URL.createObjectURL(image) : tempImage}
+                                alt={info.name}
+                                style={{ width: "100px", height: "100px" }}
+                            />
+                        </div>
+                        <div className="d-flex flex-column w-100">
+                            <h3 className="nft-name lazy-dog">{info.name}</h3>
+                            <div className="nft-stats d-flex flex-column justify-content-around align-items-center h-100 w-100 marykate">
+                                <div
+                                    className="d-flex w-100"
+                                >
+                                    <p
+                                        style={{
+                                            flex: 0.45,
+                                            textAlign: 'left', // Optional for alignment
+                                        }}
+                                    >
+                                        <strong>DAMAGE:</strong> {damage > 0 ? `+${damage}%` : "-"}
+                                    </p>
+                                    <p
+                                        style={{
+                                            flex: 0.55,
+                                            textAlign: 'left', // Optional for alignment
+                                        }}
+                                    >
+                                        <strong>DODGE:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
+                                    </p>
+                                </div>
+                                <div
+                                    className="d-flex"
+                                    style={{ width: '100%' }}
+                                >
+                                    <p
+                                        style={{
+                                            flex: 0.45,
+                                            textAlign: 'left', // Optional for alignment
+                                        }}
+                                    >
+                                        <strong>DEFENSE:</strong> {defense > 0 ? `+${defense}%` : "-"}
+                                    </p>
+                                    <p
+                                        style={{
+                                            flex: 0.55,
+                                            textAlign: 'left', // Optional for alignment
+                                        }}
+                                    >
+                                        <strong>COIN BOOST:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <img
-                        src={image ? URL.createObjectURL(image) : tempImage}
-                        alt={info.name}
-                        style={{ width: "150px", height: "150px" }}
-                    />
-                    <h3 className="nft-name">{info.name}</h3>
-                    <div className="nft-stats">
-                        <p>
-                            <strong>Damage Boost:</strong> {damage > 0 ? `+${damage}%` : "-"}
-                        </p>
-                        <p>
-                            <strong>Defense:</strong> {defense > 0 ? `+${defense}%` : "-"}
-                        </p>
-                        <p>
-                            <strong>Dodge:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
-                        </p>
-                        <p>
-                            <strong>Coin Multiplier:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
-                        </p>
+                    <div style={{ borderTop: '1px solid white', padding: '5px 0px' }}>
+
+                    </div>
+                    <div className="d-flex gap-3">
+                        <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                        <div className={bannerClass}>{subType}</div>
                     </div>
                 </button>
             </div>
-
         </div>
     );
 };

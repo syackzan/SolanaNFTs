@@ -103,3 +103,32 @@ exports.deleteNftMetadata = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.voteForNFT = async (req, res) => {
+  try {
+      const { nftId, voterAddress } = req.body;
+
+      // Fetch the NFT by ID
+      const nft = await NftMetadata.findById(nftId);
+      if (!nft) return res.status(404).json({ error: "NFT not found" });
+
+      // Prevent the creator from voting on their own NFT
+      if (nft.creator === voterAddress) {
+          return res.status(403).json({ error: "You cannot vote on your own NFT" });
+      }
+
+      // Check if the user has already voted
+      if (nft.votes.voters.includes(voterAddress)) {
+          return res.status(403).json({ error: "You have already voted for this NFT" });
+      }
+
+      // Update the NFT votes
+      nft.votes.count += 1;
+      nft.votes.voters.push(voterAddress);
+      await nft.save();
+
+      res.json({ success: true, votes: nft.votes.count });
+  } catch (error) {
+      res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+};

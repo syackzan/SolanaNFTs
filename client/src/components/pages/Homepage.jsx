@@ -9,6 +9,8 @@ import { uploadIcon, uploadMetadata } from '../Utils';
 import axios from 'axios';
 import { useWallet } from '@solana/wallet-adapter-react'
 import SolConnection from '../Connection/SolConnection';
+import Navbar from '../Navbar/Navbar';
+import { checkIfAdmin } from '../checkRole';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -16,6 +18,7 @@ const Homepage = () => {
 
     //Wallet connection
     const wallet = useWallet();
+    const [userRole, setUserRole] = useState(null);
 
     const [searchParams] = useSearchParams();
     const action = searchParams.get('action'); // "create" or "view"
@@ -39,9 +42,10 @@ const Homepage = () => {
     const [info, setInfo] = useState({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
     const [attributes, setAttributes] = useState([
         { trait_type: "blockchain", value: "solana" },
-        { trait_type: "type", value: "equipment" },
-        { trait_type: "subType", value: "none" },
+        { trait_type: "type", value: "" },
+        { trait_type: "subType", value: "" },
         { trait_type: "rarity", value: "common" },
+        { trait_type: "affinity", value: "" },
         { trait_type: "damage", value: "0" },
         { trait_type: "defense", value: "0" },
         { trait_type: "dodge", value: "0" },
@@ -70,9 +74,10 @@ const Homepage = () => {
         setInfo({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
         setAttributes([
             { trait_type: "blockchain", value: "solana" },
-            { trait_type: "type", value: "none" },
-            { trait_type: "subType", value: "none" },
+            { trait_type: "type", value: "" },
+            { trait_type: "subType", value: "" },
             { trait_type: "rarity", value: "common" },
+            { trait_type: "affinity", value: "" },
             { trait_type: "damage", value: "0" },
             { trait_type: "defense", value: "0" },
             { trait_type: "dodge", value: "0" },
@@ -99,25 +104,39 @@ const Homepage = () => {
         setNewMetadata(null);
     }
 
-    //Checks to see when a wallet is connected
+    //Handles Wallet connection & Admin Login
     useEffect(() => {
-        if (wallet.connected) {
-            console.log("Wallet connected:", wallet.publicKey?.toBase58());
-
-            if(page === 'create'){
-                handleStoreChange('creator', wallet.publicKey?.toBase58());
+        const checkAdminStatus = async () => {
+            if (wallet.connected) {
+                console.log("Wallet connected:", wallet.publicKey?.toBase58());
+    
+                // Call the checkIfAdmin function and await the response
+                const isAdmin = await checkIfAdmin(wallet.publicKey?.toBase58());
+                console.log("Is Admin:", isAdmin);
+    
+                // Perform role-specific actions
+                if (isAdmin) {
+                    setUserRole("admin");
+                } else {
+                    setUserRole("member");
+                }
+    
+                // Update the creator field if the page is 'create'
+                if (page === 'create') {
+                    handleStoreChange('creator', wallet.publicKey?.toBase58());
+                }
+            } else {
+                console.log("Wallet disconnected");
+    
+                // Reset user data when the wallet disconnects
+                handleStoreChange('creator', '');
+                setUserRole(null);
             }
-            
-            // Perform actions when the user logs in
-            // updateUserWallet(wallet.publicKey.toBase58());
-        } else {
-            console.log("Wallet disconnected");
-
-            handleStoreChange('creator', '');
-            // Perform actions when the user logs out
-            // clearUserWallet();
-        }
+        };
+    
+        checkAdminStatus(); // Call the async function
     }, [wallet.connected, wallet.publicKey]);
+    
 
     useEffect(() => {
         if(page === 'create'){
@@ -331,38 +350,10 @@ const Homepage = () => {
     }
 
     return (
-        <div>
-            <div
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "60px",
-                    backgroundColor: "#1E1E1E",
-                    color: "#FFF",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "0 20px",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                    zIndex: 1000,
-                }}
-            >
-                <div className="d-flex justify-content-center gap-3">
-                    {/* <button onClick={addOrUpdateToDB}>ADD</button> */}
-                    <button onClick={getMetadata}>Get</button>
-                    <SolConnection />
-                    {/* <button onClick={updateMetadata}>Update</button> */}
-                    {/* <button onClick={deleteMetadata}>Delete</button>
-                    <button onClick={createOffchainMetadata}>Lock</button> */}
-                </div>
-                <div className="d-flex justify-content-center gap-3">
-                    <button className="darkmode-button" onClick={() => { setPage('create'), resetMetadata(), setIsDisabled(false) }}>Create</button>
-                    <button className="darkmode-button" onClick={() => { setPage('update'), resetMetadata(), setIsDisabled(false) }}>Update</button>
-                </div>
-            </div>
-            <div className="d-flex" style={{marginTop: '60px'}}>
+        <div style={{overflow: 'hidden'}}>
+            <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
+            <div style={{width: '100%', height: '60px'}}>a</div>
+            <div className="d-flex">
                 <SideNav info={info}
                     attributes={attributes}
                     storeInfo={storeInfo}
@@ -375,7 +366,9 @@ const Homepage = () => {
                     createOffchainMetadata={createOffchainMetadata}
                     deleteMetadata={deleteMetadata}
                     isDisabled={isDisabled}
-                    setIsDisabled={setIsDisabled} />
+                    setIsDisabled={setIsDisabled}
+                    userRole={userRole}
+                    walletAddress={wallet.publicKey?.toBase58()} />
                 {page === "create" &&
                     <NFTPreview
                         info={info}

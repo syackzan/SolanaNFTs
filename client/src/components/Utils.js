@@ -78,3 +78,24 @@ export const fetchData = async () => {
     }
 };
 
+export const voteForNFT = async (nftId, walletAddress) => {
+    try {
+        const response = await fetch('/api/nft/vote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nftId, voterAddress: walletAddress }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(`Thank you for voting! Total votes: ${data.votes}`);
+        } else {
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error("Error while voting:", error);
+    }
+};
+

@@ -46,7 +46,11 @@ const NftMetadataSchema = new mongoose.Schema({
       type: Number,
       required: false
     }
-  }
+  },
+  votes: {
+    count: { type: Number, default: 0 }, // Total number of votes
+    voters: { type: [String], default: [], unique: true }, // List of wallet addresses who voted
+},
 });
 
 module.exports = mongoose.model('NftMetadata', NftMetadataSchema);

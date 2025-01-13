@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SideNav = ({
     info,
@@ -13,18 +13,25 @@ const SideNav = ({
     createOffchainMetadata,
     deleteMetadata,
     isDisabled,
-    setIsDisabled
+    setIsDisabled,
+    userRole,
+    walletAddress,
 }) => {
 
 
     const [isCreating, setIsCreating] = useState(false);
     const [isCreated, setIsCreated] = useState(false);
 
-    const typeOptions = [
-        'armor',
-        'weapon',
-        'skin',
-        'accesories'
+    const affinityOptions = [
+        'fire',
+        'ice',
+        'water',
+        'lightning',
+        'earth',
+        'wind',
+        'light',
+        'dark',
+        'poison',
     ]
 
     const armorOptions = [
@@ -35,15 +42,6 @@ const SideNav = ({
     ]
 
     const weaponOptions = [
-        'sword',
-        'axe',
-        'dagger',
-        'staff',
-        'bow'
-    ]
-
-    const equipmentOptions = [
-        'chest',
         'sword',
         'axe',
         'dagger',
@@ -73,6 +71,19 @@ const SideNav = ({
 
     const title = page === 'create' ? 'Create Solana NFT Metadata' : 'Update Solana NFT Metadata';
 
+    const isMetadataLocked = !!storeInfo.metadataUri; // Check if metadata is locked
+    const isCreator = storeInfo.creator === walletAddress; // Check if the current user is the creator
+
+    const isAdmin = userRole === "admin"
+
+    // Determine if the user can edit fields
+    const canEditFields = (isAdmin && !isMetadataLocked) || (userRole === 'member' && isCreator && !isMetadataLocked);
+
+    // Determine if the user can edit storeInfo
+    const canEditStoreInfo = isAdmin || (userRole === 'member' && page === 'create');
+
+    console.log(userRole);
+
     return (
         <div
             className="sidenav"
@@ -82,9 +93,9 @@ const SideNav = ({
                 color: '#FFFFFF',
                 padding: '20px',
                 height: '100vh',
-                overflowY: 'auto',
-                boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
-                overflowX: 'hidden'
+                // overflowY: 'auto',
+                // boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
+                // overflowX: 'hidden'
             }}
         >
             <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>{title}</h2>
@@ -93,7 +104,7 @@ const SideNav = ({
                 const form = e.target;
 
                 // Example validation for the select field
-                if (!storeInfo.available || storeInfo.available === "") {
+                if (storeInfo.available === "") {
                     alert("Please answer the 'Available' question.");
                     return;
                 }
@@ -101,16 +112,19 @@ const SideNav = ({
                 //Disables user from creating multiple new DB entries
                 if (page === 'create') {
                     setIsDisabled(true);
+                    setIsCreating(true);
                 }
-
-                setIsCreating(true);
 
                 // Check if the form is valid
                 if (form.checkValidity()) {
 
                     try {
-                        setIsCreating(false);
-                        setIsCreated(true);
+
+                        if (page === 'create') {
+                            setIsCreating(false);
+                            setIsCreated(true);
+                        }
+
                         addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
                     } catch (e) {
                         alert('Failed creating NFT Data', e);
@@ -138,6 +152,7 @@ const SideNav = ({
                                             value={value === true ? "yes" : value === false ? "no" : ""}
                                             onChange={(e) => handleStoreChange(key, e.target.value === "yes")}
                                             required
+                                            disabled={!canEditStoreInfo}
                                             style={{
                                                 width: '100%',
                                                 padding: '10px',
@@ -176,6 +191,7 @@ const SideNav = ({
                                             placeholder={key === 'price' ? '$' : 'ex. 1'}
                                             required
                                             onChange={(e) => handleStoreChange(key, e.target.value)}
+                                            disabled={!canEditStoreInfo}
                                             style={{
                                                 width: '100%',
                                                 padding: '10px',
@@ -203,7 +219,8 @@ const SideNav = ({
                         onChange={(e) => handleInputChange(e)}
                         required
                         placeholder="EX: Axe"
-                        disabled={!!storeInfo.metadataUri} //disabled
+                        disabled={!canEditFields} //disabled
+                        maxLength={15}
                         style={{
                             width: '100%',
                             padding: '10px',
@@ -224,7 +241,7 @@ const SideNav = ({
                         onChange={(e) => handleInputChange(e)}
                         required
                         placeholder="Describe your NFT"
-                        disabled={!!storeInfo.metadataUri} //disabled
+                        disabled={!canEditFields}
                         style={{
                             width: '100%',
                             padding: '10px',
@@ -269,8 +286,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    // disabled={!!storeInfo.metadataUri} //disabled
-                                    disabled={true} //Always Solana for now
+                                    disabled={!canEditFields}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -288,7 +304,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    disabled={!!storeInfo.metadataUri} //disabled
+                                    disabled={!canEditFields}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -308,7 +324,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    disabled={!!storeInfo.metadataUri} //disabled
+                                    disabled={!canEditFields}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -320,30 +336,29 @@ const SideNav = ({
                                 >
                                     <option value="">Select...</option>
                                     {(() => {
-                                        // Determine options based on the selected 'type'
                                         const type = attributes.find((attr) => attr.trait_type === 'type')?.value;
                                         if (type === 'skin') {
                                             return skinOptions.map((skin, i) => (
                                                 <option key={i} value={skin}>
-                                                    {skin.charAt(0).toUpperCase() + skin.slice(1)} {/* Capitalize the first letter */}
+                                                    {skin.charAt(0).toUpperCase() + skin.slice(1)}
                                                 </option>
                                             ));
                                         } else if (type === 'weapon') {
                                             return weaponOptions.map((weapon, i) => (
                                                 <option key={i} value={weapon}>
-                                                    {weapon.charAt(0).toUpperCase() + weapon.slice(1)} {/* Capitalize the first letter */}
+                                                    {weapon.charAt(0).toUpperCase() + weapon.slice(1)}
                                                 </option>
                                             ));
                                         } else if (type === 'armor') {
                                             return armorOptions.map((armor, i) => (
                                                 <option key={i} value={armor}>
-                                                    {armor.charAt(0).toUpperCase() + armor.slice(1)} {/* Capitalize the first letter */}
+                                                    {armor.charAt(0).toUpperCase() + armor.slice(1)}
                                                 </option>
                                             ));
                                         } else if (type === 'accessories') {
-                                            return accessoriesOptions.map((accessories, i) => (
-                                                <option key={i} value={accessories}>
-                                                    {accessories.charAt(0).toUpperCase() + accessories.slice(1)} {/* Capitalize the first letter */}
+                                            return accessoriesOptions.map((accessory, i) => (
+                                                <option key={i} value={accessory}>
+                                                    {accessory.charAt(0).toUpperCase() + accessory.slice(1)}
                                                 </option>
                                             ));
                                         } else {
@@ -355,7 +370,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    disabled={!!storeInfo.metadataUri} //disabled
+                                    disabled={!canEditFields}
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -367,7 +382,33 @@ const SideNav = ({
                                 >
                                     {rarityOptions.map((rarity, i) => (
                                         <option key={i} value={rarity}>
-                                            {rarity.charAt(0).toUpperCase() + rarity.slice(1)} {/* Capitalize the first letter */}
+                                            {rarity.charAt(0).toUpperCase() + rarity.slice(1)}
+                                        </option>
+                                    ))}
+                                </select>
+                            ) : attribute.trait_type === 'affinity' ? (
+                                <select
+                                    value={attribute.value}
+                                    onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
+                                    disabled={!canEditFields}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #555',
+                                        backgroundColor: '#2E2E2E',
+                                        color: '#FFF',
+                                    }}
+                                >
+                                    {/* Placeholder option */}
+                                    <option value='' disabled>
+                                        Select...
+                                    </option>
+
+                                    {/* Map through the affinity options */}
+                                    {affinityOptions.map((affinity, i) => (
+                                        <option key={i} value={affinity}>
+                                            {affinity.charAt(0).toUpperCase() + affinity.slice(1)}
                                         </option>
                                     ))}
                                 </select>
@@ -375,9 +416,35 @@ const SideNav = ({
                                 <input
                                     type="text"
                                     value={attribute.value}
-                                    placeholder="Value"
-                                    onChange={(e) => handleAttributeChange(index, 'value', e.target.value)}
-                                    disabled={!!storeInfo.metadataUri} //disabled
+                                    placeholder="0"
+                                    onChange={(e) => {
+                                        const inputValue = e.target.value;
+
+                                        // Ensure input is a valid positive number or 0
+                                        if (/^\d*$/.test(inputValue)) { // Only allow digits
+                                            if (userRole !== "admin" && inputValue !== "" && parseInt(inputValue, 10) > 20) {
+                                                // If not admin and input exceeds 20%, prevent it
+                                                alert("Non-admin users cannot exceed 20%");
+                                                return;
+                                            }
+
+                                            if (inputValue === "" || inputValue === "0") {
+                                                // Allow empty string (placeholder) or 0 as valid inputs
+                                                handleAttributeChange(index, 'value', inputValue);
+                                            } else if (!/^0/.test(inputValue)) {
+                                                // Prevent numbers starting with 0 (e.g., 0123)
+                                                handleAttributeChange(index, 'value', inputValue);
+                                            }
+                                        }
+                                    }}
+                                    onBlur={(e) => {
+                                        // Ensure default value is 0 if input is left empty
+                                        if (e.target.value === "") {
+                                            handleAttributeChange(index, 'value', "0");
+                                        }
+                                    }}
+                                    disabled={!canEditFields}
+                                    maxLength={2} // Restrict to 10 characters
                                     style={{
                                         width: '100%',
                                         padding: '10px',
@@ -391,7 +458,6 @@ const SideNav = ({
                         </div>
                     ))}
                 </div>
-
                 {/* Submit Button */}
                 <button
                     type="submit"
@@ -422,12 +488,14 @@ const SideNav = ({
                     {storeInfo.metadataUri ? (
                         <>Locked</>
                     ) : (
-                        <button
-                            className="button-click metadata-button"
-                            onClick={createOffchainMetadata}
-                        >
-                            Lock Metadata
-                        </button>
+                        <>
+                            {isAdmin && <button
+                                className="button-click metadata-button"
+                                onClick={createOffchainMetadata}
+                            >
+                                Lock Metadata
+                            </button>}
+                        </>
                     )}
                     <button
                         className="button-click"
@@ -441,23 +509,53 @@ const SideNav = ({
                 <>
                     {storeInfo.metadataUri ? (
                         <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
-                            <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
+                            {isAdmin &&
+                                <button
+                                    className="button-click metadata-button"
+                                    onClick={deleteMetadata}
+                                >
+                                    Delete Metadata
+                                </button>}
+
+                                <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
                                 View Locked Data
                             </a>
-                            <button
-                                className="button-click metadata-button"
-                                onClick={deleteMetadata}
-                            >
-                                Delete Metadata
-                            </button>
                         </div>
                     ) : (
-                        <button
-                            className="button-click metadata-button"
-                            onClick={createOffchainMetadata}
-                        >
-                            Lock Metadata
-                        </button>
+                        <>
+                            {isAdmin ? (
+                                <>
+                                    <button
+                                        className="button-click metadata-button"
+                                        onClick={createOffchainMetadata}
+                                    >
+                                        Lock Metadata
+                                    </button>
+                                    <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
+                                        {isAdmin &&
+                                            <button
+                                                className="button-click metadata-button"
+                                                onClick={deleteMetadata}
+                                            >
+                                                Delete Metadata
+                                            </button>}
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
+                                        {isAdmin &&
+                                            <button
+                                                className="button-click metadata-button"
+                                                onClick={deleteMetadata}
+                                            >
+                                                Delete Metadata
+                                            </button>}
+                                    </div>
+                                </>
+                            )}
+                            
+                        </>
                     )}
                 </>
             )}

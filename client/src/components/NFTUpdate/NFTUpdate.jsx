@@ -45,15 +45,14 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
 
     return (
         <div
+            className="sidenav"
             style={{
                 width: "60vw",
                 backgroundColor: "#1E1E1E",
                 color: "#FFFFFF",
                 padding: "20px",
-                // height: "100vh",
-                overflowY: "auto",
-                boxShadow: "2px 0 5px rgba(0, 0, 0, 0.5)",
-                overflow: "hidden",
+                height: "100vh",
+                overflow: "auto", // Enables vertical scrolling
             }}
         >
             <div className="d-flex gap-3 flex-wrap">
@@ -88,41 +87,71 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                     const isSelected = selectedIndex === index;
 
                     return (
-                        <div>
-                            <div className="d-flex justify-content-between" style={{marginBottom: '5px'}}>
+                        <div style={{ display: 'inline-block' }}>
+                            <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
                                 <div>Price: ${nft.storeInfo.price}</div>
-                                {nft.storeInfo.metadataUri ? (<div><FaLock/></div>) : (<div><FaLockOpen /></div>)}
+                                {nft.storeInfo.metadataUri ? (<div><FaLock /></div>) : (<div><FaLockOpen /></div>)}
                             </div>
-                            <button key={index}
+                            <button
+                                key={index}
                                 className={`${rarityClass} ${isSelected ? "selected" : ""}`}
                                 style={{ marginBottom: "20px" }}
-                                onClick={() => { setEditData(nft), setSelectedIndex(index) }}>
-                                <div
-                                    className="d-flex justify-content-between"
-                                    style={{ marginBottom: "10px" }}
-                                >
-                                    <div className={bannerClass}>{subType}</div>
-                                    <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                                onClick={() => { setEditData(nft), setSelectedIndex(index) }}
+                            >
+                                <div className="d-flex" style={{ marginBottom: '10px' }}>
+                                    <div className="d-flex justify-content-center align-items-center">
+                                        <img
+                                            src={nft.image || "/path/to/default-image.png"}
+                                            alt={nft.name || "NFT"}
+                                            style={{ width: "100px", height: "100px" }}
+                                        />
+                                    </div>
+                                    <div className="d-flex flex-column w-100">
+                                        <h3 className="nft-name lazy-dog">{nft.name || "Unnamed NFT"}</h3>
+                                        <div className="nft-stats d-flex flex-column justify-content-around align-items-center h-100 w-100 marykate">
+                                            <div className="d-flex w-100">
+                                                <p
+                                                    style={{
+                                                        flex: 0.45,
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    <strong>DAMAGE:</strong> {damage > 0 ? `+${damage}%` : "-"}
+                                                </p>
+                                                <p
+                                                    style={{
+                                                        flex: 0.55,
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    <strong>DODGE:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
+                                                </p>
+                                            </div>
+                                            <div className="d-flex" style={{ width: '100%' }}>
+                                                <p
+                                                    style={{
+                                                        flex: 0.45,
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    <strong>DEFENSE:</strong> {defense > 0 ? `+${defense}%` : "-"}
+                                                </p>
+                                                <p
+                                                    style={{
+                                                        flex: 0.55,
+                                                        textAlign: 'left',
+                                                    }}
+                                                >
+                                                    <strong>COIN BOOST:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <img
-                                    src={nft.image || "/path/to/default-image.png"} // Replace with a default image path if necessary
-                                    alt={nft.name || "NFT"}
-                                    style={{ width: "150px", height: "150px" }}
-                                />
-                                <h3 className="nft-name">{nft.name || "Unnamed NFT"}</h3>
-                                <div className="nft-stats">
-                                    <p>
-                                        <strong>Damage Boost:</strong> {damage > 0 ? `+${damage}%` : "-"}
-                                    </p>
-                                    <p>
-                                        <strong>Defense:</strong> {defense > 0 ? `+${defense}%` : "-"}
-                                    </p>
-                                    <p>
-                                        <strong>Dodge:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
-                                    </p>
-                                    <p>
-                                        <strong>Coin Multiplier:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
-                                    </p>
+                                <div style={{ borderTop: '1px solid white', padding: '5px 0px' }}></div>
+                                <div className="d-flex gap-3">
+                                    <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                                    <div className={bannerClass}>{subType}</div>
                                 </div>
                             </button>
                         </div>
