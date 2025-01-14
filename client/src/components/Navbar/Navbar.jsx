@@ -32,6 +32,11 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                     <SolConnection />
                 </div>
             )}
+            {location.pathname === '/collection' && (
+                <div className="d-flex justify-content-center gap-3">
+                    <SolConnection />
+                </div>
+            )}
         </div>
     )
 }

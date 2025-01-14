@@ -382,7 +382,8 @@ const Homepage = () => {
                         setProperties={setProperties}
                         setStoreInfo={setStoreInfo}
                         refetchNFTs={refetchNFTs}
-                        deleteMetadata={deleteMetadata} />}
+                        userRole={userRole}
+                        wallet={wallet} />}
             </div>
         </div>
 

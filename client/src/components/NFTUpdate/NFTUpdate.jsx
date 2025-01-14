@@ -5,9 +5,16 @@ import axios from 'axios';
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
-const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, deleteMetadata }) => {
+import { createCoreNft, sendSol } from '../BlockchainInteractions/blockchainInteractions';
+
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+
+const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
     const [nfts, setNfts] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button
+
+    const { publicKey, sendTransaction } = useWallet();
+    const { connection } = useConnection();
 
     // Fetch NFT metadata
     const fetchNFTs = async () => {
@@ -41,6 +48,56 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setProperties(nft.properties);
         setAttributes(nft.attributes);
         setStoreInfo(nft.storeInfo);
+    }
+
+
+    const isAdmin = userRole === "admin";
+
+    const createNft = async () => {
+
+        await createCoreNft(nfts[selectedIndex], wallet);
+        return;
+
+        console.log("Entering into core create");
+        // await coreCreate(nfts[selectedIndex], wallet); //Works Successfully
+        // const response = await simulateTransaction(nfts[selectedIndex], wallet);
+        // const resp = await sendSol(wallet);
+
+        if (!publicKey) {
+            console.error("Wallet not connected");
+            return;
+        }
+
+        try {
+            const transaction = await sendSol(publicKey);
+            const signature = await sendTransaction(transaction, connection);
+            console.log(`Transaction signature: ${signature}`);
+
+            const latestBlockhash = await connection.getLatestBlockhash(); // Required for the new strategy
+            const confirmation = await connection.confirmTransaction(
+                { signature, ...latestBlockhash }, // Use the signature and blockhash
+                'confirmed' // Commitment level
+            );
+
+            if (confirmation.value.err) {
+                throw new Error(`Transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+            }
+
+            console.log("Transaction confirmed:", confirmation);
+
+            try {
+                if (confirmation) {
+                    await createCoreNft(nfts[selectedIndex], wallet);
+                }
+            } catch (e) {
+                console.log("Failed at Create NFT", e);
+            }
+
+        } catch (error) {
+            console.error("Transaction failed", error);
+        }
+
+        console.log("NFT creation complete");
     }
 
     return (
@@ -154,6 +211,11 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                                     <div className={bannerClass}>{subType}</div>
                                 </div>
                             </button>
+                            {isAdmin && (
+                                <div>
+                                    <button onClick={createNft}>Create NFT</button>
+                                </div>
+                            )}
                         </div>
                     );
                 })}

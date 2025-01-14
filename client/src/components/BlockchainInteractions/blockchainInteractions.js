@@ -1,31 +1,30 @@
-import { 
-    createProgrammableNft, 
-    mplTokenMetadata, 
-    createNft, 
-    updateAsUpdateAuthorityV2, 
-    fetchMetadataFromSeeds, 
-    verifyCollectionV1, 
-    findMetadataPda, 
-    collectionToggle, 
-    TokenStandard
+import {
+    mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata'
 
 import {
-    createGenericFile,
     generateSigner,
-    percentAmount,
     publicKey,
-    signAllTransactions,
     signerIdentity,
     sol,
-    createSignerFromKeypair
+    createSignerFromKeypair,
+    transactionBuilder,
+    signTransaction
 } from '@metaplex-foundation/umi'
+
+import {
+    createCollection,
+    create,
+    fetchCollection,
+    fetchAsset,
+    transferV1
+} from '@metaplex-foundation/mpl-core'
+
+import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
 
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 
-import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters'
-
-import { useWallet } from '@solana/wallet-adapter-react'
+// import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters' //If connecting a wallet via WalletProvider
 
 import bs58 from 'bs58';
 
@@ -35,96 +34,195 @@ const umi = createUmi('https://api.devnet.solana.com')
 
 /* START - WORKING FROM A CONNECTED WALLET */
 
-const wallet = useWallet();
+let keypair = umi.eddsa.createKeypairFromSecretKey(bs58.decode(import.meta.env.VITE_TEST_PRIVATE_KEY));
 
-// Register Wallet Adapter to Umi
-umi.use(walletAdapterIdentity(wallet))
+// Before Umi can use this Keypair you need to generate 
+// a Signer type with it.  
+const signer = createSignerFromKeypair(umi, keypair);
 
 /* END - WORKING FROM A CONNECTED WALLET */
 
-export const createNFTFromMeta = async (metadataUri, umi) => {
+const CORE_COLLECTION_ADDRESS = 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
 
-    const nftSigner = generateSigner(umi);
+const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz"
 
-    // Decide on a ruleset for the Nft.
-    // Metaplex ruleset - publicKey("eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9")
-    // Compatability ruleset - publicKey("AdH2Utn6Fus15ZhtenW4hZBQnvtLgM1YCW2MfVp7pYS5")
-    const ruleset = null // or set a publicKey from above
-
-    console.log("Creating Nft...");
-    const tx = await createProgrammableNft(umi, {
-        mint: nftSigner,
-        sellerFeeBasisPoints: percentAmount(5.5),
-        name: info.name,
-        uri: metadataUri,
-        // symbol: 'BOOH',
-        ruleSet: ruleset,
-    }).sendAndConfirm(umi);
-
-    console.log(tx);
-
-    // Finally we can deserialize the signature that we can check on chain.
-    // const signature = bs58.deserialize(tx.signature)[0];
-
-    // Log out the signature and the links to the transaction and the NFT.
-    console.log("\npNFT Created")
-    console.log("View Transaction on Solana Explorer");
-    // console.log(`https://explorer.solana.com/tx/${signature}?cluster=devnet`);
-    console.log("\n");
-    console.log("View NFT on Metaplex Explorer");
-    console.log(`https://explorer.solana.com/address/${nftSigner.publicKey}?cluster=devnet`);
-}
-
-export const createCollection = async (umi) => {
-
+export const createCoreNft = async (nft, wallet) => {
     try {
-        const collectionMint = generateSigner(umi);
-        const tx = await createNft(umi, {
-            mint: collectionMint,
-            name: 'My Collection',
-            uri: 'https://example.com/my-collection.json',
-            sellerFeeBasisPoints: percentAmount(5.5), // 5.5%
-            isCollection: true,
+        // Register Wallet Adapter to Umi
+        // umi.use(walletAdapterIdentity(wallet));
+        // console.log("Wallet updated:", wallet.publicKey);
+
+        // Tell Umi to use the new signer.
+        umi.use(signerIdentity(signer))
+
+        // const collectionAddress = await createCoreCollection(umi);
+
+
+        //TESTING
+        const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
+        console.log("Collection fetched successfully:", collection);
+
+        const assetSigner = generateSigner(umi);
+
+        let builder = transactionBuilder()
+            .add(create(umi, {
+                asset: assetSigner,
+                collection: collection,
+                name: nft.name,
+                uri: nft.storeInfo.metadataUri,
+            }))
+
+        const transaction = await builder.buildWithLatestBlockhash(umi);
+        console.log(transaction);
+
+        // const mySigners = [signer, assetSigner];
+
+        // const signedTransaction = await signTransaction(transaction, mySigners);
+        // console.log(signedTransaction);
+
+        // const signature = await umi.rpc.sendTransaction(signedTransaction);
+        // console.log(signature);
+
+        // const signedTransaction = await builder.buildAndSign(umi);
+        // console.log(signedTransaction);
+
+        // const yes = await builder.setLatestBlockhash(umi);
+        // console.log(yes);
+
+        // const transactionTest = await builder.buildAndSign(umi);
+        // console.log(transactionTest);
+        // return;
+
+        const mySerializedTransaction = umi.transactions.serialize(transaction)
+        console.log(mySerializedTransaction);
+
+        // Serialize the transaction to Base64
+        const base64Transaction = Buffer.from(mySerializedTransaction).toString('base64');
+
+        // Send the serialized transaction to the backend
+        const response = await fetch('http://localhost:5000/api/nft/signer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                transaction: base64Transaction,
+                assetSigner: {
+                    publicKey: assetSigner.publicKey,
+                    secretKey: Array.from(assetSigner.secretKey)
+                } 
+            }),
+        });
+
+        const result = await response.json();
+        console.log('Transaction Result:', result);
+
+        return;
+        ///TESTING
+
+        try {
+            // Fetch the collection
+            const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
+            console.log("Collection fetched successfully:", collection);
+
+            try {
+                // Generate assetSigner and then create the asset
+                const assetSigner = generateSigner(umi);
+                console.log("Asset signer generated:", assetSigner);
+
+                console.log("Creating Asset...");
+
+                await create(umi, {
+                    asset: assetSigner,
+                    collection: collection,
+                    name: nft.name,
+                    uri: nft.storeInfo.metadataUri,
+                }).sendAndConfirm(umi);
+
+                console.log("Asset created,", assetSigner.publicKey);
+
+                console.log("Sending NFT");
+
+                await transferV1(umi, {
+                    asset: publicKey(assetSigner.publicKey),
+                    newOwner: wallet.publicKey,
+                    collection: CORE_COLLECTION_ADDRESS
+                }).sendAndConfirm(umi);
+
+                console.log("NFT Sent to: ", wallet.publicKey);
+
+                console.log("Asset created and sent successfully.");
+            } catch (assetCreationError) {
+                console.error("Error creating asset:", assetCreationError);
+            }
+        } catch (collectionError) {
+            console.error("Error fetching collection:", collectionError);
+        }
+    } catch (walletError) {
+        console.error("Error registering wallet adapter:", walletError);
+    }
+};
+
+export const transferAsset = async (wallet, address) => {
+
+    // Tell Umi to use the new signer.
+    umi.use(signerIdentity(signer))
+
+    console.log("Sending To New wallet: ", wallet.publicKey.toString());
+    try {
+        await transferV1(umi, {
+            asset: publicKey(address),
+            newOwner: wallet.publicKey,
+            collection: CORE_COLLECTION_ADDRESS
         }).sendAndConfirm(umi);
 
-        console.log(collectionMint.publicKey)
-    } catch (e) {
-        console.log("Failed collection creation", e)
+        console.log("Sent to: ", wallet.publicKey.toString());
+    } catch (error) {
+        console.error("Error transferring NFT:", error);
     }
-}
+};
 
-export const updateNFT = async () => {
+export const sendSol = async (fromPubkeyString) => {
+
+    const amount = .004;
+
+    const fromPubkey = new PublicKey(fromPubkeyString);
+    const toPubkey = new PublicKey(TEST_WALLET)
+
+    console.log("Building Send Trasaction to: ", TEST_WALLET)
 
     try {
 
-        const mintId = '4GcTdbfhpu4EHzZ8PegSgGzynxLHWMn9kdyuPhcimf5X'
-        const nftAddress = publicKey(mintId);
+        const transaction = new Transaction();
+        const sendSolInstruction = SystemProgram.transfer({
+            fromPubkey,
+            toPubkey,
+            lamports: amount * 1_000_000_000,
+        });
 
-        const collectionAddress = publicKey(COLLECTION_ADDRESS);
+        transaction.add(sendSolInstruction);
 
-        // Fetch the Metadata of the pNFT Asset
-        const metadata = await fetchMetadataFromSeeds(umi, { mint: mintId })
+        console.log("Transaction built");
 
-        const txRes = await updateAsUpdateAuthorityV2(umi, {
-            mint: nftAddress,
-            data: metadata, // Leave empty if no metadata updates are needed
-            tokenStandard: TokenStandard.ProgrammableNonFungible,
-            collection: collectionToggle('Set', [
-                {
-                    key: collectionAddress,
-                    verified: false,
-                },
-            ])
-            // authorizationRules:
-            //     unwrapOptionRecursively(metadata.programmableConfig)?.ruleSet || undefined, // If your pNFT has rules
-            // authorizationRulesProgram: getMplTokenAuthRulesProgramId(umi), // The rules program ID
-            // authorizationData: undefined, // Use if required by your authorization rules
-        }).sendAndConfirm(umi);
-
-        console.log('Collection successfully set:', txRes);
-    } catch (e) {
-        console.error('Error setting collection:', e);
+        return transaction;
+    } catch (error) {
+        console.error("Error sending SOL:", error);
     }
+};
+
+export const createCoreCollection = async (umi) => {
+
+    const collectionSigner = generateSigner(umi)
+
+    // create collection
+    // if you are doing this in a single script you may have
+    // to use a sleep function or commitment level of 'finalized'
+    // so the collection is fully written to change before fetching it.
+    await createCollection(umi, {
+        collection: collectionSigner,
+        name: 'Booh Brawlers Core Test',
+        uri: 'https://example.com/my-collection.json',
+    }).sendAndConfirm(umi)
+
+    return collectionSigner.publicKey;
 }
 
 export const airdropTestSol = async () => {
@@ -132,30 +230,12 @@ export const airdropTestSol = async () => {
     await umi.rpc.airdrop("5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz", sol(1));
 }
 
-export const logNftData = async () => {
-    const mintId = '4GcTdbfhpu4EHzZ8PegSgGzynxLHWMn9kdyuPhcimf5X'
+export const logNftData = async (address) => {
 
-    // Fetch the Metadata of the pNFT Asset
-    const metadata = await fetchMetadataFromSeeds(umi, { mint: mintId })
-    console.log(metadata);
-}
+    //CORE
+    const asset = await fetchAsset(umi, address, {
+        skipDerivePlugins: false
+    })
 
-export const verifyCollectionNow = async () => {
-
-    const mintId = '4GcTdbfhpu4EHzZ8PegSgGzynxLHWMn9kdyuPhcimf5X'
-
-    try {
-        // first find the metadata PDA to use later
-        const metadata = findMetadataPda(umi, {
-            mint: publicKey(mintId)
-        });
-
-        await verifyCollectionV1(umi, {
-            metadata,
-            collectionMint: publicKey(COLLECTION_ADDRESS),
-            authority: signer,
-        }).sendAndConfirm(umi)
-    } catch (e) {
-        console.log("Failed verification", e);
-    }
+    console.log(asset);
 }

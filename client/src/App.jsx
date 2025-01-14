@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Homepage from './components/pages/Homepage';
 import LandingPage from './components/pages/LandingPage';
+import Collection from './components/pages/Collection';
 
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<Homepage />} />
+          <Route path='/collection' element={<Collection />} />
         </Routes>
       </Router>
     </>

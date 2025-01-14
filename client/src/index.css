@@ -407,3 +407,90 @@ textarea:focus::placeholder {
 .style-links a:hover{
   color: #ad04fc;
 }
+
+
+/* COLLECTION CSS */
+
+/* Custom CSS for Collection Component */
+
+/* Create Collection Section */
+
+.card {
+  background: #1e1e1e; /* Dark gray for card background */
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+}
+
+.create-collection {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.create-collection button {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.create-collection button:hover {
+  background-color: #218838;
+}
+
+.create-collection p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Add NFT Section */
+.add-nft {
+  margin-top: 30px;
+}
+
+.add-nft form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-nft label {
+  font-weight: bold;
+}
+
+.add-nft input#nftAddress {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.add-nft input#nftAddress:focus {
+  border-color: #007bff;
+}
+
+.add-nft button {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-nft button:hover {
+  background-color: #0056b3;
+}
+

@@ -35,10 +35,10 @@ const SideNav = ({
     ]
 
     const armorOptions = [
-        'light',
-        'medium',
-        'heavy',
-        'colossal'
+        'chest',
+        'gloves',
+        'leggings',
+        'helm'
     ]
 
     const weaponOptions = [
@@ -81,8 +81,6 @@ const SideNav = ({
 
     // Determine if the user can edit storeInfo
     const canEditStoreInfo = isAdmin || (userRole === 'member' && page === 'create');
-
-    console.log(userRole);
 
     return (
         <div
