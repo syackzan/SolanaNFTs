@@ -5,7 +5,7 @@ import axios from 'axios';
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
-import { createCoreNft, sendSol } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
 
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
@@ -69,7 +69,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         }
 
         try {
-            const transaction = await sendSol(publicKey);
+            const transaction = await createSendSolTx(publicKey);
             const signature = await sendTransaction(transaction, connection);
             console.log(`Transaction signature: ${signature}`);
 

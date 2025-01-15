@@ -150,7 +150,11 @@ exports.voteForNFT = async (req, res) => {
 };
 
 // Initialize Umi
-const umi = createUmi('https://api.devnet.solana.com');
+const solanaNode = process.env.IS_MAINNET === 'true' ? process.env.SOLANA_NODE : 'https://api.devnet.solana.com'
+console.log(solanaNode);
+
+//CREATE AND CONNECT TO UMI WITH mplTokenMetadata Program
+const umi = createUmi(solanaNode);
 
 // Load the private key securely
 const privateKey = bs58.default.decode(process.env.TEST_WALLET_KEY);
@@ -177,7 +181,7 @@ exports.signAndConfirmTransaction = async (req, res) => {
     // Convert the assetSigner back to a Keypair
     const reconstructedSigner = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(assetSigner.secretKey));
     const signer2 = createSignerFromKeypair(umi, reconstructedSigner);
-    console.log('Reconstructed Signer:', reconstructedSigner);
+    // console.log('Reconstructed Signer:', reconstructedSigner);
     
     const mySigners = [signer, signer2];
 
@@ -187,12 +191,23 @@ exports.signAndConfirmTransaction = async (req, res) => {
     // console.log(transactionArray);
 
     // Deserialize the transaction using Umi
-    const myTransaction = umi.transactions.deserialize(transactionArray);
+    let myTransaction = umi.transactions.deserialize(transactionArray);
 
-    console.log(myTransaction);
+    // console.log(myTransaction);
+    
+    console.log(myTransaction.message.accounts[0]);
+
+    myTransaction.message.accounts[0] = signer.publicKey;
+
+    console.log(myTransaction.message.accounts[0]);
 
     const signedTransaction = await signTransaction(myTransaction, mySigners);
     console.log(signedTransaction);
+
+    // const signedTransactions = await signAllTransactions([
+    //   {transaction: myFirstTransaction, signers: [mySigners]},
+    //   {transaction: mySecondTransaction, signers: [mySigners.signer]}
+    // ])
 
     const signature = await umi.rpc.sendTransaction(signedTransaction);
     console.log(signature);

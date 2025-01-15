@@ -4,7 +4,7 @@ import Navbar from '../Navbar/Navbar';
 
 import { useWallet } from '@solana/wallet-adapter-react'
 
-// import { updateNFT, logNftData, transferAsset } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreCollection } from '../BlockchainInteractions/blockchainInteractions';
 
 
 const Collection = () => {
@@ -19,7 +19,7 @@ const Collection = () => {
     const handleCreateCollection = async () => {
         try {
             
-            const newCollectionAddress = await newCollection(wallet);
+            const newCollectionAddress = await createCoreCollection();
             console.log(newCollectionAddress);
 
             setCollectionAddress(newCollectionAddress);
