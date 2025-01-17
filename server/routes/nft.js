@@ -1,7 +1,10 @@
 const express = require('express');
 const {verifyApiKey} = require('../Middleware/authMiddleware')
-const { getAllMetadata, createNftMetadata, deleteNftMetadata, updateNftMetadata, updateMetadataUri, voteForNFT, signAndConfirmTransaction } = require('../controllers/nftController');
+const { getAllMetadata, createNftMetadata, deleteNftMetadata, updateNftMetadata, updateMetadataUri, voteForNFT, signAndConfirmTransaction, testData } = require('../controllers/nftController');
 const router = express.Router();
+
+//Test Data
+router.get('/hello', testData);
 
 //GET /api/nft/all
 router.get('/all', getAllMetadata);

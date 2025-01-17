@@ -11,6 +11,9 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import SolConnection from '../Connection/SolConnection';
 import Navbar from '../Navbar/Navbar';
 import { checkIfAdmin } from '../checkRole';
+import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
+
+
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -19,6 +22,12 @@ const Homepage = () => {
     //Wallet connection
     const wallet = useWallet();
     const [userRole, setUserRole] = useState(null);
+
+    useEffect(() => {
+        
+        fetchAssets(wallet);
+
+    }, [wallet.publicKey])
 
     const [searchParams] = useSearchParams();
     const action = searchParams.get('action'); // "create" or "view"
@@ -97,7 +106,7 @@ const Homepage = () => {
             price: '',
             season: '',
             metadataUri: '',
-            creator: ''
+            creator: wallet.publicKey.toString()
         })
 
         setImage(null);
@@ -107,12 +116,13 @@ const Homepage = () => {
     //Handles Wallet connection & Admin Login
     useEffect(() => {
         const checkAdminStatus = async () => {
+
             if (wallet.connected) {
                 console.log("Wallet connected:", wallet.publicKey?.toBase58());
     
                 // Call the checkIfAdmin function and await the response
                 const isAdmin = await checkIfAdmin(wallet.publicKey?.toBase58());
-                console.log("Is Admin:", isAdmin);
+                // console.log("Is Admin:", isAdmin);
     
                 // Perform role-specific actions
                 if (isAdmin) {
@@ -200,7 +210,7 @@ const Homepage = () => {
         });
 
 
-        console.log(info);
+        // console.log(info);
 
         //Use immediate value
         const hardProperties = {
@@ -255,7 +265,7 @@ const Homepage = () => {
             if (page === 'create') {
                 const metadataForDB = await combineNewMetadataJSON();
                 const response = await axios.post(
-                    'http://localhost:5000/api/nft/create',
+                    'http://localhost:8080/api/nft/create',
                     metadataForDB,
                     { headers: { 'x-api-key': API_KEY } });
 
@@ -270,7 +280,7 @@ const Homepage = () => {
                 const updateDataForDB = await combineUpdateMetadataJSON();
 
                 //Remove ID from metadata
-                const response = await axios.patch(`http://localhost:5000/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
+                const response = await axios.patch(`http://localhost:8080/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
                 console.log('Update Successfull,', response.data);
 
                 setRefetchNFTs(!refetchNFTs);
@@ -298,7 +308,7 @@ const Homepage = () => {
         }
 
         const response = await axios.patch(
-            `http://localhost:5000/api/nft/locknft/${objectId}`,
+            `http://localhost:8080/api/nft/locknft/${objectId}`,
             { metadataUri: metadataUri }, // Send data as an object in the request body
             { headers: { 'x-api-key': API_KEY } } // Include API key in headers
         );
@@ -318,7 +328,7 @@ const Homepage = () => {
     //Get all metadata objects from DB
     const getMetadata = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/nft/all');
+            const response = await axios.get('http://localhost:8080/api/nft/all');
             console.log('NFT DATA', response.data);
         } catch (e) {
             console.error('Error when accessing data', error.response?.data || error.message)
@@ -328,7 +338,7 @@ const Homepage = () => {
     // const updateMetadata = async () => {
 
     //     try {
-    //         const response = await axios.patch(`http://localhost:5000/api/nft/update/${test_id}`,
+    //         const response = await axios.patch(`http://localhost:8080/api/nft/update/${test_id}`,
     //             updateData,
     //             { headers: { 'x-api-key': API_KEY } });
     //         console.log('Update Successfull,', response.data);
@@ -339,7 +349,7 @@ const Homepage = () => {
 
     const deleteMetadata = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/nft/delete/${info._id}`);
+            const response = await axios.delete(`http://localhost:8080/api/nft/delete/${info._id}`);
             console.log('Update Successfull,', response.data);
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
@@ -352,7 +362,6 @@ const Homepage = () => {
     return (
         <div style={{overflow: 'hidden'}}>
             <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
-            <div style={{width: '100%', height: '60px'}}>a</div>
             <div className="d-flex">
                 <SideNav info={info}
                     attributes={attributes}
@@ -363,12 +372,14 @@ const Homepage = () => {
                     handleImageChange={handleImageChange}
                     addOrUpdateToDB={addOrUpdateToDB}
                     page={page}
+                    setPage={setPage}
                     createOffchainMetadata={createOffchainMetadata}
                     deleteMetadata={deleteMetadata}
                     isDisabled={isDisabled}
                     setIsDisabled={setIsDisabled}
                     userRole={userRole}
-                    walletAddress={wallet.publicKey?.toBase58()} />
+                    walletAddress={wallet.publicKey?.toBase58()}
+                    resetMetadata={resetMetadata} />
                 {page === "create" &&
                     <NFTPreview
                         info={info}
@@ -389,14 +400,5 @@ const Homepage = () => {
 
     );
 };
-
-{/* {metadataURI && (
-                <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                    <h2>Metadata URI</h2>
-                    <p style={{ wordBreak: 'break-word' }}>{metadataURI}</p>
-                </div>
-            )} */}
-
-
 
 export default Homepage;

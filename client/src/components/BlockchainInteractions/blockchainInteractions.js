@@ -34,6 +34,8 @@ import bs58 from 'bs58';
 
 import { IS_MAINNET } from '../config'
 
+import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
+
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
 console.log(solanaNode);
 
@@ -49,20 +51,36 @@ let keypair = umi.eddsa.createKeypairFromSecretKey(bs58.decode(import.meta.env.V
 // a Signer type with it.  
 const signer = createSignerFromKeypair(umi, keypair);
 
+import { fetchNFTsUtils } from './GetNFTsUtils';
+
 /* END - WORKING FROM A CONNECTED WALLET */
 
 const CORE_COLLECTION_ADDRESS = IS_MAINNET ? "CnRTKtN1piFJcrchQPgPN1AH7hagLbAMtkXuhabcruNz" : 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
 
 const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz"
 
+export const fetchAssets = async (wallet) => {
+
+    // const ownerType = new PublicKey('3cr2d54oNqrZe83Wa28LskMa3DjhqbpianjnD2srV2WW');
+    // const assetsByOwner = await fetchAssetsByOwner(umi, ownerType, {
+    //     skipDerivePlugins: false,
+    //   })
+
+    // console.log(assetsByOwner);
+
+    // await fetchNFTsUtils(wallet.publicKey.toString());
+
+      
+}
+
 export const createCoreNft = async (nft, wallet) => {
     try {
         // Register Wallet Adapter to Umi
-        umi.use(walletAdapterIdentity(wallet));
+        // umi.use(walletAdapterIdentity(wallet));
         // console.log("Wallet updated:", wallet.publicKey);
 
         // Tell Umi to use the new signer.
-        // umi.use(signerIdentity(signer))
+        umi.use(signerIdentity(signer))
 
         //TESTING
         const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
@@ -80,19 +98,17 @@ export const createCoreNft = async (nft, wallet) => {
                 collection: collection,
                 name: nft.name,
                 uri: nft.storeInfo.metadataUri,
+            })).add(transferV1(umi, {
+                asset: publicKey(assetSigner.publicKey),
+                newOwner: wallet.publicKey,
+                collection: CORE_COLLECTION_ADDRESS
             }))
-            
-            // .add(transferV1(umi, {
-            //     asset: publicKey(assetSigner.publicKey),
-            //     newOwner: wallet.publicKey,
-            //     collection: CORE_COLLECTION_ADDRESS
-            // }))
 
         let transaction = await builder.buildWithLatestBlockhash(umi);
 
         console.log(transaction);
 
-        // transaction.message.accounts[6] = wallet.publicKey.toString();
+        transaction.message.accounts[6] = wallet.publicKey.toString();
         // transaction.message.instructions[3].accountIndexes =  [1, 2, 0, 4, 6, 4, 4];
 
         const mySerializedTransaction = umi.transactions.serialize(transaction)
@@ -101,7 +117,7 @@ export const createCoreNft = async (nft, wallet) => {
         const base64Transaction = Buffer.from(mySerializedTransaction).toString('base64');
 
         // Send the serialized transaction to the backend
-        const response = await fetch('http://localhost:5000/api/nft/signer', {
+        const response = await fetch('http://localhost:8080/api/nft/signer', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -140,9 +156,10 @@ export const createCoreNft = async (nft, wallet) => {
 //     }
 // };
 
-export const createSendSolTx = async (fromPubkeyString) => {
+export const createSendSolTx = async (fromPubkeyString, payment = 0) => {
 
-    const amount = .004;
+    const mintingCosts = .004
+    const amount = mintingCosts + payment ;
 
     const fromPubkey = new PublicKey(fromPubkeyString);
     const toPubkey = new PublicKey(TEST_WALLET)

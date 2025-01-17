@@ -1,21 +1,63 @@
-import React from 'react';
-
-import {
-    WalletDisconnectButton,
-    WalletMultiButton
-} from '@solana/wallet-adapter-react-ui';
-
-import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useState, useEffect } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 const SolConnection = () => {
+    const walletModal = useWalletModal(); // Wallet modal hook
+    const { publicKey, connected, disconnect } = useWallet(); // Wallet hook
 
-    const wallet = useWallet();
+    const [selectedAddress, setSelectedAddress] = useState('');
 
-    return(
-        <>
-        {!wallet.connected ? <WalletMultiButton/> : <WalletDisconnectButton />}
-        </>
-    )
-}
+    // Update the selected address whenever the wallet connection changes
+    useEffect(() => {
+        if (publicKey) {
+            setSelectedAddress(publicKey.toString());
+        } else {
+            setSelectedAddress('');
+        }
+    }, [publicKey, connected]);
+
+    // Function to handle wallet connection or disconnection
+    const connectWallet = async (blockchain) => {
+        if (blockchain === 'sol') {
+            if (!publicKey) {
+                try {
+                    console.log('Trying to connect...');
+                    walletModal.setVisible(true); // Show the wallet modal
+                } catch (e) {
+                    console.error('Failed to open wallet modal:', e);
+                }
+            } else {
+                try {
+                    await disconnect(); // Disconnect the wallet
+                } catch (e) {
+                    console.error('Failed to disconnect wallet:', e);
+                }
+            }
+        }
+    };
+
+    const shortenAddress = (address, chars = 4) => {
+        if (!address) return '';
+        return `${address.slice(0, chars)}...${address.slice(-chars)}`;
+    };
+
+    const connectOrDisconnect = () => {
+        if (connected) {
+            disconnect(); // Disconnect if already connected
+        } else {
+            connectWallet('sol'); // Attempt to connect
+        }
+    };
+
+    return (
+        <button
+            className={`${connected ? 'disconnect-button' : 'login-nav-button'}`}
+            onClick={connectOrDisconnect}
+        >
+            {connected ? shortenAddress(selectedAddress, 4) : 'LOGIN'}
+        </button>
+    );
+};
 
 export default SolConnection;

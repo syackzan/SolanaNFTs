@@ -89,9 +89,7 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -122,6 +120,171 @@ button:focus-visible {
   padding: 0 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+}
+
+/* NAVBAR FROM BOOH WORLD */
+.store-navbar-main {
+  background: linear-gradient(90deg, #2a2a2a, #444, #2a2a2a);
+  /* Cool dark gray gradient */
+  padding: 10px 25px;
+  border-bottom: 2px solid #1a1a1a;
+  /* Optional: Subtle border for depth */
+  color: white;
+}
+
+.store-nav ul {
+  list-style: none;
+  /* Removes bullet points */
+  padding: 0;
+  /* Removes default padding */
+  margin: 0;
+  /* Removes default margin */
+  display: flex;
+  /* Ensure horizontal layout */
+  align-items: center;
+  /* Vertically align items within the list */
+  gap: 1rem;
+  /* Space between items */
+}
+
+.store-nav li {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.store-nav a {
+  color: #D6D6ED;
+}
+
+.store-nav a:hover {
+  color: rgb(226, 226, 226);
+}
+
+.searchbox {
+  display: flex;
+  align-items: center;
+  border: 1px solid #444;
+  /* Subtle dark gray border for better definition */
+  border-radius: 5px;
+  overflow: hidden;
+  background: #000;
+  /* Pure black background */
+  padding: 5px;
+  width: 100%;
+  max-width: 300px;
+  /* Optional: Limit the width */
+}
+
+.search-icon {
+  color: #888;
+  /* Light gray for the icon */
+  font-size: 1.2rem;
+  /* Adjust size */
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  /* Transparent input to blend with black background */
+  color: #fff;
+  /* White text for contrast */
+  padding: 5px 10px;
+  flex: 1;
+  font-size: 1rem;
+}
+
+.search-input::placeholder {
+  color: #888;
+  /* Light gray placeholder for better readability */
+}
+
+.login-nav-button {
+  font-size: 16px;
+  width: 150px;
+  color: white;
+  background: linear-gradient(90deg, #6a0dad 0%, #3e0076 100%);
+  /* Deeper purple gradient */
+  /* Slightly increased padding for emphasis */
+  border-radius: 12px;
+  /* Slightly larger radius for smoother edges */
+  box-shadow: 0 0 15px rgba(211, 127, 255, 0.8);
+  /* Glowing effect around the box */
+  text-shadow: 2px 2px 8px rgba(211, 127, 255, 0.6);
+  /* Maintained text glow */
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.login-nav-button:hover {
+  color: white;
+  background-color: gainsboro !important;
+}
+
+.disconnect-button{
+  font-size: 14px;
+  width: 150px;
+  color: white;
+  background: linear-gradient(90deg, #6a0dad 0%, #3e0076 100%);
+  /* Slightly increased padding for emphasis */
+  border-radius: 12px;
+  /* Slightly larger radius for smoother edges */
+  box-shadow: 0 0 15px rgba(211, 127, 255, 0.8);
+  /* Glowing effect around the box */
+  text-shadow: 2px 2px 8px rgba(211, 127, 255, 0.6);
+  /* Maintained text glow */
+  font-weight: bold;
+  text-align: center;
+}
+
+
+/* NAVBAR FROM BOOH WORLD */
+
+/* Media Queries */
+@media (max-width: 1374px) {
+  .style-links {
+      display: none !important;
+  }
+
+  .hamburger-menu {
+      display: flex;
+  }
+}
+
+/* Button base style */
+.button-style-regular {
+  background-color: #3a3a4f;
+  color: #ffffff;
+  border: 1px solid #555555; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Button hover style */
+.button-style-regular:hover {
+  background-color: #57576c;
+}
+
+.button-style-thin{
+  background-color: #3a3a4f;
+  color: #ffffff;
+  border: 1px solid #555555; /* Subtle border */
+  padding: 0px 5px; /* Comfortable padding */
+  border-radius: 8px; /* Rounded corners */
+  font-size: 16px; /* Readable text */
+  font-weight: 600; /* Slightly bold for emphasis */
+  width: 100px;
+  cursor: pointer; /* Pointer cursor for interactivity */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+}
+
+.button-style-thin:hover {
+  background-color: #9c9c9c; /* Dark background */
 }
 
 
@@ -187,6 +350,8 @@ input:focus::placeholder,
 textarea:focus::placeholder {
   color: #cccccc; /* Optional: lighter grey when focused */
 }
+
+
 
 /* NFT CSS */
 .nft-name {
@@ -400,7 +565,7 @@ textarea:focus::placeholder {
 .style-links a {
   color: white;
   font-family: 'marykate';
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   transition: color 0.3s ease;
 }
 
@@ -494,3 +659,47 @@ textarea:focus::placeholder {
   background-color: #0056b3;
 }
 
+/* STORE CSS */
+.strip-button {
+  margin: 0px;
+  padding: 0px;
+  background-color: transparent;
+  color: white;
+  border: none;
+}
+
+.selected-button{
+  margin: 0px;
+  padding: 0px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  text-decoration: underline;
+}
+
+.strip-button:hover {
+  text-decoration: underline;
+}
+
+.circle-button {
+  border-radius: 20px;
+  border: 1px solid white;
+  padding: 3px 6px;
+  font-size: 14px;
+  background-color: transparent;
+  color: white;
+}
+
+.circle-button-selected{
+  border-radius: 20px;
+  border: 1px solid white;
+  padding: 3px 6px;
+  font-size: 14px;
+  color: black;
+}
+
+.circle-button:hover {
+  border: 1px solid white;
+  background-color: white;
+  color: black;
+}

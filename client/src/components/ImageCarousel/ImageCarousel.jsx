@@ -12,7 +12,7 @@ const ImageCarousel = () => {
     // Fetch NFT metadata
     const fetchNFTs = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/nft/all");
+            const response = await axios.get("http://localhost:8080/api/nft/all");
             setNfts(response.data || []); // Ensure `nfts` is an array
             // console.log("NFT DATA", response.data);
         } catch (e) {

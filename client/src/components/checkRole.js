@@ -1,9 +1,9 @@
 export const checkIfAdmin = async (walletAddress) => {
     try {
 
-        console.log("hello");
+        // console.log("hello");
         
-        const response = await fetch("http://localhost:5000/api/user/role", {
+        const response = await fetch("http://localhost:8080/api/user/role", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

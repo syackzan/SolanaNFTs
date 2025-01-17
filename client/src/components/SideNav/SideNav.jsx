@@ -10,12 +10,14 @@ const SideNav = ({
     handleImageChange,
     addOrUpdateToDB,
     page,
+    setPage,
     createOffchainMetadata,
     deleteMetadata,
     isDisabled,
     setIsDisabled,
     userRole,
     walletAddress,
+    resetMetadata
 }) => {
 
 
@@ -69,7 +71,7 @@ const SideNav = ({
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    const title = page === 'create' ? 'Create Solana NFT Metadata' : 'Update Solana NFT Metadata';
+    const title = page === 'create' ? 'Metadata Creator' : 'Metadata Editor';
 
     const isMetadataLocked = !!storeInfo.metadataUri; // Check if metadata is locked
     const isCreator = storeInfo.creator === walletAddress; // Check if the current user is the creator
@@ -89,14 +91,20 @@ const SideNav = ({
                 width: '40vw',
                 backgroundColor: '#1E1E1E',
                 color: '#FFFFFF',
-                padding: '20px',
+                padding: '10px 20px 20px 20px',
                 height: '100vh',
                 // overflowY: 'auto',
                 // boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
                 // overflowX: 'hidden'
             }}
         >
-            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>{title}</h2>
+            <div className="d-flex justify-content-end" style={{ marginBottom: '5px' }}>
+                <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
+                    <button className="button-style-thin" onClick={() => { setPage('create'), resetMetadata(), setIsDisabled(false) }}>Create</button>
+                    <button className="button-style-thin" onClick={() => { setPage('update'), resetMetadata(), setIsDisabled(false) }}>Edit</button>
+                </div>
+            </div>
+            <h2 className="marykate" style={{ textAlign: 'center', marginBottom: '20px', fontSize: '3.5rem' }}>{title}</h2>
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
@@ -123,10 +131,16 @@ const SideNav = ({
                             setIsCreated(true);
                         }
 
-                        addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
+                        await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
+
                     } catch (e) {
                         alert('Failed creating NFT Data', e);
                         setIsDisabled(false);
+                    } finally {
+
+                        if (page === 'create') {
+                            setIsDisabled(false);
+                        }
                     }
 
                 } else {
@@ -138,7 +152,7 @@ const SideNav = ({
                 }}>
                 {/* Store Info */}
                 <div>
-                    <h4>Store Info</h4>
+                    <h4 className="marykate" style={{ fontSize: '2rem' }}>Store Info</h4>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                         {Object.entries(storeInfo)
                             .filter(([key]) => key !== 'metadataUri') // Filter out metadataUri
@@ -169,7 +183,7 @@ const SideNav = ({
                                         <input
                                             type="text"
                                             value={value || ''}
-                                            placeholder='Connect Wallet'
+                                            placeholder='Connect Wallet / Login'
                                             required
                                             onChange={(e) => handleStoreChange(key, e.target.value)}
                                             disabled={true}
@@ -207,7 +221,7 @@ const SideNav = ({
 
                 {/* NFT Name */}
                 <div>
-                    <h4>Metadata</h4>
+                    <h4 className="marykate" style={{ fontSize: '2rem' }}>Metadata</h4>
                     <label htmlFor="name" style={{ display: 'block', marginBottom: '5px' }}>NFT Name:</label>
                     <input
                         type="text"
@@ -274,7 +288,7 @@ const SideNav = ({
 
                 {/* Attributes */}
                 <div>
-                    <h4>Attributes</h4>
+                    <h4 className="marykate" style={{ fontSize: '2rem' }}>Attributes</h4>
                     {attributes.map((attribute, index) => (
                         <div key={index} style={{ marginBottom: '10px' }}>
                             <label style={{ display: 'block', marginBottom: '5px' }}>
@@ -515,7 +529,7 @@ const SideNav = ({
                                     Delete Metadata
                                 </button>}
 
-                                <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
+                            <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
                                 View Locked Data
                             </a>
                         </div>
@@ -552,7 +566,7 @@ const SideNav = ({
                                     </div>
                                 </>
                             )}
-                            
+
                         </>
                     )}
                 </>

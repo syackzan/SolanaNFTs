@@ -9,6 +9,7 @@ import Collection from './components/pages/Collection';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Marketplace from './components/Marketplace/Marketplace';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<Homepage />} />
           <Route path='/collection' element={<Collection />} />
+          <Route path='/marketplace' element={<Marketplace />} />
         </Routes>
       </Router>
     </>

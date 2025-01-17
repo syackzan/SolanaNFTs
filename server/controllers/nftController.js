@@ -5,6 +5,16 @@ const bs58 = require('bs58');
 const { createUmi } = require('@metaplex-foundation/umi-bundle-defaults');
 const { Keypair } = require('@solana/web3.js')
 
+exports.testData = async (req, res) => {
+  try {
+    const metadataList = "hello from server"
+    res.status(200).json(metadataList); // Send the data as JSON
+  } catch (error) {
+    console.error('Error fetching metadata:', error);
+    res.status(500).json({ error: 'Failed to fetch metadata' });
+  }
+}
+
 exports.getAllMetadata = async (req, res) => {
   try {
     const metadataList = await NftMetadata.find(); // Retrieve all documents from the collection
