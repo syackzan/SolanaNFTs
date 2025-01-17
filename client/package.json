@@ -24,6 +24,7 @@
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "bs58": "^6.0.0",
+    "framer-motion": "^11.18.1",
     "pinata-web3": "^0.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,6 +32,9 @@
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.0.2",
     "react-switch": "^7.1.0",
+    "react-tsparticles": "^2.12.2",
+    "tsparticles": "^3.7.1",
+    "uninstall": "^0.0.0",
     "vite-plugin-node-polyfills": "^0.22.0"
   },
   "devDependencies": {

@@ -66,7 +66,7 @@ const Filter = ({
                         uncheckedIcon={false}
                         checkedIcon={false}
                     />
-                    <p className="m-0 marykate" style={{fontSize: '1.2rem'}}>Created By Me</p>
+                    <p className="m-0 marykate" style={{fontSize: '1.3rem'}}>Created By Me</p>
                 </div>
                 <div>
                     <button className="strip-button" onClick={() => setIsFetched(false)}>

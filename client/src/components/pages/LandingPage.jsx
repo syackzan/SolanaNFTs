@@ -8,7 +8,7 @@ import Navbar from '../Navbar/Navbar';
 const LandingPage = () => {
 
     return (
-        <div>
+        <div style={{width: '100vw', height: '100vh'}}>
             <Navbar />
             <div className="landing-page">
                 <h1 className='lazy-dog' style={{
@@ -29,7 +29,7 @@ const LandingPage = () => {
                 }}>
                     NFT Creation Hub
                 </h3>
-                <div className="d-flex justify-content-center gap-3" style={{ marginBottom: '15px' }}>
+                <div className="d-flex justify-content-center gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff", marginBottom: '15px' }}>
                     <Link className="darkmode-button" to='/dashboard?action=create' >Create</Link>
                     <Link className="darkmode-button" to='/dashboard?action=update' >View NFTs</Link>
                     <Link className="darkmode-button" to='/documentation' >Docs</Link>

@@ -101,9 +101,9 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  background-color: #03010f;
+  width: 100%;
+  height: 100%;
+  background-color: #1E1E1E;
 }
 
 .navbar-parent {
@@ -124,12 +124,17 @@ button:focus-visible {
 
 /* NAVBAR FROM BOOH WORLD */
 .store-navbar-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   background: linear-gradient(90deg, #2a2a2a, #444, #2a2a2a);
   /* Cool dark gray gradient */
   padding: 10px 25px;
   border-bottom: 2px solid #1a1a1a;
   /* Optional: Subtle border for depth */
   color: white;
+  z-index: 1000;
 }
 
 .store-nav ul {
@@ -201,7 +206,7 @@ button:focus-visible {
 
 .login-nav-button {
   font-size: 16px;
-  width: 150px;
+  width: 125px;
   color: white;
   background: linear-gradient(90deg, #6a0dad 0%, #3e0076 100%);
   /* Deeper purple gradient */
@@ -214,7 +219,7 @@ button:focus-visible {
   /* Maintained text glow */
   font-weight: bold;
   text-align: center;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
 }
 
 .login-nav-button:hover {
@@ -224,7 +229,7 @@ button:focus-visible {
 
 .disconnect-button{
   font-size: 14px;
-  width: 150px;
+  width: 125px;
   color: white;
   background: linear-gradient(90deg, #6a0dad 0%, #3e0076 100%);
   /* Slightly increased padding for emphasis */
@@ -702,4 +707,34 @@ textarea:focus::placeholder {
   border: 1px solid white;
   background-color: white;
   color: black;
+}
+
+/* CAROUSEL */
+.carousel-wrapper {
+  position: relative;
+  width: 100%; /* Adjust to fit your layout */
+  max-width: 600px;
+  height: 200px; /* Set height of the carousel */
+  margin: 0 auto; /* Center the carousel */
+  overflow: hidden; /* Hide overflow for the sliding effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1e1e2f; /* Optional: Background color */
+  border-radius: 8px;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
 }
