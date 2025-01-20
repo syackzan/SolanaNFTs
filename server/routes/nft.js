@@ -8,7 +8,8 @@ const {
     updateMetadataUri, 
     voteForNFT, 
     testData, 
-    createAndSendNFT } = require('../controllers/nftController');
+    createAndSendNFT,
+    getCoreNFTs } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
@@ -32,5 +33,7 @@ router.patch('/vote', verifyApiKey, voteForNFT);
 router.delete('/delete/:id', deleteNftMetadata);
 
 router.post('/createnft', createAndSendNFT);
+
+router.post('/getCoreNfts', getCoreNFTs);
 
 module.exports = router;

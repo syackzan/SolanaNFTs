@@ -23,4 +23,11 @@ function initializeUmi() {
     return umi;
 }
 
-module.exports = { initializeUmi };
+function softInitUmi(){
+    const solanaNode = process.env.IS_MAINNET === 'true' ? process.env.SOLANA_NODE : 'https://api.devnet.solana.com';
+    console.log(solanaNode);
+
+    const umi = createUmi(solanaNode);
+}
+
+module.exports = { initializeUmi, softInitUmi };

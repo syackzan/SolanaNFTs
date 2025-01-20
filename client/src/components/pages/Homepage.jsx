@@ -113,8 +113,11 @@ const Homepage = () => {
         setNewMetadata(null);
     }
 
+    
+
     //Handles Wallet connection & Admin Login
     useEffect(() => {
+
         const checkAdminStatus = async () => {
 
             if (wallet.connected) {
@@ -146,6 +149,38 @@ const Homepage = () => {
 
         checkAdminStatus(); // Call the async function
     }, [wallet.connected, wallet.publicKey]);
+
+    useEffect(() => {
+        const fetchCoreNFTs = async (walletPublicKey) => {
+
+            if(!walletPublicKey){
+                return;
+            }
+            
+            try {
+              const response = await axios.post(
+                'http://localhost:8080/api/nft/getCoreNfts', // Replace with your actual endpoint URL
+                {
+                  walletPublicKey: walletPublicKey, // Wallet public key as request body
+                },
+                {
+                  headers: {
+                    'Content-Type': 'application/json', // Ensure JSON format
+                    'x-api-key': 'your-api-key-here',  // Optional: Add if your endpoint requires an API key
+                  },
+                }
+              );
+          
+              console.log('Response:', response.data);
+              return response.data; // Handle the data returned from the server
+            } catch (error) {
+              console.error('Error fetching NFTs:', error.response?.data || error.message);
+              throw error; // Re-throw the error to handle it upstream
+            }
+          };
+
+        fetchCoreNFTs(wallet.publicKey);
+    }, [wallet.publicKey]);
 
 
     useEffect(() => {

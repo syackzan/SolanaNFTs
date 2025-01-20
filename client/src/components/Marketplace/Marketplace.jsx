@@ -64,7 +64,7 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <div  style={{height: 'calc(100vh-60px)', marginTop: '60px'}}>
+        <div style={{height: 'calc(100vh-60px)', marginTop: '60px'}}>
             <Navbar />
             <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
                 <Filter
@@ -76,6 +76,8 @@ const Marketplace = () => {
                     selectedRarity={selectedRarity}
                     setSelectedRarity={setSelectedRarity}
                     setIsFetched={setIsFetched}
+                    selectedCreator={selectedCreator}
+                    setSelectedCreator={setSelectedCreator}
                 />
                 <PrintNfts
                     nfts={nfts}

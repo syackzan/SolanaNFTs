@@ -9,14 +9,14 @@ const {
 const {
   create,
   fetchCollection,
-  fetchAsset,
+  fetchAssetsByOwner,
   transferV1,
   addPlugin
 } = require('@metaplex-foundation/mpl-core');
 
 const { PublicKey } = require('@solana/web3.js'); 
 
-const { initializeUmi } = require('../config/umiInstance');
+const { initializeUmi, softInitUmi } = require('../config/umiInstance');
 const { validateNFT } = require('../utils/validateNFT');
 const { getPriorityFee } = require('../utils/transactionHelpers');
 
@@ -253,6 +253,46 @@ exports.createAndSendNFT = async (req, res) => {
     return res.status(500).json({ success: false, error: e.message });
   }
 }
+
+exports.getCoreNFTs = async (req, res) => {
+
+  console.log(req.body.walletPublicKey);
+
+  try {
+    // Extract wallet public key from the request
+    const ownerType = new PublicKey(req.body.walletPublicKey); // Ensure `walletPublicKey` is sent in the request body
+
+    const softUmi = softInitUmi();
+
+    // Fetch assets owned by the specified wallet
+    const assetsByOwner = await fetchAssetsByOwner(umi, ownerType, {
+      skipDerivePlugins: false,
+    });
+
+    console.log('Fetched assets:', assetsByOwner);
+
+    return;
+
+    // Return the assets as a response
+    res.status(200).json({
+      success: true,
+      message: 'Assets fetched successfully',
+      address: ownerType.toString(), // Return the address as a string
+      data: assetsByOwner,
+    });
+  } catch (error) {
+    console.error('Error fetching assets:', error);
+
+    // Return an error response
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch assets',
+      error: error.message || 'An unexpected error occurred',
+    });
+  }
+};
+
+
 
 //DEAD CODE - REPLACED BY createAndSendNFT
 // exports.signAndConfirmTransaction = async (req, res) => {
