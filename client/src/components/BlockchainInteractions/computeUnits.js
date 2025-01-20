@@ -97,32 +97,5 @@ export const getPriorityFee = async (umi, wallet) => {
     } catch (error) {
         console.error("Error:", error);
     }
-
-    //     const response = await fetch(umi.rpc.getEndpoint(), {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //             jsonrpc: "2.0",
-    //             id: 1,
-    //             method: "getRecentPrioritizationFees",
-    //             params: [[wallet.publicKey]],
-    //         }),
-    //     });
-    
-    //     const data = await response.json();
-    
-    //     const fees = data.result?.map((entry) => entry.prioritizationFee) || [];
-    //     const topFees = fees.sort((a, b) => b - a).slice(0, 100);
-    //     const average =
-    //         topFees.length > 0
-    //             ? Math.ceil(topFees.reduce((sum, fee) => sum + fee, 0) / topFees.length)
-    //             : 0;
-    
-    //     console.log(`averageFee is ${average}`)
-    
-    //     return average;
-    
 }
 

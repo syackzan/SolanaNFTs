@@ -60,6 +60,9 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
             alert("User must sign in!");
         }
 
+        await createCoreNft(nfts[selectedIndex], wallet);
+        return;
+
         try {
             const transaction = await createSendSolTx(publicKey);
             const signature = await sendTransaction(transaction, connection);

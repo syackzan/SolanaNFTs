@@ -1,9 +1,31 @@
 const NftMetadata = require('../Models/NftMetadata');
 
-const { createSignerFromKeypair, signerIdentity, signTransaction } = require('@metaplex-foundation/umi');
-const bs58 = require('bs58');
-const { createUmi } = require('@metaplex-foundation/umi-bundle-defaults');
-const { Keypair } = require('@solana/web3.js')
+const {
+  generateSigner,
+  publicKey,
+  createSignerFromKeypair,
+  transactionBuilder,
+  signTransaction
+} = require('@metaplex-foundation/umi');
+
+const {
+  create,
+  fetchCollection,
+  fetchAsset,
+  transferV1
+} = require('@metaplex-foundation/mpl-core');
+
+const { PublicKey } = require('@solana/web3.js'); 
+
+const { initializeUmi } = require('../config/umiInstance');
+const { validateNFT } = require('../utils/validateNFT');
+const { getPriorityFee } = require('../utils/transactionHelpers');
+
+const umi = initializeUmi();
+
+const CORE_COLLECTION_ADDRESS = process.env.IS_MAINNET === "true" ? "CnRTKtN1piFJcrchQPgPN1AH7hagLbAMtkXuhabcruNz" : 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
+
+const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz"
 
 exports.testData = async (req, res) => {
   try {
@@ -159,21 +181,6 @@ exports.voteForNFT = async (req, res) => {
   }
 };
 
-// Initialize Umi
-const solanaNode = process.env.IS_MAINNET === 'true' ? process.env.SOLANA_NODE : 'https://api.devnet.solana.com'
-console.log(solanaNode);
-
-//CREATE AND CONNECT TO UMI WITH mplTokenMetadata Program
-const umi = createUmi(solanaNode);
-
-// Load the private key securely
-const privateKey = bs58.default.decode(process.env.TEST_WALLET_KEY);
-const keypair = umi.eddsa.createKeypairFromSecretKey(privateKey);
-
-const signer = createSignerFromKeypair(umi, keypair);
-
-umi.use(signerIdentity(signer))
-
 exports.signAndConfirmTransaction = async (req, res) => {
 
   try {
@@ -192,7 +199,7 @@ exports.signAndConfirmTransaction = async (req, res) => {
     const reconstructedSigner = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(assetSigner.secretKey));
     const signer2 = createSignerFromKeypair(umi, reconstructedSigner);
     // console.log('Reconstructed Signer:', reconstructedSigner);
-    
+
     const mySigners = [signer, signer2];
 
     // Convert Base64 string back to Uint8Array
@@ -204,7 +211,7 @@ exports.signAndConfirmTransaction = async (req, res) => {
     let myTransaction = umi.transactions.deserialize(transactionArray);
 
     // console.log(myTransaction);
-    
+
     console.log(myTransaction.message.accounts[0]);
 
     myTransaction.message.accounts[0] = signer.publicKey;
@@ -238,3 +245,65 @@ exports.signAndConfirmTransaction = async (req, res) => {
     });
   }
 };
+
+exports.createAndSendNFT = async (req, res) => {
+
+  const { nft, receiverPubKey } = req.body;
+  console.log(receiverPubKey);
+
+  const isValidated = await validateNFT(nft);
+
+  console.log(isValidated);
+
+  if (isValidated.success) {
+    try {
+
+      // Fetch the collection
+      const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
+      console.log("Collection fetched successfully:", collection);
+
+      // Generate a new signer for the asset
+      const assetSigner = generateSigner(umi);
+
+      let perComputeUnit;
+      try {
+        perComputeUnit = await getPriorityFee();
+      } catch (error) {
+        console.error("Failed to fetch priority fee, using default value:", error.message);
+        perComputeUnit = 3500000; // Fallback value
+      }
+
+      console.log(perComputeUnit);
+
+      console.log(nft.storeInfo.metadataUri);
+
+      // Build the transaction
+      let builder = transactionBuilder()
+        // .add(setComputeUnitLimit(umi, { units: 600_000 }))
+        // .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
+        .add(create(umi, {
+          asset: assetSigner,
+          collection: collection,
+          name: nft.name,
+          uri: nft.storeInfo.metadataUri,
+        })).add(transferV1(umi, {
+          asset: publicKey(assetSigner.publicKey),
+          newOwner: publicKey(receiverPubKey),
+          collection: CORE_COLLECTION_ADDRESS
+        }))
+
+      // Send and confirm the transaction
+      const result = await builder.sendAndConfirm(umi);
+      console.log("NFT created and sent successfully:", result);
+
+      // Return success response
+      return res.status(200).json({ success: true, result });
+    } catch (e) {
+      console.error("Error creating and sending NFT:", e);
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  } else {
+    console.error("Error creating and sending NFT:", e);
+    return res.status(500).json({ success: false, error: e.message });
+  }
+}

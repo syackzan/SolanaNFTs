@@ -19,7 +19,7 @@ export const fetchNFTsUtils = async (ownerAddress) => {
         body: JSON.stringify(body),
       };
 
-      const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
+      const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : import.meta.env.VITE_SOLANA_NODE_DEVNET
   
       const response = await fetch(solanaNode, options);
   
