@@ -1,6 +1,14 @@
 const express = require('express');
 const {verifyApiKey} = require('../Middleware/authMiddleware')
-const { getAllMetadata, createNftMetadata, deleteNftMetadata, updateNftMetadata, updateMetadataUri, voteForNFT, signAndConfirmTransaction, testData, createAndSendNFT } = require('../controllers/nftController');
+const { 
+    getAllMetadata, 
+    createNftMetadata, 
+    deleteNftMetadata, 
+    updateNftMetadata, 
+    updateMetadataUri, 
+    voteForNFT, 
+    testData, 
+    createAndSendNFT } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
@@ -22,8 +30,6 @@ router.patch('/vote', verifyApiKey, voteForNFT);
 
 // DELETE /api/nft/delete/:id
 router.delete('/delete/:id', deleteNftMetadata);
-
-router.post('/signer', signAndConfirmTransaction);
 
 router.post('/createnft', createAndSendNFT);
 

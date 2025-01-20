@@ -8,9 +8,13 @@ import PrintNfts from '../PrintNfts/PrintNfts';
 import Filter from '../Filter/Filter';
 import useNFTs from '../Hooks/useNFTs';
 
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
+
 const Marketplace = () => {
 
-    // const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button
+    const wallet = useWallet();
+    const { connection } = useConnection();
 
     const {
         nfts,
@@ -60,7 +64,7 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <>
+        <div  style={{height: 'calc(100vh-60px)', marginTop: '60px'}}>
             <Navbar />
             <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
                 <Filter
@@ -83,7 +87,7 @@ const Marketplace = () => {
                     setEditData={setEditData}
                 />
             </div>
-        </>
+        </div>
     );
 };
 

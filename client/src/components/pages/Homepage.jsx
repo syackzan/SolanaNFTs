@@ -13,8 +13,6 @@ import Navbar from '../Navbar/Navbar';
 import { checkIfAdmin } from '../checkRole';
 import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
 
-
-
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
 const Homepage = () => {
@@ -24,7 +22,7 @@ const Homepage = () => {
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
-        
+
         fetchAssets(wallet);
 
     }, [wallet.publicKey])
@@ -45,10 +43,12 @@ const Homepage = () => {
     const [newMetadata, setNewMetadata] = useState(null);
 
     //Handles disabling buttons
-    const [isDisabled, setIsDisabled] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false); //Button use for Creating Metadata
+    const [lockStatus, setLockStatus] = useState(false);
 
     //States that make up Meta data information
     const [info, setInfo] = useState({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
+
     const [attributes, setAttributes] = useState([
         { trait_type: "blockchain", value: "solana" },
         { trait_type: "type", value: "" },
@@ -119,37 +119,37 @@ const Homepage = () => {
 
             if (wallet.connected) {
                 console.log("Wallet connected:", wallet.publicKey?.toBase58());
-    
+
                 // Call the checkIfAdmin function and await the response
                 const isAdmin = await checkIfAdmin(wallet.publicKey?.toBase58());
                 // console.log("Is Admin:", isAdmin);
-    
+
                 // Perform role-specific actions
                 if (isAdmin) {
                     setUserRole("admin");
                 } else {
                     setUserRole("member");
                 }
-    
+
                 // Update the creator field if the page is 'create'
                 if (page === 'create') {
                     handleStoreChange('creator', wallet.publicKey?.toBase58());
                 }
             } else {
                 console.log("Wallet disconnected");
-    
+
                 // Reset user data when the wallet disconnects
                 handleStoreChange('creator', '');
                 setUserRole(null);
             }
         };
-    
+
         checkAdminStatus(); // Call the async function
     }, [wallet.connected, wallet.publicKey]);
-    
+
 
     useEffect(() => {
-        if(page === 'create'){
+        if (page === 'create') {
             handleStoreChange('creator', wallet.publicKey?.toBase58());
         }
     }, [page])
@@ -279,6 +279,8 @@ const Homepage = () => {
                 //Combine Metadata
                 const updateDataForDB = await combineUpdateMetadataJSON();
 
+                console.log(updateDataForDB);
+
                 //Remove ID from metadata
                 const response = await axios.patch(`http://localhost:8080/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
                 console.log('Update Successfull,', response.data);
@@ -293,37 +295,54 @@ const Homepage = () => {
         }
     }
 
-    const createOffchainMetadata = async () => {
-
-        const metadataForJSONUpload = await combineOffchainMetatdata();
-
-        // // create new const with json data
-        const metadataUri = await uploadMetadata(metadataForJSONUpload);
-
-        let objectId;
-        if (page === 'create') {
-            objectId = newMetadata._id //newly created metadata
-        } else {
-            objectId = info._id //metadata existing in DB already
-        }
-
-        const response = await axios.patch(
-            `http://localhost:8080/api/nft/locknft/${objectId}`,
-            { metadataUri: metadataUri }, // Send data as an object in the request body
-            { headers: { 'x-api-key': API_KEY } } // Include API key in headers
-        );
-
-        console.log('Update Successfull,', response.data);
-
-        setRefetchNFTs(!refetchNFTs);
-
-        if (response.status >= 200 && response.status < 300) {
-            alert("Metadata Locked Successfully");
-            resetMetadata();
-        } else {
-            alert("Metadata failed to lock");
-        }
+    function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
+
+    const createOffchainMetadata = async () => {
+        
+        try {
+
+            setLockStatus(true);
+            // Combine offchain metadata
+            const metadataForJSONUpload = await combineOffchainMetatdata();
+
+            // Upload metadata and get the URI
+            const metadataUri = await uploadMetadata(metadataForJSONUpload);
+
+            // Determine the object ID based on the page
+            let objectId;
+            if (page === 'create') {
+                objectId = newMetadata._id; // Newly created metadata
+            } else {
+                objectId = info._id; // Metadata existing in DB already
+            }
+
+            // Make the PATCH request to lock the NFT
+            const response = await axios.patch(
+                `http://localhost:8080/api/nft/locknft/${objectId}`,
+                { metadataUri: metadataUri }, // Send data as an object in the request body
+                { headers: { 'x-api-key': API_KEY } } // Include API key in headers
+            );
+
+            // Handle response
+            if (response.status >= 200 && response.status < 300) {
+                console.log('Update Successful:', response.data);
+                alert("Metadata Locked Successfully");
+                resetMetadata(); // Reset metadata
+                setRefetchNFTs(!refetchNFTs); // Trigger refetch
+                setLockStatus(false);
+            } else {
+                console.error('Failed to update metadata:', response);
+                alert("Metadata failed to lock");
+            }
+        } catch (error) {
+            // Log and handle any errors
+            console.error('Error in createOffchainMetadata:', error);
+            alert("An error occurred while locking metadata. Please try again.");
+            setLockStatus(false);
+        }
+    };
 
     //Get all metadata objects from DB
     const getMetadata = async () => {
@@ -360,9 +379,9 @@ const Homepage = () => {
     }
 
     return (
-        <div style={{overflow: 'hidden'}}>
+        <div style={{ overflow: 'hidden' }}>
             <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
-            <div className="d-flex">
+            <div className="d-flex" style={{ marginTop: '60px' }}>
                 <SideNav info={info}
                     attributes={attributes}
                     storeInfo={storeInfo}
@@ -379,7 +398,8 @@ const Homepage = () => {
                     setIsDisabled={setIsDisabled}
                     userRole={userRole}
                     walletAddress={wallet.publicKey?.toBase58()}
-                    resetMetadata={resetMetadata} />
+                    resetMetadata={resetMetadata}
+                    lockedStatus={lockStatus} />
                 {page === "create" &&
                     <NFTPreview
                         info={info}

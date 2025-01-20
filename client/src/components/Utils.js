@@ -11,7 +11,9 @@ export const uploadMetadata = async (metadata) => {
 
     try {
 
-        const upload = await pinata.upload.json(metadata);
+        const { _id, _v, ...offChainMetadata} = metadata; //Extract database _id & _v from offchain data
+
+        const upload = await pinata.upload.json(offChainMetadata);
 
         console.log(upload);
         const metadataUri = `${import.meta.env.VITE_METADATA_URI}${upload.IpfsHash}`

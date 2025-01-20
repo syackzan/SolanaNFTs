@@ -17,7 +17,8 @@ const SideNav = ({
     setIsDisabled,
     userRole,
     walletAddress,
-    resetMetadata
+    resetMetadata,
+    lockedStatus
 }) => {
 
 
@@ -92,10 +93,7 @@ const SideNav = ({
                 backgroundColor: '#1E1E1E',
                 color: '#FFFFFF',
                 padding: '10px 20px 20px 20px',
-                height: '100vh',
-                // overflowY: 'auto',
-                // boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
-                // overflowX: 'hidden'
+                height: 'calc(100vh - 60px)'
             }}
         >
             <div className="d-flex justify-content-end" style={{ marginBottom: '5px' }}>
@@ -109,6 +107,11 @@ const SideNav = ({
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
 
+                if (page === "update" && !info.name) {
+                    alert('Select and item');
+                    return;
+                }
+
                 // Example validation for the select field
                 if (storeInfo.available === "") {
                     alert("Please answer the 'Available' question.");
@@ -116,31 +119,28 @@ const SideNav = ({
                 }
 
                 //Disables user from creating multiple new DB entries
-                if (page === 'create') {
-                    setIsDisabled(true);
-                    setIsCreating(true);
-                }
+                setIsDisabled(true);
 
                 // Check if the form is valid
                 if (form.checkValidity()) {
 
                     try {
 
+                        await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
+
+                        if(page === 'update'){
+                            await delay(1000);
+                            setIsDisabled(false);
+                        }
+
                         if (page === 'create') {
                             setIsCreating(false);
                             setIsCreated(true);
                         }
 
-                        await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
-
                     } catch (e) {
                         alert('Failed creating NFT Data', e);
                         setIsDisabled(false);
-                    } finally {
-
-                        if (page === 'create') {
-                            setIsDisabled(false);
-                        }
                     }
 
                 } else {
@@ -198,11 +198,18 @@ const SideNav = ({
                                         />
                                     ) : (
                                         <input
-                                            type="number"
+                                            type="text" // Use "text" to handle input flexibility and control formatting
                                             value={value || ''}
                                             placeholder={key === 'price' ? '$' : 'ex. 1'}
                                             required
-                                            onChange={(e) => handleStoreChange(key, e.target.value)}
+                                            onChange={(e) => {
+                                                const input = e.target.value;
+
+                                                // Allow only valid USD format: digits, optional decimal point, and up to two decimals
+                                                if (/^\$?\d*\.?\d{0,2}$/.test(input)) {
+                                                    handleStoreChange(key, input);
+                                                }
+                                            }}
                                             disabled={!canEditStoreInfo}
                                             style={{
                                                 width: '100%',
@@ -497,79 +504,79 @@ const SideNav = ({
             </form>
             {page === "create" && isCreated && (
                 <>
-                    {storeInfo.metadataUri ? (
-                        <>Locked</>
-                    ) : (
-                        <>
-                            {isAdmin && <button
-                                className="button-click metadata-button"
-                                onClick={createOffchainMetadata}
-                            >
-                                Lock Metadata
-                            </button>}
-                        </>
-                    )}
                     <button
                         className="button-click"
-                        onClick={() => setIsCreated(false)}
+                        onClick={() => {setIsCreated(false), setIsDisabled(false)}}
                     >
                         Create New (Reset)
                     </button>
+                    {isAdmin && (<>
+                        {lockedStatus ? (
+                            <div className="button-container">
+                                <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                <div className="d-flex gap-2">
+                                    <strong>LOCKING...</strong>
+                                    <div class='loader'></div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="button-container">
+                                <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                <div className="d-flex gap-2">
+                                    <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
+                                </div>
+                            </div>
+                        )}
+                    </>)}
                 </>
             )}
-            {page === "update" && (
-                <>
+            {page === "update" && info.name && (
+                <div className="d-flex justify-content-center align-items-center gap-4 flex-wrap" style={{ width: '100%', marginTop: '10px' }}>
                     {storeInfo.metadataUri ? (
-                        <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
-                            {isAdmin &&
-                                <button
-                                    className="button-click metadata-button"
-                                    onClick={deleteMetadata}
-                                >
-                                    Delete Metadata
-                                </button>}
-
-                            <a href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
-                                View Locked Data
-                            </a>
-                        </div>
-                    ) : (
                         <>
-                            {isAdmin ? (
-                                <>
-                                    <button
-                                        className="button-click metadata-button"
-                                        onClick={createOffchainMetadata}
-                                    >
-                                        Lock Metadata
-                                    </button>
-                                    <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
-                                        {isAdmin &&
-                                            <button
-                                                className="button-click metadata-button"
-                                                onClick={deleteMetadata}
-                                            >
-                                                Delete Metadata
-                                            </button>}
+                            <a className="button-style-regular" href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
+                                View Off-Chain Data
+                            </a>
+                            {isAdmin && (
+                                <div className="d-flex align-items-center justify-content-between p-2 gap-5" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
+                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                    <div className="d-flex gap-2">
+                                        <button onClick={() => { deleteMetadata() }} className='button-style-regular'>Delete NFT</button>
                                     </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="d-flex justify-content-center flex-column align-items-center" style={{ width: '100%', marginTop: '10px' }}>
-                                        {isAdmin &&
-                                            <button
-                                                className="button-click metadata-button"
-                                                onClick={deleteMetadata}
-                                            >
-                                                Delete Metadata
-                                            </button>}
-                                    </div>
-                                </>
+                                </div>
                             )}
-
                         </>
+                    ) : (
+                        <div className="d-flex flex-column w-100 gap-2">
+                            {isAdmin && (<>
+                                {lockedStatus ? (
+                                    <div className="button-container">
+                                        <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                        <div className="d-flex gap-2">
+                                            <strong>LOCKING...</strong>
+                                            <div class='loader'></div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="button-container">
+                                        <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                        <div className="d-flex gap-2">
+                                            <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
+                                        </div>
+                                    </div>
+                                )}
+                            </>)}
+                            {isAdmin && (
+                                <div className="d-flex align-items-center justify-content-between p-2 gap-5" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
+                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                    <div className="d-flex gap-2">
+                                        <button onClick={() => { deleteMetadata() }} className='button-style-regular'>Delete NFT</button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     )}
-                </>
+                </div>
             )}
         </div>
     );

@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
-import axios from 'axios';
-
-import { FaLock } from "react-icons/fa";
-import { FaLockOpen } from "react-icons/fa";
+import React from 'react';
 
 import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
 
@@ -31,7 +26,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         selectedCreator,
         setSelectedCreator,
         setIsFetched,
-    } = useNFTs({inStoreOnly: false});
+    } = useNFTs({inStoreOnly: false, refetchNFTs});
 
     const setEditData = async (nft) => {
         console.log(nft);
@@ -60,9 +55,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
             alert("User must sign in!");
         }
 
-        await createCoreNft(nfts[selectedIndex], wallet);
-        return;
-
         try {
             const transaction = await createSendSolTx(publicKey);
             const signature = await sendTransaction(transaction, connection);
@@ -84,7 +76,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     }
 
     return (
-        <div className="d-flex flex-column" style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
+        <div className="d-flex flex-column sidenav" style={{ backgroundColor: 'rgb(30, 30, 30)', height: 'calc(100vh - 60px)' }}>
             <Filter
                 title={"CREATOR HUB"}
                 selectedType={selectedType}

@@ -3,16 +3,15 @@ const NftMetadata = require('../Models/NftMetadata');
 const {
   generateSigner,
   publicKey,
-  createSignerFromKeypair,
   transactionBuilder,
-  signTransaction
 } = require('@metaplex-foundation/umi');
 
 const {
   create,
   fetchCollection,
   fetchAsset,
-  transferV1
+  transferV1,
+  addPlugin
 } = require('@metaplex-foundation/mpl-core');
 
 const { PublicKey } = require('@solana/web3.js'); 
@@ -21,11 +20,11 @@ const { initializeUmi } = require('../config/umiInstance');
 const { validateNFT } = require('../utils/validateNFT');
 const { getPriorityFee } = require('../utils/transactionHelpers');
 
+const { base58 } =  require("@metaplex-foundation/umi/serializers");
+
 const umi = initializeUmi();
 
 const CORE_COLLECTION_ADDRESS = process.env.IS_MAINNET === "true" ? "CnRTKtN1piFJcrchQPgPN1AH7hagLbAMtkXuhabcruNz" : 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
-
-const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz"
 
 exports.testData = async (req, res) => {
   try {
@@ -75,6 +74,8 @@ exports.updateNftMetadata = async (req, res) => {
     const { id } = req.params; // Extract id from request parameters
     const updates = req.body; // Extract updates from request body
 
+    console.log(updates);
+
     // Fetch the current metadata
     const existingNft = await NftMetadata.findById(id);
     if (!existingNft) {
@@ -112,7 +113,6 @@ exports.updateMetadataUri = async (req, res) => {
     const { metadataUri } = req.body; // Extract metadataUri from request body
 
     console.log(id);
-    console.log("hello");
     console.log(metadataUri);
 
     // Ensure metadataUri is provided
@@ -181,70 +181,6 @@ exports.voteForNFT = async (req, res) => {
   }
 };
 
-exports.signAndConfirmTransaction = async (req, res) => {
-
-  try {
-
-    console.log("Inside the send transaction");
-    const { transaction: base64Transaction, assetSigner } = req.body;
-
-    if (!base64Transaction || !assetSigner) {
-      return res.status(400).json({ error: 'Transaction data is required.' });
-    }
-
-    console.log('Received Transaction');
-    // console.log(assetSigner);
-
-    // Convert the assetSigner back to a Keypair
-    const reconstructedSigner = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(assetSigner.secretKey));
-    const signer2 = createSignerFromKeypair(umi, reconstructedSigner);
-    // console.log('Reconstructed Signer:', reconstructedSigner);
-
-    const mySigners = [signer, signer2];
-
-    // Convert Base64 string back to Uint8Array
-    const transactionArray = Uint8Array.from(Buffer.from(base64Transaction, 'base64'));
-
-    // console.log(transactionArray);
-
-    // Deserialize the transaction using Umi
-    let myTransaction = umi.transactions.deserialize(transactionArray);
-
-    // console.log(myTransaction);
-
-    console.log(myTransaction.message.accounts[0]);
-
-    myTransaction.message.accounts[0] = signer.publicKey;
-
-    console.log(myTransaction.message.accounts[0]);
-
-    const signedTransaction = await signTransaction(myTransaction, mySigners);
-    console.log(signedTransaction);
-
-    // const signedTransactions = await signAllTransactions([
-    //   {transaction: myFirstTransaction, signers: [mySigners]},
-    //   {transaction: mySecondTransaction, signers: [mySigners.signer]}
-    // ])
-
-    const signature = await umi.rpc.sendTransaction(signedTransaction);
-    console.log(signature);
-
-    // Confirm the transaction
-    // const confirmation = await umi.rpc.confirmTransaction(signature, 'confirmed');
-
-    res.json({
-      success: true,
-      signature,
-      // confirmation,
-    });
-  } catch (error) {
-    console.error('Error signing and confirming transaction:', error);
-    res.status(500).json({
-      error: 'Failed to sign and confirm transaction',
-      details: error.message,
-    });
-  }
-};
 
 exports.createAndSendNFT = async (req, res) => {
 
@@ -286,18 +222,28 @@ exports.createAndSendNFT = async (req, res) => {
           collection: collection,
           name: nft.name,
           uri: nft.storeInfo.metadataUri,
-        })).add(transferV1(umi, {
+        })).add(addPlugin(umi, {
+          asset: assetSigner.publicKey,
+          collection: collection,
+          plugin: {
+            type: 'ImmutableMetadata',
+          },
+        }))
+        .add(transferV1(umi, {
           asset: publicKey(assetSigner.publicKey),
           newOwner: publicKey(receiverPubKey),
           collection: CORE_COLLECTION_ADDRESS
         }))
 
       // Send and confirm the transaction
-      const result = await builder.sendAndConfirm(umi);
-      console.log("NFT created and sent successfully:", result);
+      const { signature } = await builder.sendAndConfirm(umi);
+
+      const serializedSignature = base58.deserialize(signature)[0];
+
+      console.log("NFT created and sent successfully:", serializedSignature);
 
       // Return success response
-      return res.status(200).json({ success: true, result });
+      return res.status(200).json({ success: true, serializedSignature });
     } catch (e) {
       console.error("Error creating and sending NFT:", e);
       return res.status(500).json({ success: false, error: e.message });
@@ -307,3 +253,69 @@ exports.createAndSendNFT = async (req, res) => {
     return res.status(500).json({ success: false, error: e.message });
   }
 }
+
+//DEAD CODE - REPLACED BY createAndSendNFT
+// exports.signAndConfirmTransaction = async (req, res) => {
+
+//   try {
+
+//     console.log("Inside the send transaction");
+//     const { transaction: base64Transaction, assetSigner } = req.body;
+
+//     if (!base64Transaction || !assetSigner) {
+//       return res.status(400).json({ error: 'Transaction data is required.' });
+//     }
+
+//     console.log('Received Transaction');
+//     // console.log(assetSigner);
+
+//     // Convert the assetSigner back to a Keypair
+//     const reconstructedSigner = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(assetSigner.secretKey));
+//     const signer2 = createSignerFromKeypair(umi, reconstructedSigner);
+//     // console.log('Reconstructed Signer:', reconstructedSigner);
+
+//     const mySigners = [signer, signer2];
+
+//     // Convert Base64 string back to Uint8Array
+//     const transactionArray = Uint8Array.from(Buffer.from(base64Transaction, 'base64'));
+
+//     // console.log(transactionArray);
+
+//     // Deserialize the transaction using Umi
+//     let myTransaction = umi.transactions.deserialize(transactionArray);
+
+//     // console.log(myTransaction);
+
+//     console.log(myTransaction.message.accounts[0]);
+
+//     myTransaction.message.accounts[0] = signer.publicKey;
+
+//     console.log(myTransaction.message.accounts[0]);
+
+//     const signedTransaction = await signTransaction(myTransaction, mySigners);
+//     console.log(signedTransaction);
+
+//     // const signedTransactions = await signAllTransactions([
+//     //   {transaction: myFirstTransaction, signers: [mySigners]},
+//     //   {transaction: mySecondTransaction, signers: [mySigners.signer]}
+//     // ])
+
+//     const signature = await umi.rpc.sendTransaction(signedTransaction);
+//     console.log(signature);
+
+//     // Confirm the transaction
+//     // const confirmation = await umi.rpc.confirmTransaction(signature, 'confirmed');
+
+//     res.json({
+//       success: true,
+//       signature,
+//       // confirmation,
+//     });
+//   } catch (error) {
+//     console.error('Error signing and confirming transaction:', error);
+//     res.status(500).json({
+//       error: 'Failed to sign and confirm transaction',
+//       details: error.message,
+//     });
+//   }
+// };

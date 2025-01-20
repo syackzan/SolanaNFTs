@@ -540,6 +540,17 @@ textarea:focus::placeholder {
   background: #f4f4f4; /* Thumb color on hover */
 }
 
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px; /* Equivalent to p-2 in Bootstrap */
+  gap: 20px; /* Equivalent to gap-5 */
+  background-color: #1e1e2f;
+  border-radius: 8px;
+  color: #ffffff;
+}
+
 /* LOADER */
 .loader {
   border: 4px solid #f3f3f3; /* Light gray border */
