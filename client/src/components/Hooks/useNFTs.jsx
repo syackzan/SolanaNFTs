@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { filterNFTs, sortNFTsByRarity } from '../filterUtils'
 
+import { URI_SERVER } from "../config";
+
 const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     const [nfts, setNfts] = useState([]);
     const [nftsToSort, setNftsToSort] = useState([]);
@@ -24,7 +26,7 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
 
             if (!isFetched) {
                 console.log("Fetching NFT data from API...");
-                const response = await axios.get("http://localhost:8080/api/nft/all");
+                const response = await axios.get(`${URI_SERVER}/api/nft/all`);
                 const allNFTs = response.data || [];
 
                 let filteredNFTs = allNFTs;
@@ -65,7 +67,7 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     useEffect(() => {
         const updatedDatabase = async () => {
             console.log("Fetching NFT data from API...");
-            const response = await axios.get("http://localhost:8080/api/nft/all");
+            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
             const allNFTs = response.data || [];
 
             let filteredNFTs = allNFTs;

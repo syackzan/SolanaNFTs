@@ -13,6 +13,8 @@ import Navbar from '../Navbar/Navbar';
 import { checkIfAdmin } from '../checkRole';
 import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
 
+import { URI_SERVER } from '../config';
+
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
 const Homepage = () => {
@@ -156,17 +158,17 @@ const Homepage = () => {
             if(!walletPublicKey){
                 return;
             }
-            
+
             try {
               const response = await axios.post(
-                'http://localhost:8080/api/nft/getCoreNfts', // Replace with your actual endpoint URL
+                `${URI_SERVER}/api/nft/getCoreNfts`, // Replace with your actual endpoint URL
                 {
                   walletPublicKey: walletPublicKey, // Wallet public key as request body
                 },
                 {
                   headers: {
                     'Content-Type': 'application/json', // Ensure JSON format
-                    'x-api-key': 'your-api-key-here',  // Optional: Add if your endpoint requires an API key
+                    'x-api-key': API_KEY,  // Optional: Add if your endpoint requires an API key
                   },
                 }
               );
@@ -300,7 +302,7 @@ const Homepage = () => {
             if (page === 'create') {
                 const metadataForDB = await combineNewMetadataJSON();
                 const response = await axios.post(
-                    'http://localhost:8080/api/nft/create',
+                    `${URI_SERVER}/api/nft/create`,
                     metadataForDB,
                     { headers: { 'x-api-key': API_KEY } });
 
@@ -317,7 +319,7 @@ const Homepage = () => {
                 console.log(updateDataForDB);
 
                 //Remove ID from metadata
-                const response = await axios.patch(`http://localhost:8080/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
+                const response = await axios.patch(`${URI_SERVER}/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
                 console.log('Update Successfull,', response.data);
 
                 setRefetchNFTs(!refetchNFTs);
@@ -355,7 +357,7 @@ const Homepage = () => {
 
             // Make the PATCH request to lock the NFT
             const response = await axios.patch(
-                `http://localhost:8080/api/nft/locknft/${objectId}`,
+                `${URI_SERVER}/api/nft/locknft/${objectId}`,
                 { metadataUri: metadataUri }, // Send data as an object in the request body
                 { headers: { 'x-api-key': API_KEY } } // Include API key in headers
             );
@@ -382,7 +384,7 @@ const Homepage = () => {
     //Get all metadata objects from DB
     const getMetadata = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/nft/all');
+            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
             console.log('NFT DATA', response.data);
         } catch (e) {
             console.error('Error when accessing data', error.response?.data || error.message)
@@ -392,7 +394,7 @@ const Homepage = () => {
     // const updateMetadata = async () => {
 
     //     try {
-    //         const response = await axios.patch(`http://localhost:8080/api/nft/update/${test_id}`,
+    //         const response = await axios.patch(`${URI_SERVER}/api/nft/update/${test_id}`,
     //             updateData,
     //             { headers: { 'x-api-key': API_KEY } });
     //         console.log('Update Successfull,', response.data);
@@ -403,7 +405,7 @@ const Homepage = () => {
 
     const deleteMetadata = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:8080/api/nft/delete/${info._id}`);
+            const response = await axios.delete(`${URI_SERVER}/api/nft/delete/${info._id}`);
             console.log('Update Successfull,', response.data);
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);

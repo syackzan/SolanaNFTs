@@ -262,23 +262,30 @@ exports.getCoreNFTs = async (req, res) => {
     // Extract wallet public key from the request
     const ownerType = new PublicKey(req.body.walletPublicKey); // Ensure `walletPublicKey` is sent in the request body
 
-    const softUmi = softInitUmi();
-
     // Fetch assets owned by the specified wallet
-    const assetsByOwner = await fetchAssetsByOwner(umi, ownerType, {
+    const fetchedAssets = await fetchAssetsByOwner(umi, ownerType, {
       skipDerivePlugins: false,
     });
 
-    console.log('Fetched assets:', assetsByOwner);
+    // console.log('Fetched assets:', assetsByOwner);
 
-    return;
+    // Remove unnecessary fields (rentEpoch, lamports, pluginHeader, immutableMetadata)
+    const sanitizedAssets = fetchedAssets.map(({ header, pluginHeader, immutableMetadata, ...asset }) => {
+      const { rentEpoch, lamports, ...sanitizedHeader } = header; // Remove rentEpoch and lamports
+      return {
+        ...asset,
+        header: sanitizedHeader, // Include sanitized header without rentEpoch and lamports
+      };
+    });
+
+    console.log(sanitizedAssets);
 
     // Return the assets as a response
     res.status(200).json({
       success: true,
       message: 'Assets fetched successfully',
       address: ownerType.toString(), // Return the address as a string
-      data: assetsByOwner,
+      data: sanitizedAssets,
     });
   } catch (error) {
     console.error('Error fetching assets:', error);

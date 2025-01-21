@@ -13,8 +13,6 @@ exports.checkUserRole = async (req, res) => {
         // Fetch user role
         const user = await User.findOne({ walletAddress });
 
-        console.log(user);
-
         // Check if the user is an admin
         const isAdmin = user && user.role === "admin";
 

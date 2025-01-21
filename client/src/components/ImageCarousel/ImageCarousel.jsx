@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import axios from 'axios';
 
+import { URI_SERVER } from "../config";
+
 const ImageCarousel = () => {
     const [nfts, setNfts] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,7 +16,7 @@ const ImageCarousel = () => {
     // Fetch NFT metadata
     const fetchNFTs = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/nft/all");
+            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
             setNfts(response.data || []);
         } catch (e) {
             console.error("Error when accessing data", e.response?.data || e.message);
@@ -152,7 +154,7 @@ export default ImageCarousel;
 //  //Fetch NFT metadata
 //  const fetchNFTs = async () => {
 //     try {
-//         const response = await axios.get("http://localhost:8080/api/nft/all");
+//         const response = await axios.get(`${URI_SERVER}/api/nft/all`);
 //         setNfts(response.data || []); // Ensure `nfts` is an array
 //         // console.log("NFT DATA", response.data);
 //     } catch (e) {

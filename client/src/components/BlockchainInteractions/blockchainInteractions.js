@@ -15,6 +15,7 @@ import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
 
 import { IS_MAINNET } from '../config'
 import axios from 'axios';
+import { URI_SERVER } from '../config'
 // import { computeTxUnits, getPriorityFee } from './computeUnits'
 
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
@@ -39,7 +40,7 @@ export const createCoreNft = async (nft, wallet) => {
     try {
         const requestBody = { nft, receiverPubKey: wallet.publicKey };
 
-        const apiUrl = 'http://localhost:8080/api/nft/createnft';
+        const apiUrl = `${URI_SERVER}/api/nft/createnft`;
 
         // Make the POST request to the backend
         const signature = await axios.post(apiUrl, requestBody);
