@@ -14,7 +14,7 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 
 import App from '../../App';
 
-import { IS_MAINNET } from '../config';
+import { IS_MAINNET } from '../../config/config';
 
 const WalletAdapter = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.

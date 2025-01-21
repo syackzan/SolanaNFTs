@@ -7,10 +7,6 @@ import {
 } from "@metaplex-foundation/mpl-toolbox";
 import { base64 } from "@metaplex-foundation/umi/serializers";
 
-import axios from 'axios';
-
-import { IS_MAINNET } from "../config";
-
 export const computeTxUnits = async (umi, tx) => {
 
     const baseTransaction = await transferSol(umi, {

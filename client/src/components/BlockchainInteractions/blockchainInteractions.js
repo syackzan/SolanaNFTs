@@ -13,9 +13,9 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters' //If connecting a wallet via WalletProvider
 import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
 
-import { IS_MAINNET } from '../config'
+import { IS_MAINNET } from '../../config/config'
 import axios from 'axios';
-import { URI_SERVER } from '../config'
+import { URI_SERVER } from '../../config/config'
 // import { computeTxUnits, getPriorityFee } from './computeUnits'
 
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'

@@ -61,10 +61,10 @@ const PrintNfts = ({
 
                         return (
                             <div key={index} style={{ display: 'inline-block' }}>
-                                <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
+                                <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px' }}>
                                     <div>Price: ${nft.storeInfo.price}</div>
                                     {nft.storeInfo.available ? (<div>in-store✅</div>) : (<div>in-store❌</div>)}
-                                    {nft.storeInfo.metadataUri ? (<div><FaLock /></div>) : (<div><FaLockOpen /></div>)}
+                                    {nft.storeInfo.metadataUri ? (<div>Data <FaLock /></div>) : (<div>Data <FaLockOpen /></div>)}
                                 </div>
                                 <button
                                     className={`${rarityClass} ${isSelected ? "selected" : ""}`}

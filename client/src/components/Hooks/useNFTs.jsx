@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { filterNFTs, sortNFTsByRarity } from '../filterUtils'
+import { filterNFTs, sortNFTsByRarity } from '../../Utils/filterUtils'
 
-import { URI_SERVER } from "../config";
+import { URI_SERVER } from "../../config/config";
 
 const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     const [nfts, setNfts] = useState([]);

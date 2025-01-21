@@ -1,4 +1,4 @@
-import { URI_SERVER } from "./config";
+import { URI_SERVER } from "../config/config";
 
 export const checkIfAdmin = async (walletAddress) => {
     try {

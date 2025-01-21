@@ -4,16 +4,18 @@ import { useSearchParams } from 'react-router-dom';
 import SideNav from '../SideNav/SideNav';
 import NFTPreview from '../NFTPreview/NFTPreview';
 import NFTUpdate from '../NFTUpdate/NFTUpdate';
-import { uploadIcon, uploadMetadata } from '../Utils';
+import { uploadIcon, uploadMetadata } from '../../Utils/Utils';
 
 import axios from 'axios';
 import { useWallet } from '@solana/wallet-adapter-react'
 import SolConnection from '../Connection/SolConnection';
 import Navbar from '../Navbar/Navbar';
-import { checkIfAdmin } from '../checkRole';
+import { checkIfAdmin } from '../../Utils/checkRole';
 import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
 
-import { URI_SERVER } from '../config';
+import { URI_SERVER } from '../../config/config';
+
+import { infoData, attributesData, storeInfoData, propertiesData } from '../../config/gameConfig';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -49,67 +51,19 @@ const Homepage = () => {
     const [lockStatus, setLockStatus] = useState(false);
 
     //States that make up Meta data information
-    const [info, setInfo] = useState({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
+    const [info, setInfo] = useState(infoData);
 
-    const [attributes, setAttributes] = useState([
-        { trait_type: "blockchain", value: "solana" },
-        { trait_type: "type", value: "" },
-        { trait_type: "subType", value: "" },
-        { trait_type: "rarity", value: "common" },
-        { trait_type: "affinity", value: "" },
-        { trait_type: "damage", value: "0" },
-        { trait_type: "defense", value: "0" },
-        { trait_type: "dodge", value: "0" },
-        { trait_type: "coinMultiplier", value: "0" },
-    ]);
-    const [properties, setProperties] = useState({
-        files: [
-            {
-                uri: null,
-                type: "image/png"
-            }
-        ],
-        category: "image"
-    })
+    const [attributes, setAttributes] = useState(attributesData);
+    const [properties, setProperties] = useState(propertiesData);
     //State that makes up Store Information
-    const [storeInfo, setStoreInfo] = useState({
-        available: '',
-        price: '',
-        season: '',
-        metadataUri: '',
-        creator: '',
-    })
+    const [storeInfo, setStoreInfo] = useState(storeInfoData);
 
     //Function that resets local metadata when needed
     const resetMetadata = () => {
-        setInfo({ name: '', symbol: 'BOOH', description: '', image: '', external_link: 'https://boohworld.io/boohbrawlers/marketplace' });
-        setAttributes([
-            { trait_type: "blockchain", value: "solana" },
-            { trait_type: "type", value: "" },
-            { trait_type: "subType", value: "" },
-            { trait_type: "rarity", value: "common" },
-            { trait_type: "affinity", value: "" },
-            { trait_type: "damage", value: "0" },
-            { trait_type: "defense", value: "0" },
-            { trait_type: "dodge", value: "0" },
-            { trait_type: "coinMultiplier", value: "0" },
-        ]);
-        setProperties({
-            files: [
-                {
-                    uri: null,
-                    type: "image/png"
-                }
-            ],
-            category: "image"
-        });
-        setStoreInfo({
-            available: '',
-            price: '',
-            season: '',
-            metadataUri: '',
-            creator: wallet.publicKey.toString()
-        })
+        setInfo(infoData);
+        setAttributes(attributesData);
+        setProperties(propertiesData);
+        setStoreInfo(storeInfoData);
 
         setImage(null);
         setNewMetadata(null);
@@ -301,6 +255,7 @@ const Homepage = () => {
 
             if (page === 'create') {
                 const metadataForDB = await combineNewMetadataJSON();
+
                 const response = await axios.post(
                     `${URI_SERVER}/api/nft/create`,
                     metadataForDB,
@@ -422,6 +377,7 @@ const Homepage = () => {
                 <SideNav info={info}
                     attributes={attributes}
                     storeInfo={storeInfo}
+                    setStoreInfo={setStoreInfo}
                     handleInputChange={handleInputChange}
                     handleStoreChange={handleStoreChange}
                     handleAttributeChange={handleAttributeChange}

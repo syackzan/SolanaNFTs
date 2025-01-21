@@ -570,6 +570,33 @@ textarea:focus::placeholder {
   }
 }
 
+/* MODAL */
+.modal {
+  position: absolute; /* Position relative to the sidenav */
+  bottom: 10%; /* Lower third of the sidenav */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%);
+  background-color: #ff5555;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  text-align: center;
+  z-index: 1000;
+  opacity: 1;
+  /* animation: fadeOut 2s ease-out forwards; */
+}
+
+@keyframes fadeOut {
+  0% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0;
+  }
+}
+
 .custom-carousel {
   position: relative;
   overflow: hidden;

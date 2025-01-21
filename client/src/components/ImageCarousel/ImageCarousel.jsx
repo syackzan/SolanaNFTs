@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import axios from 'axios';
 
-import { URI_SERVER } from "../config";
+import { URI_SERVER } from "../../config/config";
 
 const ImageCarousel = () => {
     const [nfts, setNfts] = useState([]);
