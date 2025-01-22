@@ -31,7 +31,7 @@ const LandingPage = () => {
                 </h3>
                 <div className="d-flex justify-content-center gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff", marginBottom: '15px' }}>
                     <Link className="darkmode-button" to='/dashboard?action=create' >Create</Link>
-                    <Link className="darkmode-button" to='/dashboard?action=update' >View NFTs</Link>
+                    <Link className="darkmode-button" to='/dashboard?action=update' >Edit</Link>
                     <Link className="darkmode-button" to='/documentation' >Docs</Link>
                 </div>
                 <ImageCarousel />

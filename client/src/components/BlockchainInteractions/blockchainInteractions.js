@@ -27,6 +27,9 @@ const umi = createUmi(solanaNode)
 
 export const fetchAssets = async (wallet) => {
 
+    if (!wallet.publicKey)
+        return;
+
     const ownerType = new PublicKey(wallet.publicKey);
     const assetsByOwner = await fetchAssetsByOwner(umi, ownerType, {
         skipDerivePlugins: false,
@@ -45,7 +48,7 @@ export const createCoreNft = async (nft, wallet) => {
         // Make the POST request to the backend
         const signature = await axios.post(apiUrl, requestBody);
 
-        console.log(signature);
+        return signature;
 
     } catch (walletError) {
         console.error("Error registering wallet adapter:", walletError);
@@ -54,8 +57,7 @@ export const createCoreNft = async (nft, wallet) => {
 
 export const createSendSolTx = async (fromPubkeyString, payment = 0) => {
 
-    const mintingCosts = .004
-    const amount = mintingCosts + payment;
+    const amount = payment;
 
     const fromPubkey = new PublicKey(fromPubkeyString);
     const toPubkey = new PublicKey(TEST_WALLET)

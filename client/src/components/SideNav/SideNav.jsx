@@ -8,8 +8,10 @@ import {
     accessoriesOptions,
     rarityOptions,
     pricingValues,
-    talenPointSpread
+    talenPointSpread,
+    talents
 } from '../../config/gameConfig';
+import { set } from '@metaplex-foundation/umi/serializers';
 
 const SideNav = ({
     info,
@@ -30,91 +32,110 @@ const SideNav = ({
     userRole,
     walletAddress,
     resetMetadata,
-    lockedStatus
+    lockedStatus,
+    createLockStatus,
+    setCreateLockStatus,
+    disableDeleteButton
 }) => {
 
-    const [maxTalentPoints, setMaxTalentPoints] = useState(0);
-    const [isCreating, setIsCreating] = useState(false);
-    const [isCreated, setIsCreated] = useState(false);
+    // State variables
+    const [maxTalentPoints, setMaxTalentPoints] = useState(0); // Maximum talent points based on rarity
+    const [isCreating, setIsCreating] = useState(false); // Indicates if a creation process is ongoing
+    const [isCreated, setIsCreated] = useState(false); // Indicates if the metadata has been successfully created
 
-    const [showModal, setShowModal] = useState(false); //Exceeding the talent point spending threshold...
-
+    // Function to update pricing in the storeInfo state
     const updatePricing = (value) => {
         setStoreInfo((prev) => ({
             ...prev,
-            price: value
+            price: value,
         }));
     };
 
-    // Extract the current rarity value
+    // Extract the current rarity value from attributes
     const rarity = attributes.find((attr) => attr.trait_type === "rarity")?.value;
 
+    // useEffect to update pricing and max talent points when rarity changes
     useEffect(() => {
-
         if (rarity && pricingValues[rarity]) {
-            updatePricing(pricingValues[rarity]);
+            updatePricing(pricingValues[rarity]); // Update pricing based on rarity
         }
 
         if (rarity && talenPointSpread[rarity]) {
-            setMaxTalentPoints(talenPointSpread[rarity]);
+            setMaxTalentPoints(talenPointSpread[rarity]); // Set max talent points based on rarity
         }
+    }, [rarity]); // Trigger this effect whenever rarity changes
 
-    }, [rarity]); // Add pricingValues to the dependency array
-
+    // Utility function to delay execution for a specified time
     function delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    const triggerModal = () => {
-        setShowModal(true);
-        // setTimeout(() => {
-        //     setShowModal(false);
-        // }, 20000); // 2 seconds
-    };
-
+    // Determine the page title dynamically
     const title = page === 'create' ? 'Metadata Creator' : 'Metadata Editor';
 
-    const isMetadataLocked = !!storeInfo.metadataUri; // Check if metadata is locked
-    const isCreator = storeInfo.creator === walletAddress; // Check if the current user is the creator
+    // Check if the metadata is locked
+    const isMetadataLocked = !!storeInfo.metadataUri;
 
-    const isAdmin = userRole === "admin"
+    // Check if the current user is the creator
+    const isCreator = storeInfo.creator === walletAddress;
+
+    // Check if the user has admin privileges
+    const isAdmin = userRole === "admin";
 
     // Determine if the user can edit fields
-    const canEditFields = (isAdmin && !isMetadataLocked) || (userRole === 'member' && isCreator && !isMetadataLocked);
+    const canEditFields =
+        (isAdmin && !isMetadataLocked) ||
+        (userRole === 'member' && isCreator && !isMetadataLocked);
 
     // Determine if the user can edit storeInfo
-    const canEditStoreInfo = isAdmin || (userRole === 'member' && page === 'create');
+    const canEditStoreInfo =
+        isAdmin ||
+        (userRole === 'member' && page === 'create');
 
-    const attributesToTrack = ["damage", "defense", "dodge", "coinMultiplier"]; // Attributes
+    // List of attributes to track for talents
+    const attributesToTrack = talents;
 
-    // Calculate remaining points
+    // Calculate remaining points for talent allocation
     const remainingPoints = maxTalentPoints - attributes
         .filter((attr) => attributesToTrack.includes(attr.trait_type))
         .reduce((sum, attr) => sum + parseInt(attr.value || "0", 10), 0);
 
+    // Handle input changes for attributes
     const handleAttributeInputChange = (index, traitType, inputValue) => {
         if (attributesToTrack.includes(traitType)) {
-            // For tracked attributes, enforce point allocation rules
+            // Enforce rules for point allocation
             if (!/^\d*$/.test(inputValue)) {
-                // Reject invalid input (non-numeric)
-                return;
+                return; // Reject invalid input (non-numeric)
             }
 
             const newValue = parseInt(inputValue || "0", 10);
             const currentAttributeValue = parseInt(attributes[index].value || "0", 10);
 
-            // Calculate new total after input
+            // Calculate new total points after input
             const newTotal = maxTalentPoints - remainingPoints + newValue - currentAttributeValue;
 
             if (newTotal > maxTalentPoints && userRole !== "admin") {
-                // alert(`You can only allocate up to ${maxTalentPoints} points in total.`);
-                triggerModal();
+                alert(`You can only allocate up to ${maxTalentPoints} points in total.`);
                 return;
             }
         }
 
-        // Update attribute value
+        // Update the attribute value
         handleAttributeChange(index, "value", inputValue);
+    };
+
+    // Reset all state and metadata
+    const resetEverything = () => {
+        resetMetadata();
+        setIsDisabled(false);
+        setCreateLockStatus(false);
+        setIsCreated(false);
+    };
+
+    // Utility function to capitalize the first letter of a string
+    const capitalizeFirstLetter = (string) => {
+        if (!string) return ""; // Handle empty or undefined strings
+        return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
     return (
@@ -131,8 +152,8 @@ const SideNav = ({
         >
             <div className="d-flex justify-content-end" style={{ marginBottom: '5px' }}>
                 <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
-                    <button className="button-style-thin" onClick={() => { setPage('create'), resetMetadata(), setIsDisabled(false) }}>Create</button>
-                    <button className="button-style-thin" onClick={() => { setPage('update'), resetMetadata(), setIsDisabled(false) }}>Edit</button>
+                    <button className="button-style-thin" onClick={() => { setPage('create'); resetEverything(); }}>Create</button>
+                    <button className="button-style-thin" onClick={() => { setPage('update'); resetEverything() }}>Edit</button>
                 </div>
             </div>
             <h2 className="marykate" style={{ textAlign: 'center', marginBottom: '20px', fontSize: '3.5rem' }}>{title}</h2>
@@ -159,16 +180,19 @@ const SideNav = ({
 
                     try {
 
-                        await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
+                        const success = await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
 
                         if (page === 'update') {
                             await delay(1000);
                             setIsDisabled(false);
                         }
 
-                        if (page === 'create') {
+                        if (page === 'create' && success) {
                             setIsCreating(false);
                             setIsCreated(true);
+                        } else if (page === 'create' && !success) {
+                            setIsCreating(false);
+                            setIsDisabled(false);
                         }
 
                     } catch (e) {
@@ -191,7 +215,10 @@ const SideNav = ({
                             .filter(([key]) => key !== 'metadataUri') // Filter out metadataUri
                             .map(([key, value], index) => (
                                 <div key={index} style={{ flex: '1 1 48%' }}>
-                                    <label className="form-label" style={{ display: 'block', marginBottom: '5px' }}>{key}</label>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '5px' }}>
+                                        {capitalizeFirstLetter(key)}
+                                        {key === "price" && <> [set by rarity]</>}
+                                    </label>
                                     {key === 'available' ? (
                                         <select
                                             value={value === true ? "yes" : value === false ? "no" : ""}
@@ -243,7 +270,7 @@ const SideNav = ({
                                                     handleStoreChange(key, input);
                                                 }
                                             }}
-                                            disabled={!isAdmin}
+                                            disabled={true}
                                             style={{
                                                 width: '100%',
                                                 padding: '10px',
@@ -334,7 +361,7 @@ const SideNav = ({
                             {attribute.trait_type === "damage" &&
                                 <div style={{ marginTop: '20px' }}>
                                     <h5 className="marykate m-0" style={{ fontSize: "1.75rem" }}>Talents</h5>
-                                    <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem"}}>
+                                    <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem" }}>
                                         <p className='m-0'>Remaining Points: {remainingPoints}</p>
                                         {isAdmin && remainingPoints < 0 && <p className='m-0'>[Admin Only]</p>}
                                     </div>
@@ -347,7 +374,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                    disabled={!canEditFields}
+                                    disabled={!isAdmin}
                                     style={{
                                         width: "100%",
                                         padding: "10px",
@@ -529,7 +556,7 @@ const SideNav = ({
                             {isCreating ? (
                                 <div className="d-flex justify-content-center gap-3 align-items-center">
                                     <div>Creating...</div>
-                                    <div class='loader'></div>
+                                    <div className='loader'></div>
                                 </div>
                             ) : isCreated ? (
                                 <div>Metadata Created!</div>
@@ -546,7 +573,7 @@ const SideNav = ({
                 <>
                     <button
                         className="button-click"
-                        onClick={() => { setIsCreated(false), setIsDisabled(false) }}
+                        onClick={() => { resetEverything() }}
                     >
                         Create New (Reset)
                     </button>
@@ -556,16 +583,18 @@ const SideNav = ({
                                 <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                 <div className="d-flex gap-2">
                                     <strong>LOCKING...</strong>
-                                    <div class='loader'></div>
+                                    <div className='loader'></div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="button-container">
-                                <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                <div className="d-flex gap-2">
-                                    <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
-                                </div>
-                            </div>
+                            <>
+                                {!createLockStatus && <div className="button-container">
+                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
+                                    <div className="d-flex gap-2">
+                                        <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
+                                    </div>
+                                </div>}
+                            </>
                         )}
                     </>)}
                 </>
@@ -578,10 +607,23 @@ const SideNav = ({
                                 View Off-Chain Data
                             </a>
                             {isAdmin && (
-                                <div className="d-flex align-items-center justify-content-between p-2 gap-5" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
+                                <div className="button-container">
                                     <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                     <div className="d-flex gap-2">
-                                        <button onClick={() => { deleteMetadata() }} className='button-style-regular'>Delete NFT</button>
+                                        <button
+                                            onClick={() => { deleteMetadata(); }}
+                                            disabled={disableDeleteButton} // Use 'disabled' to disable the button
+                                            className='button-style-regular'
+                                        >
+                                            {disableDeleteButton ? ( // Conditionally render based on 'disableDeleteButton'
+                                                <div className="d-flex gap-2">
+                                                    <strong>DELETING...</strong>
+                                                    <div className='loader'></div>
+                                                </div>
+                                            ) : (
+                                                "Delete NFT"
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -594,7 +636,7 @@ const SideNav = ({
                                         <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                         <div className="d-flex gap-2">
                                             <strong>LOCKING...</strong>
-                                            <div class='loader'></div>
+                                            <div className='loader'></div>
                                         </div>
                                     </div>
                                 ) : (
@@ -607,20 +649,28 @@ const SideNav = ({
                                 )}
                             </>)}
                             {isAdmin && (
-                                <div className="d-flex align-items-center justify-content-between p-2 gap-5" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
+                                <div className="button-container">
                                     <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                     <div className="d-flex gap-2">
-                                        <button onClick={() => { deleteMetadata() }} className='button-style-regular'>Delete NFT</button>
+                                        <button
+                                            onClick={() => { deleteMetadata(); }}
+                                            disabled={disableDeleteButton} // Use 'disabled' to disable the button
+                                            className='button-style-regular'
+                                        >
+                                            {disableDeleteButton ? ( // Conditionally render based on 'disableDeleteButton'
+                                                <div className="d-flex gap-2">
+                                                    <strong>DELETING...</strong>
+                                                    <div className='loader'></div>
+                                                </div>
+                                            ) : (
+                                                "Delete NFT"
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
                             )}
                         </div>
                     )}
-                </div>
-            )}
-            {showModal && (
-                <div className="modal">
-                    That's too many!
                 </div>
             )}
         </div>

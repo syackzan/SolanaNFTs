@@ -4,18 +4,21 @@ import { useSearchParams } from 'react-router-dom';
 import SideNav from '../SideNav/SideNav';
 import NFTPreview from '../NFTPreview/NFTPreview';
 import NFTUpdate from '../NFTUpdate/NFTUpdate';
-import { uploadIcon, uploadMetadata } from '../../Utils/Utils';
+import { priceToSol, uploadIcon, uploadMetadata } from '../../Utils/Utils';
 
 import axios from 'axios';
 import { useWallet } from '@solana/wallet-adapter-react'
+import { useConnection } from '@solana/wallet-adapter-react';
 import SolConnection from '../Connection/SolConnection';
 import Navbar from '../Navbar/Navbar';
 import { checkIfAdmin } from '../../Utils/checkRole';
 import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
 
+import { createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
+
 import { URI_SERVER } from '../../config/config';
 
-import { infoData, attributesData, storeInfoData, propertiesData } from '../../config/gameConfig';
+import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -23,7 +26,11 @@ const Homepage = () => {
 
     //Wallet connection
     const wallet = useWallet();
+    const { connection } = useConnection();
+
     const [userRole, setUserRole] = useState(null);
+
+    const attributesData = getAttributesData();
 
     useEffect(() => {
 
@@ -47,8 +54,10 @@ const Homepage = () => {
     const [newMetadata, setNewMetadata] = useState(null);
 
     //Handles disabling buttons
-    const [isDisabled, setIsDisabled] = useState(false); //Button use for Creating Metadata
-    const [lockStatus, setLockStatus] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false); //Button use for storing metadata in database
+    const [lockStatus, setLockStatus] = useState(false); //Button used for creating offchain metadata
+    const [createLockStatus, setCreateLockStatus] = useState(false); //Use case for if a Admin is create offchain metadata from create page
+    const [disableDeleteButton, setDisabledDeleteButton] = useState(false);
 
     //States that make up Meta data information
     const [info, setInfo] = useState(infoData);
@@ -69,7 +78,7 @@ const Homepage = () => {
         setNewMetadata(null);
     }
 
-    
+
 
     //Handles Wallet connection & Admin Login
     useEffect(() => {
@@ -126,7 +135,7 @@ const Homepage = () => {
     //               },
     //             }
     //           );
-          
+
     //           console.log('Response:', response.data);
     //           return response.data; // Handle the data returned from the server
     //         } catch (error) {
@@ -248,12 +257,55 @@ const Homepage = () => {
         return metadataCombined;
     }
 
+    const creatorPayment = async () => {
+
+        if (userRole === 'admin') //Admins are exempt from creator costs
+            return;
+
+        try {
+            //Pay for higher level creation items
+            const rarityAttribute = attributes.find(attr => attr.trait_type === "rarity");
+
+            const paymentInUSD = creatorCosts[rarityAttribute.value];
+
+            if (paymentInUSD === 0)
+                return true;
+
+            const paymentInSol = await priceToSol(paymentInUSD);
+
+            const transaction = await createSendSolTx(wallet.publicKey, paymentInSol);
+
+            if (!transaction)
+                return false;
+
+            const signature = await wallet.sendTransaction(transaction, connection);
+
+            if (signature) {
+                console.log("Creator Payment Successful")
+                return true;
+            } else {
+                console.log("Creator Payment Failed");
+                return false;
+            }
+
+        } catch (e) {
+            console.log("Creator payment failed", e)
+            return false;
+        }
+    }
+
     //Add new entry or update entry to Database
     const addOrUpdateToDB = async () => {
 
         try {
 
             if (page === 'create') {
+
+                const success = await creatorPayment(); //Higher level items have creator costs
+
+                if (!success)
+                    return false;
+
                 const metadataForDB = await combineNewMetadataJSON();
 
                 const response = await axios.post(
@@ -292,7 +344,7 @@ const Homepage = () => {
     }
 
     const createOffchainMetadata = async () => {
-        
+
         try {
 
             setLockStatus(true);
@@ -323,7 +375,8 @@ const Homepage = () => {
                 alert("Metadata Locked Successfully");
                 resetMetadata(); // Reset metadata
                 setRefetchNFTs(!refetchNFTs); // Trigger refetch
-                setLockStatus(false);
+                setLockStatus(false); //(this shows a loader to UI) Complete so turn off 
+                setCreateLockStatus(true); //Offchain data was locked via creater page
             } else {
                 console.error('Failed to update metadata:', response);
                 alert("Metadata failed to lock");
@@ -359,15 +412,20 @@ const Homepage = () => {
     // }
 
     const deleteMetadata = async (id) => {
+
+        setDisabledDeleteButton(true);
+        await delay(2000);
         try {
             const response = await axios.delete(`${URI_SERVER}/api/nft/delete/${info._id}`);
-            console.log('Update Successfull,', response.data);
+            alert('Deleting Metadata Successful')
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
+            setDisabledDeleteButton(true);
         }
 
         setRefetchNFTs(!refetchNFTs);
         resetMetadata();
+        setDisabledDeleteButton(false);
     }
 
     return (
@@ -392,7 +450,10 @@ const Homepage = () => {
                     userRole={userRole}
                     walletAddress={wallet.publicKey?.toBase58()}
                     resetMetadata={resetMetadata}
-                    lockedStatus={lockStatus} />
+                    lockedStatus={lockStatus}
+                    createLockStatus={createLockStatus}
+                    setCreateLockStatus={setCreateLockStatus}
+                    disableDeleteButton={disableDeleteButton} />
                 {page === "create" &&
                     <NFTPreview
                         info={info}

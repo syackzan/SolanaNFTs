@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
 
@@ -7,6 +7,8 @@ import PrintNfts from '../PrintNfts/PrintNfts';
 
 import Filter from '../Filter/Filter';
 import useNFTs from '../Hooks/useNFTs';
+
+import TxModal from '../txModal/TxModal';
 
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
 
@@ -27,6 +29,18 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setSelectedCreator,
         setIsFetched,
     } = useNFTs({inStoreOnly: false, refetchNFTs});
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState("t");
+    const [modalContent, setModalContent] = useState("t");
+
+    const openModal = (title, content) => {
+        setModalTitle(title);
+        setModalContent(content);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => setIsModalOpen(false);
 
     const setEditData = async (nft) => {
         console.log(nft);
@@ -77,6 +91,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
 
     return (
         <div className="d-flex flex-column sidenav" style={{ backgroundColor: 'rgb(30, 30, 30)', height: 'calc(100vh - 60px)' }}>
+            {/* <button onClick={() => openModal()}>Open</button> */}
             <Filter
                 title={"CREATOR HUB"}
                 selectedType={selectedType}
@@ -98,6 +113,12 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 isAdmin={isAdmin}
                 setEditData={setEditData}
             />
+            {/* <TxModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={modalTitle}
+                content={modalContent}
+            /> */}
         </div>
     );
 };

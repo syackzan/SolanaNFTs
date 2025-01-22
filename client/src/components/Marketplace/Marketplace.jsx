@@ -10,6 +10,7 @@ import useNFTs from '../Hooks/useNFTs';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
+import { priceToSol } from '../../Utils/Utils';
 
 const Marketplace = () => {
 
@@ -29,9 +30,30 @@ const Marketplace = () => {
         selectedCreator,
         setSelectedCreator,
         setIsFetched,
-    } = useNFTs({inStoreOnly: true});
+    } = useNFTs({ inStoreOnly: true });
 
-    const SOL_TO_USD = 200;
+    const payWithSol = async () => {
+
+        const mintCosts = 0.004; //Costs to mint an NFT
+        const solToSend = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts); //Get Sol in USD per NFT price
+
+        console.log(solToSend);
+
+        const transaction = await createSendSolTx(wallet.publicKey, solToSend); //Built a sent sol Transaction
+        const signature = await wallet.sendTransaction(transaction, connection); //Send the transaction
+        console.log(`Transaction signature: ${signature}`);
+
+        return signature; //Return sig
+
+    }
+
+    const payWithBabyBooh = async () => {
+
+    }
+
+    const payWithStripe = async () => {
+
+    }
 
     const createNft = async (paymentType) => {
 
@@ -39,17 +61,21 @@ const Marketplace = () => {
             alert("User must sign in!");
         }
 
-        const payment = paymentType === "SOL" ? (nfts[selectedIndex].storeInfo.price / SOL_TO_USD) : 0;
-
+        let signature;
         try {
-            const transaction = await createSendSolTx(wallet.publicKey, payment);
-            const signature = await wallet.sendTransaction(transaction, connection);
-            console.log(`Transaction signature: ${signature}`);
 
-            if (signature) {
+            if (paymentType === 'SOL') {
+                signature = payWithSol(); //Pay with sol
+            }
+
+            if (signature) { //If Sig is true, create and send NFT
                 try {
-                    await createCoreNft(nfts[selectedIndex], wallet);
+
+                    //TODO: HANDLE UI TRACKING OF PAYING WITH AND MINTING NFT
+                    const resp = await createCoreNft(nfts[selectedIndex], wallet);
+                    console.log(resp.data.serializedSignature);
                 } catch (e) {
+                    alert('Failed to send Sol');
                     console.log('Failure to create NFT: ', e)
                 }
 
@@ -64,7 +90,7 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <div style={{height: 'calc(100vh-60px)', marginTop: '60px'}}>
+        <div style={{ height: 'calc(100vh-60px)', marginTop: '60px' }}>
             <Navbar />
             <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
                 <Filter
