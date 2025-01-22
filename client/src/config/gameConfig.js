@@ -130,3 +130,5 @@ export const rarityOptions = [
     'epic',
     'legendary',
 ];
+
+export const defaultMintCost = .004;

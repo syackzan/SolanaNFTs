@@ -10,6 +10,8 @@ import useNFTs from '../Hooks/useNFTs';
 
 import TxModal from '../txModal/TxModal';
 
+import { defaultMintCost } from '../../config/gameConfig';
+
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
 
     const { publicKey, sendTransaction } = useWallet();
@@ -33,6 +35,9 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState("t");
     const [modalContent, setModalContent] = useState("t");
+    const [txState, setTxState] = useState('empty'); //empty, started, complete, failed
+    const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
+    const [transactionSig, setTransactionSig] = useState(null);
 
     const openModal = (title, content) => {
         setModalTitle(title);
@@ -40,7 +45,12 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setIsModalOpen(true);
     };
 
-    const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setTxState('empty');
+        setCreateState('empty');
+        setTransactionSig(null);
+    } ;
 
     const setEditData = async (nft) => {
         console.log(nft);
@@ -69,21 +79,35 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
             alert("User must sign in!");
         }
 
+        setTxState('started');
+
         try {
-            const transaction = await createSendSolTx(publicKey);
+
+            const transaction = await createSendSolTx(publicKey, defaultMintCost);
             const signature = await sendTransaction(transaction, connection);
             console.log(`Transaction signature: ${signature}`);
 
+            setTxState('complete');
+
             if (signature) {
                 try {
-                    await createCoreNft(nfts[selectedIndex], wallet);
+
+                    setCreateState('started')
+
+                    const signature = await createCoreNft(nfts[selectedIndex], wallet);
+                    console.log(signature.data.serializedSignature);
+                    setTransactionSig(signature.data.serializedSignature);
+
+                    setCreateState('complete')
                 } catch (e) {
                     console.log('Failure to create NFT: ', e)
+                    setCreateState('failed')
                 }
 
             }
         } catch (e) {
             console.log('Failure to transfer Sol', e);
+            setTxState('failed');
         }
 
         return;
@@ -109,16 +133,21 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 selectedIndex={selectedIndex}
                 setSelectedIndex={setSelectedIndex}
                 location='creator-hub'
-                createNft={createNft}
+                createNft={openModal}
                 isAdmin={isAdmin}
                 setEditData={setEditData}
             />
-            {/* <TxModal
+            <TxModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                title={modalTitle}
-                content={modalContent}
-            /> */}
+                title={nfts[selectedIndex]?.name || ''}
+                mintCost={defaultMintCost}
+                paymentType={"Sol"}
+                txState={txState}
+                createState={createState}
+                signature={transactionSig}
+                createNft={createNft}
+            />
         </div>
     );
 };

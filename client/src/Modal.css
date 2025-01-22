@@ -1,44 +1,144 @@
+/* Modal overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6); /* Dimmed background */
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    opacity: 0; /* Start invisible */
+    transform: scale(0.95); /* Slightly shrink */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade and scale */
     z-index: 1000;
 }
 
+.modal-overlay.open {
+    opacity: 1; /* Fully visible */
+    transform: scale(1); /* Return to normal size */
+}
+
+/* Modal container */
 .modal-tx {
-    background: #302f2f;
-    padding: 20px;
+    background: #1e1e1e;
+    /* Dark gray background */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    color: white;
+    padding: 20px;
+    width: 350px;
+    max-width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+    position: relative;
+    color: #ffffff;
+    /* Light text color */
 }
 
-.modal-title {
-    margin-bottom: 0px;
-    font-size: 1.5rem;
+/* Close button (top right) */
+.modal-close-top-right {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0px 10px 0px 0px;
 }
 
-.modal-content {
+/* Header styling */
+.modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Body styling */
+.modal-body {
     margin-bottom: 20px;
-    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.modal-close {
-    background: #007bff;
-    color: #fff;
-    padding: 10px 20px;
+/* Tracker container */
+.tracker-container {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Two columns: one for labels, one for values */
+    gap: 10px 20px; /* Row and column gaps */
+    background-color: #2a2a3c; /* Dark background for better contrast */
+    padding: 15px; /* Spacing inside the container */
+    border-radius: 8px; /* Rounded corners */
+    color: #ffffff; /* Light text color */
+    font-size: 14px; /* Slightly smaller font size */
+}
+
+/* Individual tracker row */
+.tracker-row {
+    display: contents; /* Use grid layout from the container */
+}
+
+/* Label styling */
+.tracker-label {
+    font-weight: 600; /* Make labels bold */
+    color: #b0b0b0; /* Slightly lighter gray for labels */
+}
+
+/* Value styling */
+.tracker-value {
+    font-weight: 600; /* Normal weight for values */
+    color: #ffffff; /* White text for values */
+}
+
+
+.loading-details{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    /* Equivalent to p-2 in Bootstrap */
+    gap: 5px;
+    /* Equivalent to gap-5 */
+    background-color: #1e1e2f;
+    border-radius: 8px;
+    color: #ffffff;
+}
+
+.modal-detail {
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Confirm button */
+.modal-confirm {
+    width: 100%;
+    background: #3a3a3a;
+    /* Dark button background */
+    color: #ffffff;
+    padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
+    text-align: center;
 }
 
-.modal-close:hover {
-    background: #0056b3;
+.modal-confirm:hover {
+    background: #575757;
+    /* Slightly lighter on hover */
+}
+
+/* Base styling for all tx-state-icon elements */
+.tx-state-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Circle styling for 'empty' state */
+.tx-state-icon.circle {
+    background-color: #ccc;
+    /* Light gray for 'empty' state */
+    border: 2px solid #aaa;
+    /* Slightly darker border */
 }
