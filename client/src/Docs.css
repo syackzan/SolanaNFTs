@@ -1,0 +1,80 @@
+/* Custom styles for Creator Hub Docs page */
+.docs-container {
+    margin: 60px;
+    padding: 20px;
+    background-color: rgb(40, 40, 40);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    max-width: 800px;
+}
+
+.docs-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.docs-title {
+    color: #00d1b2;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.docs-section {
+    margin-bottom: 30px;
+    border-left: 4px solid #00d1b2;
+    padding-left: 15px;
+}
+
+.docs-subtitle {
+    color: #00d1b2;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.docs-subsection-title {
+    color: #00b3a4;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.docs-text {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #f1f1f1;
+    font-size: 1rem;
+}
+
+.docs-list {
+    list-style-type: disc;
+    margin: 10px 0 15px 20px;
+}
+
+.docs-list-item {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: #e1e1e1;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .docs-container {
+        padding: 15px;
+    }
+
+    .docs-title {
+        font-size: 1.8rem;
+    }
+
+    .docs-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .docs-subsection-title {
+        font-size: 1.3rem;
+    }
+
+    .docs-text,
+    .docs-list-item {
+        font-size: 0.9rem;
+    }
+}

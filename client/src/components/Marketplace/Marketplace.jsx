@@ -12,6 +12,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { priceToSol } from '../../Utils/Utils';
 
+import TxModal from '../txModal/TxModal';
+
 const Marketplace = () => {
 
     const wallet = useWallet();
@@ -31,6 +33,31 @@ const Marketplace = () => {
         setSelectedCreator,
         setIsFetched,
     } = useNFTs({ inStoreOnly: true });
+
+        const [isModalOpen, setIsModalOpen] = useState(false);
+        const [txState, setTxState] = useState('empty'); //empty, started, complete, failed
+        const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
+        const [transactionSig, setTransactionSig] = useState(null);
+        const [preCalcPayment, setPreCalcPayment] = useState(0);
+        const [paymentTracker, setPaymentTracker] = useState('none')
+    
+        const openModal = async () => {
+
+            setIsModalOpen(true);
+
+            if(paymentTracker === 'SOL'){
+                console.log("hello")
+                const mintCosts = 0.004; //Costs to mint an NFT
+                setPreCalcPayment(await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts)); //Get Sol in USD per NFT price
+            }
+        };
+    
+        const closeModal = () => {
+            setIsModalOpen(false);
+            setTxState('empty');
+            setCreateState('empty');
+            setTransactionSig(null);
+        };
 
     const payWithSol = async () => {
 
@@ -55,28 +82,39 @@ const Marketplace = () => {
 
     }
 
-    const createNft = async (paymentType) => {
+    const createNft = async () => {
 
         if (!wallet.publicKey) {
             alert("User must sign in!");
         }
 
+        setTxState('started');
+
         let signature;
+        console.log('createNft');
         try {
 
-            if (paymentType === 'SOL') {
-                signature = payWithSol(); //Pay with sol
+            if (paymentTracker === 'SOL') {
+                signature = await payWithSol(); //Pay with sol
+                setTxState('complete');
             }
 
             if (signature) { //If Sig is true, create and send NFT
                 try {
 
+                    setCreateState('started')
+
                     //TODO: HANDLE UI TRACKING OF PAYING WITH AND MINTING NFT
                     const resp = await createCoreNft(nfts[selectedIndex], wallet);
                     console.log(resp.data.serializedSignature);
+                    setTransactionSig(resp.data.serializedSignature);
+
+                    setCreateState('complete')
                 } catch (e) {
                     alert('Failed to send Sol');
                     console.log('Failure to create NFT: ', e)
+                    setCreateState('failed')
+                    setTxState('failed');
                 }
 
             }
@@ -111,10 +149,22 @@ const Marketplace = () => {
                     setSelectedIndex={setSelectedIndex}
                     divWidth='100vw'
                     location='marketplace'
-                    createNft={createNft}
+                    createNft={openModal}
                     setEditData={setEditData}
+                    setPaymentTracker={setPaymentTracker}
                 />
             </div>
+            <TxModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                title={nfts[selectedIndex]?.name || ''}
+                mintCost={preCalcPayment}
+                paymentType={paymentTracker}
+                txState={txState}
+                createState={createState}
+                signature={transactionSig}
+                createNft={createNft}
+            />
         </div>
     );
 };

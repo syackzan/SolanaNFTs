@@ -5,14 +5,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Homepage from './components/pages/Homepage';
 import LandingPage from './components/pages/LandingPage';
 import Collection from './components/pages/Collection';
-
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import Marketplace from './components/Marketplace/Marketplace';
+import CreatorHubDocs from './components/pages/CreatorHubDocs';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -22,6 +18,7 @@ function App() {
           <Route path="/dashboard" element={<Homepage />} />
           <Route path='/collection' element={<Collection />} />
           <Route path='/marketplace' element={<Marketplace />} />
+          <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
         </Routes>
       </Router>
     </>

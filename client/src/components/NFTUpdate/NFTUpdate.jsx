@@ -33,15 +33,12 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     } = useNFTs({inStoreOnly: false, refetchNFTs});
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalTitle, setModalTitle] = useState("t");
-    const [modalContent, setModalContent] = useState("t");
     const [txState, setTxState] = useState('empty'); //empty, started, complete, failed
     const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
     const [transactionSig, setTransactionSig] = useState(null);
 
-    const openModal = (title, content) => {
-        setModalTitle(title);
-        setModalContent(content);
+    const openModal = () => {
+        
         setIsModalOpen(true);
     };
 
@@ -50,7 +47,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setTxState('empty');
         setCreateState('empty');
         setTransactionSig(null);
-    } ;
+    };
 
     const setEditData = async (nft) => {
         console.log(nft);
@@ -94,9 +91,9 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
 
                     setCreateState('started')
 
-                    const signature = await createCoreNft(nfts[selectedIndex], wallet);
-                    console.log(signature.data.serializedSignature);
-                    setTransactionSig(signature.data.serializedSignature);
+                    const resp = await createCoreNft(nfts[selectedIndex], wallet);
+                    console.log(resp.data.serializedSignature);
+                    setTransactionSig(resp.data.serializedSignature);
 
                     setCreateState('complete')
                 } catch (e) {

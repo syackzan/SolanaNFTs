@@ -11,7 +11,8 @@ const PrintNfts = ({
     location, 
     createNft, 
     isAdmin = false, 
-    setEditData }) => {
+    setEditData,
+    setPaymentTracker }) => {
 
     return (
         <>
@@ -142,7 +143,7 @@ const PrintNfts = ({
                                             <div className="d-flex gap-2">
                                                 <button className='button-style-regular'>Card</button>
                                                 <button className='button-style-regular'>BabyBooh</button>
-                                                <button onClick={() => { createNft('SOL') }} className='button-style-regular'>SOL</button>
+                                                <button onClick={() => { createNft('SOL'), setPaymentTracker('SOL') }} className='button-style-regular'>SOL</button>
                                             </div>
                                         </div>
                                     </>
