@@ -19,6 +19,8 @@ import { createSendSolTx } from '../BlockchainInteractions/blockchainInteraction
 import { URI_SERVER } from '../../config/config';
 
 import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
+import { fetchUsdToSolPrice } from '../../Utils/getSolanaPrice';
+import { fetchBabyBooh } from '../../Utils/babyBooh';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -34,7 +36,15 @@ const Homepage = () => {
 
     useEffect(() => {
 
-        fetchAssets(wallet);
+        const runAsync = async () => {
+            
+
+            if(wallet.publicKey){
+                // fetchAssets(wallet);
+            }
+        }
+        
+        runAsync();
 
     }, [wallet.publicKey])
 

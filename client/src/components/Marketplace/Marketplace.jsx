@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
 
@@ -39,17 +39,29 @@ const Marketplace = () => {
         const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
         const [transactionSig, setTransactionSig] = useState(null);
         const [preCalcPayment, setPreCalcPayment] = useState(0);
-        const [paymentTracker, setPaymentTracker] = useState('none')
+        const [paymentTracker, setPaymentTracker] = useState('none');
+        const [solPriceLoaded, setSolPriceLoaded] = useState(false);
+
+        useEffect(() => {
+
+            const setUpModalPricing = async () => {
+                if(paymentTracker === 'SOL' && isModalOpen == true){
+
+                    const mintCosts = 0.004; //Costs to mint an NFT
+                    const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price);
+                    setPreCalcPayment(priceInSol, mintCosts); //Get Sol in USD per NFT price
+                    setSolPriceLoaded(true);
+                }
+            }
+
+            setUpModalPricing();
+
+        }, [isModalOpen])
     
         const openModal = async () => {
 
             setIsModalOpen(true);
 
-            if(paymentTracker === 'SOL'){
-                console.log("hello")
-                const mintCosts = 0.004; //Costs to mint an NFT
-                setPreCalcPayment(await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts)); //Get Sol in USD per NFT price
-            }
         };
     
         const closeModal = () => {
@@ -57,16 +69,12 @@ const Marketplace = () => {
             setTxState('empty');
             setCreateState('empty');
             setTransactionSig(null);
+            setSolPriceLoaded(false);
         };
 
     const payWithSol = async () => {
 
-        const mintCosts = 0.004; //Costs to mint an NFT
-        const solToSend = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts); //Get Sol in USD per NFT price
-
-        console.log(solToSend);
-
-        const transaction = await createSendSolTx(wallet.publicKey, solToSend); //Built a sent sol Transaction
+        const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment); //Built a sent sol Transaction
         const signature = await wallet.sendTransaction(transaction, connection); //Send the transaction
         console.log(`Transaction signature: ${signature}`);
 
@@ -164,6 +172,7 @@ const Marketplace = () => {
                 createState={createState}
                 signature={transactionSig}
                 createNft={createNft}
+                solPriceLoaded={solPriceLoaded}
             />
         </div>
     );

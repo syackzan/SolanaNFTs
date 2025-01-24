@@ -18,14 +18,12 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     // Fetch NFT metadata
     const fetchNFTs = async () => {
 
-        console.log(inStoreOnly);
-
         try {
 
             setSelectedIndex(null);
 
             if (!isFetched) {
-                console.log("Fetching NFT data from API...");
+                // console.log("Fetching NFT data from API...");
                 const response = await axios.get(`${URI_SERVER}/api/nft/all`);
                 const allNFTs = response.data || [];
 

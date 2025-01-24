@@ -1,11 +1,38 @@
-import React from 'react';
+import React, {useEffect, useContext} from 'react';
 import { Link } from 'react-router-dom'
+
+import { GlobalVars } from '../GlobalVariables/GlobalVariables';
 
 import SolConnection from '../Connection/SolConnection';
 
 import BoohLogo from '../../assets/BoohCoinLogo.svg';
 
+import { useWallet } from '@solana/wallet-adapter-react';
+import { fetchBabyBooh } from '../../Utils/babyBooh';
+
 const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
+
+    const wallet = useWallet();
+
+    const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useContext(GlobalVars);
+
+    useEffect(() => {
+
+        const callAsync = async () => {
+            if(wallet.publicKey){
+                const babyBooh = await fetchBabyBooh(wallet.publicKey.toString());
+
+                if(babyBooh > -1){
+                    console.log
+                    setInGameCurrency(babyBooh);
+                    setBoohToken(1234232);
+                } 
+            }
+        }
+
+        callAsync();
+
+    }, [wallet.publicKey]);
 
     return (
         <nav className="store-navbar-main">
@@ -33,10 +60,17 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                         <Link to='https://boohworld.io' target='_blank'>Token</Link>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}
                         <Link to='https://discord.gg/WkWcNFEA' target='_blank'>Discord</Link>
+                        <Link to='/creatorHubDocs'>Docs</Link>
                     </div>
                 </div>
-                <div className="d-flex gap-2">
-                    <SolConnection />
+                <div className="d-flex gap-5">
+                    <div className="d-flex flex-column marykate" style={{fontSize: '0.9rem'}}>
+                        <p className="m-0">Baby Booh: {inGameCurrency}</p>
+                        <p className="m-0">Booh Token: {boohToken}</p>
+                    </div>
+                    <div>
+                        <SolConnection />
+                    </div>
                 </div>
             </div>
         </nav>

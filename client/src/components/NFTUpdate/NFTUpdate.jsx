@@ -144,6 +144,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 createState={createState}
                 signature={transactionSig}
                 createNft={createNft}
+                solPriceLoaded={true}
             />
         </div>
     );

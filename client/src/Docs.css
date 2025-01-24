@@ -1,3 +1,8 @@
+:root{
+    --primary-accent-color: #bb5cff;
+    --primary-text-shadow: 2px 2px 5px rgba(165, 51, 252, 0.8);
+}
+
 /* Custom styles for Creator Hub Docs page */
 .docs-container {
     margin: 60px;
@@ -14,25 +19,28 @@
 }
 
 .docs-title {
-    color: #00d1b2;
+    color: var(--primary-accent-color);
+    text-shadow: var(--primary-text-shadow);
     font-size: 2.2rem;
     margin: 0;
 }
 
 .docs-section {
     margin-bottom: 30px;
-    border-left: 4px solid #00d1b2;
+    border-left: 4px solid var(--primary-accent-color);
     padding-left: 15px;
 }
 
 .docs-subtitle {
-    color: #00d1b2;
+    color: var(--primary-accent-color);
+    text-shadow: var(--primary-text-shadow);
     font-size: 1.8rem;
     margin-bottom: 10px;
 }
 
 .docs-subsection-title {
-    color: #00b3a4;
+    color: var(--primary-accent-color);
+    text-shadow: var(--primary-text-shadow);
     font-size: 1.5rem;
     margin-bottom: 10px;
 }
@@ -44,6 +52,10 @@
     font-size: 1rem;
 }
 
+.docs-text strong {
+    color: white;
+}
+
 .docs-list {
     list-style-type: disc;
     margin: 10px 0 15px 20px;
@@ -53,6 +65,49 @@
     margin-bottom: 8px;
     font-size: 0.95rem;
     color: #e1e1e1;
+}
+
+/* Table container */
+.docs-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background-color: rgb(40, 40, 40); /* Matches container background */
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to all rows */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Slight shadow for depth */
+}
+
+/* Table header styles */
+.docs-table thead {
+    background-color: rgb(50, 50, 50); /* Darker header for contrast */
+    color: var(--primary-accent-color); /* Accent color matching the docs title */
+}
+
+.docs-table th {
+    text-align: left;
+    padding: 12px;
+    font-size: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+/* Table body styles */
+.docs-table td {
+    padding: 12px;
+    font-size: 0.95rem;
+    color: #e1e1e1; /* Matches text color for consistency */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle row separator */
+}
+
+/* Alternating row colors */
+.docs-table tbody tr:nth-child(even) {
+    background-color: rgb(45, 45, 45); /* Slightly darker for alternating rows */
+}
+
+/* Hover effect on rows */
+.docs-table tbody tr:hover {
+    background-color: rgb(55, 55, 55); /* Highlight on hover */
+    cursor: pointer; /* Optional for interactive feel */
 }
 
 /* Mobile responsiveness */
@@ -76,5 +131,11 @@
     .docs-text,
     .docs-list-item {
         font-size: 0.9rem;
+    }
+
+    .docs-table th,
+    .docs-table td {
+        font-size: 0.85rem; /* Smaller font size for smaller screens */
+        padding: 8px; /* Reduce padding */
     }
 }

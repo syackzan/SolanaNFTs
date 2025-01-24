@@ -48,11 +48,11 @@ export const propertiesData = {
 
 // Cost Associated with Each Rarity Level
 export const creatorCosts = {
-    common: 0,
-    uncommon: 0,
-    rare: 0.05,
-    epic: 1.99,
-    legendary: 4.99,
+    common: 0.01,
+    uncommon: 0.05,
+    rare: 0.10,
+    epic: 3.99,
+    legendary: 5.99,
 };
 
 // Pricing Values (Base price adjusted dynamically)

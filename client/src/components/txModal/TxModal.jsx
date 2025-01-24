@@ -7,7 +7,7 @@ import { IS_MAINNET } from "../../config/config";
 
 import BoohLogo from '../../assets/BoohCoinLogo.svg';
 
-const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, createState, signature, createNft }) => {
+const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, createState, signature, createNft, solPriceLoaded }) => {
     if (!isOpen) return null;
 
     console.log("title", title);
@@ -73,7 +73,7 @@ const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, creat
                         </div>
                         <div className="tracker-row">
                             <span className="tracker-label">Mint cost:</span>
-                            <span className="tracker-value">{mintCost}</span>
+                            {solPriceLoaded ? (<span className="tracker-value">{mintCost}</span>) : (<div className='loader'></div>)}
                         </div>
                     </div>
                     <div className="loading-details">

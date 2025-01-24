@@ -15,6 +15,7 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 import App from '../../App';
 
 import { IS_MAINNET } from '../../config/config';
+import { GlobalVariables } from '../GlobalVariables/GlobalVariables';
 
 const WalletAdapter = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -50,10 +51,9 @@ const WalletAdapter = () => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    {/* <WalletMultiButton />
-                    <WalletDisconnectButton /> */}
-                    {/* Your app's components go here, nested within the context providers. */}
-                    <App />
+                    <GlobalVariables>
+                        <App />
+                    </GlobalVariables>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

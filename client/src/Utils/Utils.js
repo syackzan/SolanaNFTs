@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { PinataSDK } from "pinata-web3";
 
-import { getSolPriceInUSD } from './getSolanaPrice';
+import { fetchUsdToSolPrice, getSolPriceInUSD } from './getSolanaPrice';
 
 const pinata = new PinataSDK({
     pinataJwt: import.meta.env.VITE_PINATA_JWT,
@@ -109,13 +109,30 @@ export const voteForNFT = async (nftId, walletAddress) => {
 };
 
 export const priceToSol = async (payment, mintCosts = 0) => {
+    try {
 
-    console.log(mintCosts);
+        console.log('Entering Pricing Method 1');
+        const paymentInSol = await fetchUsdToSolPrice(payment);
 
-    const SOL_TO_USD = await getSolPriceInUSD();
-    
-    const paymentInSol = Number((payment / SOL_TO_USD).toFixed(6));
+        console.log("Captured pricing method 1");
+        return Number(paymentInSol + mintCosts);
 
-    return Number(paymentInSol + mintCosts);
+    } catch (e) {
+        try{
+            console.log("Failed to capture pricing Data from Jupiter");
+            const SOL_TO_USD = await getSolPriceInUSD();
+
+            const paymentInSol = Number((payment / SOL_TO_USD).toFixed(6));
+            console.log("capture pricing data 2")
+
+            return Number(paymentInSol + mintCosts);
+        } catch(e){
+
+            console.log("Failed to capture pricing data 2");
+            const paymentInSol =Number(payment/200).toFixed(6)
+
+            return Number(paymentInSol + mintCosts);
+        }
+    }
 }
 

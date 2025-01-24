@@ -2,9 +2,21 @@ import React from "react";
 import '../../Docs.css'; // Add the CSS styles below to this file
 import Navbar from "../Navbar/Navbar";
 
+import { infoData, attributesData, talents, rarityOptions, talenPointSpread, pricingValues, creatorCosts } from "../../config/gameConfig";
+
+import boohLogo from '../../assets/BoohCoinLogo.svg'
+import metadataClip from '../../assets/metadataClip.png'
+
 const CreatorHubDocs = () => {
+
+    // Utility function to capitalize the first letter of a string
+    const capitalizeFirstLetter = (string) => {
+        if (!string) return ""; // Handle empty or undefined strings
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
     return (
-        <div className='d-flex justify-content-center' style={{ backgroundColor: 'rgb(30, 30, 30)', width: '100vw'}}>
+        <div className='d-flex justify-content-center' style={{ backgroundColor: 'rgb(30, 30, 30)', width: '100vw' }}>
             <Navbar />
             <div className="docs-container" style={{ marginTop: '60px' }}>
                 <div className="docs-header">
@@ -14,15 +26,17 @@ const CreatorHubDocs = () => {
                 <section className="docs-section">
                     <h2 className="docs-subtitle">Introduction</h2>
                     <p className="docs-text">
-                        So, you're thinking about becoming a creator of Booh World! Do you fight for crypto and the planet
-                        or do you wish to make as much money as you possibly can? Well, here at Booh Brawlers, you can do
-                        just that. Excitingly, you can help the Booh Brawlers community by designing and creating your own
-                        NFTs that may have a chance to be in-game. If they are in-game, that means they are in the store, and
-                        anyone who mints from your NFT metadata earns you 10% of the rewards.
+                        Are you ready to become a creator in <strong>Booh World</strong>?
+                        Will you fight for crypto and the planet, or follow the path of an elite banker chasing profits?
+                        Here at <strong>Booh Brawlers</strong>, the choice is yours.
+                        <br /><br />
+                        By designing and creating your own <strong>NFTs</strong>, you have the exciting opportunity to contribute to the
+                        Booh Brawlers community. Your NFTs may even be featured in-game! If they make it to the store,
+                        you'll earn <strong>10% kick-back of sales</strong> whenever someone mints from your NFT metadata [excluding Baby Booh mints].
                     </p>
                 </section>
 
-                <section className="docs-section">
+                {/* <section className="docs-section">
                     <h2 className="docs-subtitle">Storyline</h2>
                     <p className="docs-text">
                         Greed and corruption have destroyed planet Earth. The old world is dead. The elites poisoned our
@@ -44,41 +58,97 @@ const CreatorHubDocs = () => {
                         our community. It's time for the final battle – and you must choose a side. Rebel or Elite? Decide
                         your destiny in Booh Brawlers.
                     </p>
-                </section>
+                </section> */}
 
                 <section className="docs-section">
                     <h2 className="docs-subtitle">Creating NFTs</h2>
                     <p className="docs-text">
-                        The first step is to connect a wallet when on the creator page. Store info is only changeable by
-                        community admins whose identities have been verified. Pricing is automatically set when selecting
-                        the rarity of the NFT.
+                        The first step is to connect a Solana-based crypto wallet on the creator page. Wallet providers like
+                        <strong> Phantom</strong> and <strong>Solflare</strong> work seamlessly with the Creation Hub.
+                        <br /><br />
+                        When creating a new dataset for NFT creation, it's important to focus on four major sections:
+                        <strong> Store Info</strong>, <strong>Basic Info</strong>, <strong>Attributes</strong>, and <strong>Talents</strong>.
+                        <br /><br />
+                        These categories form the foundation of your NFT and will provide crucial data to support players in
+                        <strong>Booh Brawlers</strong>. While some data fields can be freely edited, others will be preset to ensure consistency.
+                    </p>
+
+                </section>
+
+                <section className="docs-section d-flex flex-wrap justify-content-between">
+                    <div>
+                        <h3 className="docs-subsection-title">Editable Data</h3>
+                        <h4 className="docs-text">Base Info:</h4>
+                        <ul className='docs-list'>
+                            {Object.entries(infoData).map(([key, value]) => (
+                                <li key={key} className="docs-list-item">
+                                    {capitalizeFirstLetter(key)}
+                                </li>
+                            ))}
+                        </ul>
+                        <h4 className="docs-text">Base Attributes:</h4>
+                        <ul className='docs-list'>
+                            {attributesData.map((attribute) => {
+                                return (
+                                    <li className='docs-list-item'>{capitalizeFirstLetter(attribute.trait_type)}</li>
+                                )
+                            })}
+                        </ul>
+                        <h4 className="docs-text">Talents:</h4>
+                        <ul className="docs-list">
+                            {talents.map((talent) => {
+                                return (
+                                    <li className='docs-list-item'>{capitalizeFirstLetter(talent)}</li>
+                                )
+                            })}
+                        </ul>
+
+                    </div>
+                    <div className="d-flex align-items-center" style={{ paddingRight: '50px' }}>
+                        <img src={metadataClip} style={{ width: 'auto', height: '500px', borderRadius: '5px' }} />
+                    </div>
+                </section>
+
+                <section className="docs-section">
+                    <h2 className="docs-subtitle">Image Requirements</h2>
+                    <p className="docs-text">
+                        Best fits for an NFT are 256px by 256px! jpg, png, and svg's are acceptable.
                     </p>
                 </section>
 
                 <section className="docs-section">
-                    <h3 className="docs-subsection-title">Rules for Creating NFTs</h3>
-                    <ul className="docs-list">
-                        <li className="docs-list-item">Name</li>
-                        <li className="docs-list-item">Description</li>
-                        <li className="docs-list-item">Image (must be 512x512)</li>
-                        <li className="docs-list-item">#Attributes</li>
-                        <li className="docs-list-item">Type</li>
-                        <li className="docs-list-item">Subtype</li>
-                        <li className="docs-list-item">Rarity</li>
-                        <li className="docs-list-item">Affinity</li>
-                    </ul>
-                    <p className="docs-text">Talents:</p>
-                    <ul className="docs-list">
-                        <li className="docs-list-item">Damage</li>
-                        <li className="docs-list-item">Defense</li>
-                        <li className="docs-list-item">Dodge</li>
-                        <li className="docs-list-item">CoinMultiplier</li>
-                    </ul>
+                    <h2 className="docs-subtitle">Rarity-Price-Talents</h2>
                     <p className="docs-text">
-                        Rarity sets the price of the NFT along with allowable talent point distribution. Talent points are
-                        calculated as whole percentage points as of now. To prevent creators from monopolizing and creating
-                        only epic and legendary items, gateways have been put in place for these items.
+                        <strong>Rarity</strong> determines the price of the NFT and defines the allowable talent point distribution.
+                        Talent points are calculated as whole percentages, and depending on an item's rarity, players are limited
+                        in how they can allocate these points.
+                        <br /><br />
+                        To prevent creators from monopolizing and producing only epic and legendary items,
+                        gateways have been implemented for these rarer items.
+                        <br /><br />
+                        Refer to the grid below for a detailed breakdown.
                     </p>
+
+                    <table className="docs-table">
+                        <thead>
+                            <tr>
+                                <th>Rarity</th>
+                                <th>Talent Spread</th>
+                                <th>Store Price</th>
+                                <th>Creator Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rarityOptions.map((rarity) => (
+                                <tr key={rarity}>
+                                    <td>{rarity.charAt(0).toUpperCase() + rarity.slice(1)}</td>
+                                    <td>{talenPointSpread[rarity]}</td>
+                                    <td>${pricingValues[rarity].toFixed(2)}</td>
+                                    <td>${creatorCosts[rarity].toFixed(2)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </section>
 
                 <section className="docs-section">
