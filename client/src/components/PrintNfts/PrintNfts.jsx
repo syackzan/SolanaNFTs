@@ -141,8 +141,8 @@ const PrintNfts = ({
                                         <div className="d-flex align-items-center justify-content-between p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
                                             <div style={{ fontSize: "1rem", fontWeight: "500" }}>BUY WITH:</div>
                                             <div className="d-flex gap-2">
-                                                <button className='button-style-regular'>Card</button>
-                                                <button className='button-style-regular'>BabyBooh</button>
+                                                <button onClick={() => { createNft('CARD'), setPaymentTracker('CARD') }} className='button-style-regular'>Card</button>
+                                                <button onClick={() => { createNft('BABYBOOH'), setPaymentTracker('BABYBOOH') }} className='button-style-regular'>BabyBooh</button>
                                                 <button onClick={() => { createNft('SOL'), setPaymentTracker('SOL') }} className='button-style-regular'>SOL</button>
                                             </div>
                                         </div>

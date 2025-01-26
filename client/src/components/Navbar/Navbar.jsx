@@ -8,11 +8,16 @@ import SolConnection from '../Connection/SolConnection';
 import BoohLogo from '../../assets/BoohCoinLogo.svg';
 
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
 import { fetchBabyBooh } from '../../Utils/babyBooh';
+import { getTokenBalance } from '../BlockchainInteractions/blockchainInteractions';
+
+import { IS_MAINNET } from '../../config/config';
 
 const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
 
     const wallet = useWallet();
+    const {connection} = useConnection();
 
     const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useContext(GlobalVars);
 
@@ -25,8 +30,13 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                 if(babyBooh > -1){
                     console.log
                     setInGameCurrency(babyBooh);
-                    setBoohToken(1234232);
-                } 
+                }
+
+                const fetchedBoohToken = await getTokenBalance(wallet.publicKey.toString(), connection);
+
+                if(fetchedBoohToken >= 0 && IS_MAINNET === true){
+                    setBoohToken(fetchedBoohToken);
+                }
             }
         }
 

@@ -13,6 +13,7 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { priceToSol } from '../../Utils/Utils';
 
 import TxModal from '../txModal/TxModal';
+import { deductBabyBooh } from '../../Utils/babyBooh';
 
 const Marketplace = () => {
 
@@ -48,9 +49,21 @@ const Marketplace = () => {
                 if(paymentTracker === 'SOL' && isModalOpen == true){
 
                     const mintCosts = 0.004; //Costs to mint an NFT
-                    const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price);
-                    setPreCalcPayment(priceInSol, mintCosts); //Get Sol in USD per NFT price
+                    const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
+                    setPreCalcPayment(priceInSol); //Get Sol in USD per NFT price
                     setSolPriceLoaded(true);
+                }
+
+                if(paymentTracker === 'BABYBOOH' && isModalOpen == true){
+                    //Need a Conversion rate for BABY BOOH!!!
+
+                    //TODO SET BABY BOOH PreCalcPayment
+                }
+
+                if(paymentTracker === 'CARD' && isModalOpen == true){
+                    
+                    setPreCalcPayment(Number(nfts[selectedIndex].storeInfo.price));
+                    setSolPriceLoaded(true); //We already have the hard value stored
                 }
             }
 
@@ -84,9 +97,12 @@ const Marketplace = () => {
 
     const payWithBabyBooh = async () => {
 
+        const success = deductBabyBooh(wallet.publicKey.toString(), preCalcPayment);
+        return success;
+        
     }
 
-    const payWithStripe = async () => {
+    const payWithCard = async () => {
 
     }
 
@@ -107,6 +123,15 @@ const Marketplace = () => {
                 setTxState('complete');
             }
 
+            if(paymentTracker === 'BABYBOOH'){
+                signature = await payWithBabyBooh();
+                setTxState('complete');
+            }
+
+            if(paymentTracker === 'CARD'){
+                signature = await payWithCard();
+            }
+
             if (signature) { //If Sig is true, create and send NFT
                 try {
 
@@ -125,9 +150,11 @@ const Marketplace = () => {
                     setTxState('failed');
                 }
 
+            } else {
+                alert('Payment Failed');
             }
         } catch (e) {
-            console.log('Failure to transfer Sol', e);
+            console.log('Payment Type Failed', e);
         }
 
         return;

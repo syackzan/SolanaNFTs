@@ -115,3 +115,41 @@ export const logNftData = async (address) => {
 
     console.log(asset);
 }
+
+export const getTokenBalance = async (walletAddress, connection) => {
+
+    const mintAddress = 'bttEP13PVTuvGzpNEVhU4Q7FDjBbQx22zXJG38xxMEE';
+
+    try {
+        if (!walletAddress || !mintAddress) {
+            throw new Error("Wallet address and mint address are required");
+        }
+
+        // Derive the associated token account address
+        const associatedTokenAddress = PublicKey.findProgramAddressSync(
+            [
+                new PublicKey(walletAddress).toBuffer(),
+                new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").toBuffer(),
+                new PublicKey(mintAddress).toBuffer(),
+            ],
+            new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL") // Associated Token Program ID
+        );
+
+        // Fetch account info
+        const tokenAccountInfo = await connection.getParsedAccountInfo(associatedTokenAddress[0]);
+
+        if (!tokenAccountInfo.value) {
+            console.log("Token account does not exist");
+            return 0; // No balance if account doesn't exist
+        }
+
+        // Extract balance
+        const tokenAccountData = tokenAccountInfo.value.data;
+        const balance = tokenAccountData.parsed.info.tokenAmount.uiAmount;
+
+        return balance;
+    } catch (error) {
+        console.error("Error fetching token balance:", error);
+        return null;
+    }
+};

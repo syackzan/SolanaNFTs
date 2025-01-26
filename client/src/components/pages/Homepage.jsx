@@ -20,7 +20,7 @@ import { URI_SERVER } from '../../config/config';
 
 import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
 import { fetchUsdToSolPrice } from '../../Utils/getSolanaPrice';
-import { fetchBabyBooh } from '../../Utils/babyBooh';
+import { deductBabyBooh, fetchBabyBooh } from '../../Utils/babyBooh';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -41,6 +41,9 @@ const Homepage = () => {
 
             if(wallet.publicKey){
                 // fetchAssets(wallet);
+
+                // const success = await deductBabyBooh(wallet.publicKey);
+                // console.log(success);
             }
         }
         
