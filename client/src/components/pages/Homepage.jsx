@@ -21,6 +21,8 @@ import { URI_SERVER } from '../../config/config';
 import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
 import { fetchUsdToSolPrice } from '../../Utils/getSolanaPrice';
 import { deductBabyBooh, fetchBabyBooh } from '../../Utils/babyBooh';
+import { createPaymentIntent } from '../../Utils/stripeInteractions';
+import Stripe from '../Stripe/Stripe';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -483,8 +485,9 @@ const Homepage = () => {
                         userRole={userRole}
                         wallet={wallet} />}
             </div>
+            {/* STRIPE COMPONENT IS FOR TESTING - DELETE AFTER USE */}
+            {/* {clientSecret && <Stripe clientSecret={clientSecret} setClientSecret={setClientSecret} />} */}
         </div>
-
     );
 };
 

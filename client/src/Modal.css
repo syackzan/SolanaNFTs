@@ -36,13 +36,23 @@
 
 /* Close button (top right) */
 .modal-close-top-right {
-    background: none;
+    background: #3a3a4f;
+    width: 25px;
+    height: 25px;
     border: none;
     color: #ffffff;
-    font-size: 24px;
+    font-size: 20px; /* Adjust font size to fit better */
     cursor: pointer;
-    margin: 0px;
-    padding: 0px 10px 0px 0px;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    border-radius: 10%; /* Optional: make it circular */
+}
+
+.modal-close-top-right:hover{
+    background: #57576c
 }
 
 /* Header styling */

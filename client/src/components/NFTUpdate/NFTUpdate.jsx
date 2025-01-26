@@ -42,7 +42,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setIsModalOpen(true);
     };
 
-    const closeModal = () => {
+    const resetConfirmModal = () => {
         setIsModalOpen(false);
         setTxState('empty');
         setCreateState('empty');
@@ -136,7 +136,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
             />
             <TxModal
                 isOpen={isModalOpen}
-                onClose={closeModal}
+                onClose={resetConfirmModal}
                 title={nfts[selectedIndex]?.name || ''}
                 mintCost={defaultMintCost}
                 paymentType={"Sol"}

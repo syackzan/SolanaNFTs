@@ -1,0 +1,53 @@
+/* Center the modal on desktop */
+.stripe-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; /* Desktop width */
+    background: #1e1e2f; /* Dark background to match night theme */
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5); /* Deeper shadow for dark mode */
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out, bottom 0.3s ease-in-out;
+    color: #ffffff; /* White text for better contrast */
+}
+
+/* For mobile: slide up from the bottom */
+@media (max-width: 768px) {
+    .stripe-modal {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        transform: none; /* No centering on mobile */
+        width: 100%; /* Full width on mobile */
+        border-radius: 16px 16px 0 0; /* Rounded corners at the top */
+    }
+}
+
+/* Overlay to dim the background */
+.stripe-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* Darker overlay for night mode */
+    z-index: 999; /* Below the modal */
+}
+
+/* Button Styling */
+.stripe-button {
+    background-color: #3a3a4f; /* Stripe's primary color for the night theme */
+    color: #fff; /* Button text color */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stripe-button:hover {
+    background-color: #5469d4; /* Slightly darker shade for hover */
+}

@@ -14,6 +14,9 @@ import { priceToSol } from '../../Utils/Utils';
 
 import TxModal from '../txModal/TxModal';
 import { deductBabyBooh } from '../../Utils/babyBooh';
+import { createPaymentIntent } from '../../Utils/stripeInteractions';
+
+import Stripe from '../Stripe/Stripe';
 
 const Marketplace = () => {
 
@@ -42,34 +45,54 @@ const Marketplace = () => {
         const [preCalcPayment, setPreCalcPayment] = useState(0);
         const [paymentTracker, setPaymentTracker] = useState('none');
         const [solPriceLoaded, setSolPriceLoaded] = useState(false);
+        const [stripeSecret, setStripeSecret] = useState(null);
+        const [stripeModal, setStripeModal] = useState(false);
 
         useEffect(() => {
-
             const setUpModalPricing = async () => {
-                if(paymentTracker === 'SOL' && isModalOpen == true){
-
-                    const mintCosts = 0.004; //Costs to mint an NFT
-                    const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
-                    setPreCalcPayment(priceInSol); //Get Sol in USD per NFT price
-                    setSolPriceLoaded(true);
+                if (!isModalOpen) return; // Exit early if modal is not open
+        
+                try {
+                    if (paymentTracker === 'SOL') {
+                        const mintCosts = 0.004; // Cost to mint an NFT
+                        if (nfts[selectedIndex]?.storeInfo?.price) {
+                            const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
+                            setPreCalcPayment(priceInSol); // Set SOL price in USD per NFT price
+                            setSolPriceLoaded(true);
+                        } else {
+                            console.error("Invalid NFT data or selectedIndex for SOL payment.");
+                        }
+                    }
+        
+                    if (paymentTracker === 'BABYBOOH') {
+                        // TODO: Implement conversion rate for BABY BOOH
+                        console.warn("Conversion rate for BABY BOOH is not implemented yet.")
+                    }
+        
+                    if (paymentTracker === 'CARD') {
+                        if (nfts[selectedIndex]?.storeInfo?.price) {
+                            const toNumber = Number(nfts[selectedIndex].storeInfo.price);
+        
+                            // Create a PaymentIntent
+                            const data = await createPaymentIntent(toNumber);
+                            if (data?.client_secret) {
+                                setStripeSecret(data.client_secret);
+                                setPreCalcPayment(toNumber);
+                                setSolPriceLoaded(true); // Hard value already stored
+                            } else {
+                                console.error("Failed to retrieve client_secret from PaymentIntent.");
+                            }
+                        } else {
+                            console.error("Invalid NFT data or selectedIndex for CARD payment.");
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error setting up modal pricing:", error.message);
                 }
-
-                if(paymentTracker === 'BABYBOOH' && isModalOpen == true){
-                    //Need a Conversion rate for BABY BOOH!!!
-
-                    //TODO SET BABY BOOH PreCalcPayment
-                }
-
-                if(paymentTracker === 'CARD' && isModalOpen == true){
-                    
-                    setPreCalcPayment(Number(nfts[selectedIndex].storeInfo.price));
-                    setSolPriceLoaded(true); //We already have the hard value stored
-                }
-            }
-
+            };
+        
             setUpModalPricing();
-
-        }, [isModalOpen])
+        }, [isModalOpen]);
     
         const openModal = async () => {
 
@@ -77,12 +100,13 @@ const Marketplace = () => {
 
         };
     
-        const closeModal = () => {
+        const resetConfirmModal = () => {
             setIsModalOpen(false);
             setTxState('empty');
             setCreateState('empty');
             setTransactionSig(null);
             setSolPriceLoaded(false);
+            setClientSecret(null);
         };
 
     const payWithSol = async () => {
@@ -99,11 +123,11 @@ const Marketplace = () => {
 
         const success = deductBabyBooh(wallet.publicKey.toString(), preCalcPayment);
         return success;
-        
+
     }
 
     const payWithCard = async () => {
-
+        setStripeModal(true);
     }
 
     const createNft = async () => {
@@ -129,7 +153,9 @@ const Marketplace = () => {
             }
 
             if(paymentTracker === 'CARD'){
-                signature = await payWithCard();
+                await payWithCard();
+                setIsModalOpen(false);
+                return //Different work flow with Card payments
             }
 
             if (signature) { //If Sig is true, create and send NFT
@@ -191,7 +217,7 @@ const Marketplace = () => {
             </div>
             <TxModal
                 isOpen={isModalOpen}
-                onClose={closeModal}
+                onClose={resetConfirmModal}
                 title={nfts[selectedIndex]?.name || ''}
                 mintCost={preCalcPayment}
                 paymentType={paymentTracker}
@@ -201,6 +227,12 @@ const Marketplace = () => {
                 createNft={createNft}
                 solPriceLoaded={solPriceLoaded}
             />
+            {stripeModal && <Stripe 
+            clientSecret={stripeSecret} 
+            setStripeModal={setStripeModal} 
+            name={nfts[selectedIndex].name}  
+            payment={preCalcPayment}
+            resetConfirmModal={resetConfirmModal}/>}
         </div>
     );
 };
