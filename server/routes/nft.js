@@ -9,11 +9,14 @@ const {
     voteForNFT, 
     testData, 
     createAndSendNFT,
-    getCoreNFTs } = require('../controllers/nftController');
+    getCoreNFTs,
+    getMetadataById } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
 router.get('/hello', testData);
+
+router.get('/getnftmetadata/:id', getMetadataById);
 
 //GET /api/nft/all
 router.get('/all', getAllMetadata);

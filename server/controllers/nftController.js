@@ -46,6 +46,26 @@ exports.getAllMetadata = async (req, res) => {
   }
 };
 
+exports.getMetadataById = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract the id from the request parameters
+
+    // Find the NFT metadata by id
+    const metadata = await NftMetadata.findById(id);
+
+    // Check if metadata exists
+    if (!metadata) {
+      return res.status(404).json({ error: 'Metadata not found' });
+    }
+
+    // Return the found metadata
+    res.status(200).json(metadata);
+  } catch (error) {
+    console.error('Error fetching metadata by id:', error);
+    res.status(500).json({ error: 'Failed to fetch metadata' });
+  }
+};
+
 exports.createNftMetadata = async (req, res) => {
   try {
     console.log("Insert new NFT");

@@ -1,16 +1,20 @@
 const stripe = require('stripe')(process.env.STRIPE_SK);
 
 exports.getPaymentIntent = async (req, res) => {
+
+    const { payment, id, walletAddress } = req.query;
+
     try {
         
-        console.log("Hello from stripe payments");
+        console.log(payment, id, walletAddress);
 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: 1099,
-            currency: 'sek',
+            amount: (payment * 100), //convert to cents
+            currency: 'usd',
             automatic_payment_methods: {
               enabled: true,
             },
+            description: `${payment}?${id}?${walletAddress}`
           });
 
         // Return the data as a response

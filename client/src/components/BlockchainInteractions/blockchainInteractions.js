@@ -40,6 +40,7 @@ export const fetchAssets = async (wallet) => {
 }
 
 export const createCoreNft = async (nft, wallet) => {
+
     try {
         const requestBody = { nft, receiverPubKey: wallet.publicKey };
 

@@ -19,10 +19,6 @@ import { createSendSolTx } from '../BlockchainInteractions/blockchainInteraction
 import { URI_SERVER } from '../../config/config';
 
 import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
-import { fetchUsdToSolPrice } from '../../Utils/getSolanaPrice';
-import { deductBabyBooh, fetchBabyBooh } from '../../Utils/babyBooh';
-import { createPaymentIntent } from '../../Utils/stripeInteractions';
-import Stripe from '../Stripe/Stripe';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -46,6 +42,9 @@ const Homepage = () => {
 
                 // const success = await deductBabyBooh(wallet.publicKey);
                 // console.log(success);
+
+                // const resp = await fetchSingleNftMetadata('6789733fcce17af1b40985f3')
+                // console.log(resp);
             }
         }
         

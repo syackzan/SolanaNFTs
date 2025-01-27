@@ -1,13 +1,13 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import "../../Modal.css"; // Optional for styling
 
 import { IS_MAINNET } from "../../config/config";
 
 import BoohLogo from '../../assets/BoohCoinLogo.svg';
 
-const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, createState, signature, createNft, solPriceLoaded }) => {
+const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, createState, signature, createNft, solPriceLoaded, redirectSecret }) => {
     if (!isOpen) return null;
 
     console.log("title", title);
@@ -52,13 +52,13 @@ const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, creat
     return (
         <div className={`modal-overlay ${isOpen ? "open" : ""}`}>
             <div className="modal-tx">
-                
+
                 <div className="d-flex justify-content-end">
-                    <button className="modal-close-top-right" onClick={onClose}>&times;</button>
+                    {redirectSecret ? (<Link to='/marketplace' className="modal-close-top-right" onClick={onClose}>&times;</Link>) : (<button className="modal-close-top-right" onClick={onClose}>&times;</button>)}
                 </div>
 
-                <div className='d-flex justify-content-center align-items-center gap-2' style={{marginBottom: '10px'}}>
-                    <img src={BoohLogo} style={{width: '40px', height: '40px'}} />
+                <div className='d-flex justify-content-center align-items-center gap-2' style={{ marginBottom: '10px' }}>
+                    <img src={BoohLogo} style={{ width: '40px', height: '40px' }} />
                     <h2 className="modal-header marykate m-0" style={{ fontSize: '2rem' }}>Confirmation</h2>
                 </div>
                 <div className="modal-body">
@@ -90,7 +90,9 @@ const TxModal = ({ isOpen, onClose, title, mintCost, paymentType, txState, creat
                 {/* Confirm button at the bottom */}
                 <div className='d-flex justify-content-center'>
                     {!signature ? (
-                        <button className="button-style-regular" onClick={() => createNft()}>Confirm</button>
+                        <>
+                            {redirectSecret ? (<div className="button-style-regular">Creating...</div>) : (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)}
+                        </>
                     ) : (
                         <Link className="button-style-regular" to={solScanner} target='_blank'>View Transaction</Link>
                     )}

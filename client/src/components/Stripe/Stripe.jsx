@@ -4,28 +4,44 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import CheckoutForm from './CheckoutForm';
 
+import StripeRedirect from './StripeRedirect';
+
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe('pk_test_51P1DZuC7RFNPITL3MmIT7G9P4QfwOdWsw8VHsXk6QuNB2zuBMpjHaNf9GSdsLMMC2LbKwipuGbYwfZEkT8TH2tZa00haILEpQC');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUB_KEY);
 
-const Stripe = ({ clientSecret, setStripeModal, name, payment, resetConfirmModal }) => {
+const Stripe = ({ 
+    stripeSecret,
+    redirectSecret,  
+    setStripeModal, 
+    nft, 
+    payment, 
+    resetConfirmModal, 
+    stripeModal, 
+    handleSuccessfulStripePayment, 
+    preCalcPayment }) => {
+
+    const clientSecret = stripeSecret ?? (redirectSecret || "");
+    console.log(clientSecret);
     const options = {
         clientSecret: `${clientSecret}`,
         appearance: {
-            theme: "night", // Options: 'stripe', 'flat', 'night', etc.
-            // variables: {
-            //     colorPrimary: "#6772e5", // Primary color for buttons and inputs
-            //     colorBackground: "#f6f8fa", // Background color
-            //     colorText: "#32325d", // Text color
-            //     borderRadius: "8px", // Input border radius
-            //     fontFamily: "Arial, sans-serif", // Font family
-            // },
+            theme: "night",
         },
     };
 
     return (
         <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm setStripeModal={setStripeModal} name={name} payment={payment} resetConfirmModal={resetConfirmModal} />
+            {stripeModal && <CheckoutForm
+                setStripeModal={setStripeModal}
+                nft={nft} payment={payment}
+                resetConfirmModal={resetConfirmModal}
+                clientSecret={clientSecret}
+                preCalcPayment={preCalcPayment}
+            />}
+            {redirectSecret && <StripeRedirect
+                redirectSecret={redirectSecret}
+                handleSuccessfulStripePayment={handleSuccessfulStripePayment} />}
         </Elements>
     );
 };

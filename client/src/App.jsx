@@ -18,6 +18,7 @@ function App() {
           <Route path="/dashboard" element={<Homepage />} />
           <Route path='/collection' element={<Collection />} />
           <Route path='/marketplace' element={<Marketplace />} />
+          <Route path='/marketplace/:id/:redirectAddress/:priceOfNft/:nameOfNft' element={<Marketplace />} />
           <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
         </Routes>
       </Router>
