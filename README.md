@@ -94,7 +94,7 @@ Any helper functions, such as recurring API calls, blockchain interactions, or s
 ## APP's Parent Component `<App />` && `<WalletAdapter />`
 
 ### App Wrappers
-This application uses **react-router-dom** for navigation and `<Link />` features. Inside the `<App />` component, you will find links to the pages listed below.
+The `<App>` component is wrapped by two parent components allowing access to variables throughout the frontend components.
 
 #### Wrappers
 1. **`<WalletAdapter />`**:
@@ -109,7 +109,7 @@ This application uses **react-router-dom** for navigation and `<Link />` feature
 
 ## Pages
 
-Pages handle the main component renderings and help with content compartmentalization. The following pages include:
+This application uses **react-router-dom** for navigation and `<Link />` features. Inside the `<App />` component, you will find links to the pages listed below. Pages handle the main component renderings and help with content compartmentalization. The following pages include:
 
 ### LandingPage
 - **URL**: [https://nft.boohworld.io](https://nft.boohworld.io)
@@ -136,8 +136,127 @@ This is where all the magic happens in terms of members creating and managing th
 ---
 
 ### Marketplace
-- The marketplace is where users can browse, filter, and purchase NFTs.
-- The marketplace uses the `<useNFT />` hook to query and render NFT metadata from the MongoDB database.
+
+The `Marketplace` component is the central hub for interacting with and managing NFTs in the **Booh World** marketplace. It facilitates user actions such as viewing NFTs, creating NFTs, and handling payment flows using various methods (e.g., SOL, Baby Booh, and credit card).
+
+---
+
+#### **useState Variables**
+
+Below are the state variables used in this component and their purposes:
+
+1. **NFT and Wallet Management**
+   - `nfts`: Stores the array of NFTs available in the marketplace.
+   - `selectedIndex`: Tracks the currently selected NFT index.
+   - `nameTracker`: Tracks the name of the selected NFT.
+
+2. **Modal and UI States**
+   - `isModalOpen`: Controls the visibility of the transaction modal.
+   - `txState`: Tracks the transaction state (`empty`, `started`, `complete`, `failed`).
+   - `createState`: Tracks the state of NFT creation (`empty`, `started`, `complete`, `failed`).
+
+3. **Payment and Pricing**
+   - `preCalcPayment`: Stores the calculated payment value for the selected NFT.
+   - `paymentTracker`: Tracks the selected payment method (`SOL`, `CARD`, or `BABYBOOH`).
+   - `solPriceLoaded`: Indicates whether the SOL price has been calculated and loaded.
+
+4. **Stripe Integration**
+   - `stripeSecret`: Stores the `client_secret` returned from the Stripe PaymentIntent.
+   - `stripeModal`: Toggles the visibility of the Stripe modal.
+   - `redirectSecret`: Handles the `client_secret` during redirect scenarios.
+
+5. **Utility States**
+   - `transactionSig`: Stores the transaction signature after NFT creation.
+   - `message`: Tracks status messages displayed to the user.
+
+---
+
+#### **Key Functions**
+
+1. **Payment Handling**
+   - `payWithSol`: Creates and sends a Solana transaction to pay for the NFT.
+   - `payWithBabyBooh`: Handles payment via the Baby Booh token.
+   - `payWithCard`: Opens the Stripe payment modal.
+
+2. **NFT Creation**
+   - `createNft`: Handles the process of NFT creation after payment is completed.
+   - `handleNFTCreation`: Responsible for calling the blockchain interaction to create an NFT.
+
+3. **Stripe Payment Integration**
+   - `handleSuccessfulStripePayment`: Handles the workflow for creating NFTs after a successful Stripe payment.
+   - `setUpModalPricing`: Dynamically calculates and sets the payment value and updates the UI for the selected payment method.
+
+4. **Modal Controls**
+   - `openModal`: Opens the transaction modal for the selected NFT.
+   - `resetConfirmModal`: Resets the modal state after a transaction or creation process.
+
+---
+
+#### **Key Components**
+
+1. **`<Navbar />`**
+   - Handles navigation and wallet tracking.
+   - Tracks the logged-in user's wallet and fetches their associated Booh Tokens and in-game currency.
+
+2. **`<PrintNfts />`**
+   - Displays the list of NFTs available in the marketplace.
+   - Accepts props such as `nfts`, `selectedIndex`, and handlers for selection and payment tracking.
+
+3. **`<Filter />`**
+   - Allows users to filter NFTs by type, rarity, and creator.
+
+4. **`<TxModal />`**
+   - Displays transaction details and progress to the user.
+   - Allows users to confirm and proceed with NFT creation.
+
+5. **`<Stripe />`**
+   - Handles the payment flow for credit card transactions via Stripe.
+   - Supports both direct PaymentIntent creation and redirect scenarios.
+
+---
+
+#### **Component Workflow**
+
+1. **NFT Selection**
+   - The user selects an NFT from the marketplace (`<PrintNfts />` updates the `selectedIndex`).
+
+2. **Modal Setup**
+   - When the user initiates a purchase, the transaction modal is opened using `openModal`.
+   - Payment calculations are dynamically set up via `setUpModalPricing`.
+
+3. **Payment Flow**
+   - Based on the selected payment method:
+     - SOL: Processes the transaction on the Solana blockchain (`payWithSol`).
+     - Baby Booh: Calls the API to deduct the token amount (`payWithBabyBooh`).
+     - Credit Card: Initiates the Stripe PaymentIntent and opens the Stripe modal.
+
+4. **NFT Creation**
+   - Once payment is confirmed, `createNft` calls `handleNFTCreation` to mint the NFT on the blockchain.
+
+5. **Stripe Redirect**
+   - After a successful Stripe payment redirect, the `handleSuccessfulStripePayment` function finalizes the NFT creation process.
+
+---
+
+#### **External Utilities and APIs**
+
+- **`useNFTs` Hook**: Handles fetching and filtering NFT metadata.
+- **`priceToSol` Utility**: Converts the NFT price into SOL, accounting for minting costs.
+- **`createPaymentIntent` API**: Creates a Stripe PaymentIntent for credit card payments.
+- **`deductBabyBooh` API**: Deducts Baby Booh tokens for NFT purchases.
+- **`fetchSingleNftMetadata` API**: Retrieves metadata for a specific NFT during the Stripe redirect workflow.
+
+---
+
+#### **Error Handling**
+
+- The component includes `try...catch` blocks in critical functions to ensure proper error reporting and graceful handling of issues (e.g., invalid NFT data, failed transactions).
+- Errors are logged to the console for debugging.
+
+---
+
+This section provides an overview of the key elements and workflows of the `Marketplace` component. You can expand or refine it based on your specific needs!
+
 
 
 
