@@ -413,18 +413,6 @@ const Homepage = () => {
         }
     }
 
-    // const updateMetadata = async () => {
-
-    //     try {
-    //         const response = await axios.patch(`${URI_SERVER}/api/nft/update/${test_id}`,
-    //             updateData,
-    //             { headers: { 'x-api-key': API_KEY } });
-    //         console.log('Update Successfull,', response.data);
-    //     } catch (error) {
-    //         console.error('Error updating data', error.response?.data || error.message);
-    //     }
-    // }
-
     const deleteMetadata = async (id) => {
 
         setDisabledDeleteButton(true);
@@ -484,8 +472,6 @@ const Homepage = () => {
                         userRole={userRole}
                         wallet={wallet} />}
             </div>
-            {/* STRIPE COMPONENT IS FOR TESTING - DELETE AFTER USE */}
-            {/* {clientSecret && <Stripe clientSecret={clientSecret} setClientSecret={setClientSecret} />} */}
         </div>
     );
 };
