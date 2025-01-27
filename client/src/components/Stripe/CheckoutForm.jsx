@@ -4,7 +4,7 @@ import "../../css/stripe.css"; // Import your custom CSS
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
-const CheckoutForm = ({ setStripeModal, nft, payment, resetConfirmModal, preCalcPayment }) => {
+const CheckoutForm = ({ setStripeModal, nft, resetConfirmModal, preCalcPayment }) => {
 
     const stripe = useStripe();
     const elements = useElements();
@@ -14,8 +14,6 @@ const CheckoutForm = ({ setStripeModal, nft, payment, resetConfirmModal, preCalc
     const handleSubmit = async (event) => {
         // Prevent the default form submission, which would refresh the page.
         event.preventDefault();
-
-        console.log(preCalcPayment);
     
         if (!stripe || !elements) {
             // Stripe.js hasn't loaded yet.
@@ -28,7 +26,7 @@ const CheckoutForm = ({ setStripeModal, nft, payment, resetConfirmModal, preCalc
                 // The `Elements` instance used to create the Payment Element.
                 elements,
                 confirmParams: {
-                    return_url: `http://localhost:5173/marketplace/${nft._id}/${wallet.publicKey.toString()}/${preCalcPayment * 100}/${encodeURIComponent(nft.name)}`,
+                    return_url: `http://localhost:5173/marketplace/${nft._id}/${wallet.publicKey.toString()}`,
                 },
             });
     
@@ -54,7 +52,7 @@ const CheckoutForm = ({ setStripeModal, nft, payment, resetConfirmModal, preCalc
                     <div className="d-flex justify-content-between mb-3">
                         <div className="marykate">
                             <h5>NFT: {nft.name}</h5>
-                            <h5>Cost: {payment}</h5>
+                            <h5>Cost: {preCalcPayment}</h5>
                         </div>
                         <button className="modal-close-top-right" onClick={() => { setStripeModal(false), resetConfirmModal() }}>&times;</button>
                     </div>

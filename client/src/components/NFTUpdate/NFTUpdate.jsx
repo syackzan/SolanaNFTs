@@ -12,6 +12,8 @@ import TxModal from '../txModal/TxModal';
 
 import { defaultMintCost } from '../../config/gameConfig';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
 
     const { publicKey, sendTransaction } = useWallet();
@@ -32,14 +34,25 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setIsFetched,
     } = useNFTs({inStoreOnly: false, refetchNFTs});
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [txState, setTxState] = useState('empty'); //empty, started, complete, failed
-    const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
-    const [transactionSig, setTransactionSig] = useState(null);
+    const {
+            isModalOpen, //stores main transaction modal state
+            setIsModalOpen, //updates main transaction state
+            setTxState, //updates payment transaction state to handle UI render
+            setCreateState,
+            setTransactionSig,
+            setPreCalcPayment,
+            setPaymentTracker,
+            setSolPriceLoaded,
+            setNameTracker,
+        } = useMarketplace();
 
     const openModal = () => {
         
         setIsModalOpen(true);
+        setNameTracker(nfts[selectedIndex].name);
+        setPreCalcPayment(defaultMintCost);
+        setSolPriceLoaded(true);
+        setPaymentTracker('SOL');
     };
 
     const resetConfirmModal = () => {
@@ -130,22 +143,14 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 selectedIndex={selectedIndex}
                 setSelectedIndex={setSelectedIndex}
                 location='creator-hub'
-                createNft={openModal}
+                openModal={openModal}
                 isAdmin={isAdmin}
                 setEditData={setEditData}
             />
-            <TxModal
-                isOpen={isModalOpen}
-                onClose={resetConfirmModal}
-                title={nfts[selectedIndex]?.name || ''}
-                mintCost={defaultMintCost}
-                paymentType={"Sol"}
-                txState={txState}
-                createState={createState}
-                signature={transactionSig}
+            {isModalOpen && <TxModal
+                resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
-                solPriceLoaded={true}
-            />
+            /> }
         </div>
     );
 };

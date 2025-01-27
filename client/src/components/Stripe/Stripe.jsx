@@ -6,23 +6,24 @@ import CheckoutForm from './CheckoutForm';
 
 import StripeRedirect from './StripeRedirect';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUB_KEY);
 
-const Stripe = ({ 
-    stripeSecret,
-    redirectSecret,  
-    setStripeModal, 
-    nft, 
-    payment, 
-    resetConfirmModal, 
-    stripeModal, 
-    handleSuccessfulStripePayment, 
-    preCalcPayment }) => {
+const Stripe = ({ nft, resetConfirmModal, handleSuccessfulStripePayment }) => {
+
+    const {
+        preCalcPayment,
+        stripeSecret,
+        stripeModal,
+        setStripeModal,
+        redirectSecret,
+    } = useMarketplace();
 
     const clientSecret = stripeSecret ?? (redirectSecret || "");
-    console.log(clientSecret);
+    
     const options = {
         clientSecret: `${clientSecret}`,
         appearance: {
@@ -34,7 +35,7 @@ const Stripe = ({
         <Elements stripe={stripePromise} options={options}>
             {stripeModal && <CheckoutForm
                 setStripeModal={setStripeModal}
-                nft={nft} payment={payment}
+                nft={nft}
                 resetConfirmModal={resetConfirmModal}
                 clientSecret={clientSecret}
                 preCalcPayment={preCalcPayment}

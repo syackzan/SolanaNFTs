@@ -65,6 +65,8 @@ export const createSendSolTx = async (fromPubkeyString, payment = 0) => {
 
     console.log("Building Send Trasaction to: ", TEST_WALLET)
 
+    console.log(amount);
+
     try {
 
         const transaction = new Transaction();

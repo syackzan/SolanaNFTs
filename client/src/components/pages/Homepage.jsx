@@ -1,24 +1,33 @@
+//React elements
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+//Components
 import SideNav from '../SideNav/SideNav';
 import NFTPreview from '../NFTPreview/NFTPreview';
 import NFTUpdate from '../NFTUpdate/NFTUpdate';
-import { priceToSol, uploadIcon, uploadMetadata } from '../../Utils/Utils';
+import Navbar from '../Navbar/Navbar';
 
+//Utility functions
+import { priceToSol, uploadIcon, uploadMetadata } from '../../Utils/Utils';
+import { checkIfAdmin } from '../../Utils/checkRole';
+import { createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
+
+//Imported packages
 import axios from 'axios';
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react';
-import SolConnection from '../Connection/SolConnection';
-import Navbar from '../Navbar/Navbar';
-import { checkIfAdmin } from '../../Utils/checkRole';
-import { fetchAssets } from '../BlockchainInteractions/blockchainInteractions';
 
-import { createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
-
+//Configs
 import { URI_SERVER } from '../../config/config';
+import { infoData, 
+    getAttributesData, 
+    storeInfoData, 
+    propertiesData, 
+    creatorCosts } from '../../config/gameConfig';
 
-import { infoData, getAttributesData, storeInfoData, propertiesData, creatorCosts } from '../../config/gameConfig';
+//Imported images
+import tempImage from '../../assets/itemBGs/tempImage.png';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -88,7 +97,7 @@ const Homepage = () => {
         setProperties(propertiesData);
         setStoreInfo(storeInfoData);
 
-        setImage(null);
+        setImage(tempImage);
         setNewMetadata(null);
     }
 
@@ -129,38 +138,6 @@ const Homepage = () => {
         checkAdminStatus(); // Call the async function
     }, [wallet.connected, wallet.publicKey]);
 
-    // useEffect(() => {
-    //     const fetchCoreNFTs = async (walletPublicKey) => {
-
-    //         if(!walletPublicKey){
-    //             return;
-    //         }
-
-    //         try {
-    //           const response = await axios.post(
-    //             `${URI_SERVER}/api/nft/getCoreNfts`, // Replace with your actual endpoint URL
-    //             {
-    //               walletPublicKey: walletPublicKey, // Wallet public key as request body
-    //             },
-    //             {
-    //               headers: {
-    //                 'Content-Type': 'application/json', // Ensure JSON format
-    //                 'x-api-key': API_KEY,  // Optional: Add if your endpoint requires an API key
-    //               },
-    //             }
-    //           );
-
-    //           console.log('Response:', response.data);
-    //           return response.data; // Handle the data returned from the server
-    //         } catch (error) {
-    //           console.error('Error fetching NFTs:', error.response?.data || error.message);
-    //           throw error; // Re-throw the error to handle it upstream
-    //         }
-    //       };
-
-    //     fetchCoreNFTs(wallet.publicKey);
-    // }, [wallet.publicKey]);
-
 
     useEffect(() => {
         if (page === 'create') {
@@ -182,9 +159,36 @@ const Homepage = () => {
         }));
     };
 
-    //Handles image update for displaying image purposes
+    //Handle Image uploads
     const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+        const file = e.target.files[0]; // Get the selected file
+    
+        if (file) {
+            const img = new Image();
+            const fileURL = URL.createObjectURL(file); // Create a temporary URL for the image
+    
+            img.onload = () => {
+                const { width, height } = img;
+    
+                // Validate image dimensions
+                if (width >= 512 || height >= 512 || width !== height) {
+                    alert("Image dimensions must be 512x512 or smaller, and same width/height.");
+                    setImage(tempImage);
+                    e.target.value = ""; // Reset the file input
+                } else {
+                    setImage(file); // Set the image as usual if valid
+                }
+    
+                URL.revokeObjectURL(fileURL); // Clean up the temporary URL
+            };
+    
+            img.onerror = () => {
+                alert("Invalid image file.");
+                URL.revokeObjectURL(fileURL); // Clean up the temporary URL
+            };
+    
+            img.src = fileURL; // Trigger the `onload` handler by setting the image source
+        }
     };
 
     // Handle input change

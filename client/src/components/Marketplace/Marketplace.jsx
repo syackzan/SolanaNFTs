@@ -23,6 +23,8 @@ import { fetchSingleNftMetadata } from '../../Utils/backendCalls';
 
 import {PublicKey} from '@solana/web3.js';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 const Marketplace = () => {
 
     const wallet = useWallet();
@@ -43,21 +45,28 @@ const Marketplace = () => {
         setIsFetched,
     } = useNFTs({ inStoreOnly: true });
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [txState, setTxState] = useState('empty'); //empty, started, complete, failed
-    const [createState, setCreateState] = useState('empty'); //empty, started, complete, failed
-    const [transactionSig, setTransactionSig] = useState(null);
-    const [preCalcPayment, setPreCalcPayment] = useState(0);
-    const [paymentTracker, setPaymentTracker] = useState('none');
-    const [solPriceLoaded, setSolPriceLoaded] = useState(false);
-    const [stripeSecret, setStripeSecret] = useState(null);
-    const [stripeModal, setStripeModal] = useState(false);
-    const [redirectSecret, setRedirectSecret] = useState('');
-    const [nameTracker, setNameTracker] = useState('');
+    const {
+        isModalOpen, //stores main transaction modal state
+        setIsModalOpen, //updates main transaction state
+        setTxState, //updates payment transaction state to handle UI render
+        setCreateState,
+        setTransactionSig,
+        preCalcPayment,
+        setPreCalcPayment,
+        paymentTracker,
+        setPaymentTracker,
+        setSolPriceLoaded,
+        stripeSecret,
+        setStripeSecret,
+        setStripeModal,
+        redirectSecret,
+        setRedirectSecret,
+        setNameTracker,
+    } = useMarketplace();
+    
 
     //Handle Stripe re-direction & confirmed payment
-    const { id, redirectAddress, priceOfNft, nameOfNft } = useParams();
-    const [message, setMessage] = useState(null);
+    const { id, redirectAddress } = useParams();
 
     useEffect(() => {
         // Retrieve the "payment_intent_client_secret" query parameter appended to
@@ -65,8 +74,6 @@ const Marketplace = () => {
         const clientSecret = new URLSearchParams(window.location.search).get(
             'payment_intent_client_secret'
         );
-
-        console.log(id);
 
         if (clientSecret) {
             console.log(clientSecret);
@@ -78,55 +85,59 @@ const Marketplace = () => {
         const setUpModalPricing = async () => {
             if (!isModalOpen) return; // Exit early if modal is not open
             if (selectedIndex === null) return;
-
+    
             setNameTracker(nfts[selectedIndex].name);
-
+    
             try {
-                if (paymentTracker === 'SOL') {
-                    const mintCosts = 0.004; // Cost to mint an NFT
-                    if (nfts[selectedIndex]?.storeInfo?.price) {
-                        const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
-                        setPreCalcPayment(priceInSol); // Set SOL price in USD per NFT price
-                        setSolPriceLoaded(true);
-                    } else {
-                        console.error("Invalid NFT data or selectedIndex for SOL payment.");
-                    }
-                }
-
-                if (paymentTracker === 'BABYBOOH') {
-                    // TODO: Implement conversion rate for BABY BOOH
-                    console.warn("Conversion rate for BABY BOOH is not implemented yet.")
-                }
-
-                if (paymentTracker === 'CARD') {
-                    if (nfts[selectedIndex]?.storeInfo?.price) {
-                        const toNumber = Number(nfts[selectedIndex].storeInfo.price);
-
-                        // Create a PaymentIntent
-                        const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
-                        if (data?.client_secret) {
-                            setStripeSecret(data.client_secret);
-                            setPreCalcPayment(toNumber);
-                            setSolPriceLoaded(true); // Hard value already stored
+                switch (paymentTracker) {
+                    case 'SOL':
+                        const mintCosts = 0.004; // Cost to mint an NFT
+                        if (nfts[selectedIndex]?.storeInfo?.price) {
+                            const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
+                            setPreCalcPayment(priceInSol); // Set SOL price in USD per NFT price
+                            setSolPriceLoaded(true);
                         } else {
-                            console.error("Failed to retrieve client_secret from PaymentIntent.");
+                            console.error("Invalid NFT data or selectedIndex for SOL payment.");
                         }
-                    } else {
-                        console.error("Invalid NFT data or selectedIndex for CARD payment.");
-                    }
+                        break;
+    
+                    case 'BABYBOOH':
+                        // TODO: Implement conversion rate for BABY BOOH
+                        console.warn("Conversion rate for BABY BOOH is not implemented yet.");
+                        break;
+    
+                    case 'CARD':
+                        if (nfts[selectedIndex]?.storeInfo?.price) {
+                            const toNumber = Number(nfts[selectedIndex].storeInfo.price);
+    
+                            // Create a PaymentIntent
+                            const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
+                            if (data?.client_secret) {
+                                setStripeSecret(data.client_secret);
+                                setPreCalcPayment(toNumber);
+                                setSolPriceLoaded(true); // Hard value already stored
+                            } else {
+                                console.error("Failed to retrieve client_secret from PaymentIntent.");
+                            }
+                        } else {
+                            console.error("Invalid NFT data or selectedIndex for CARD payment.");
+                        }
+                        break;
+    
+                    default:
+                        console.warn("Unhandled payment method:", paymentTracker);
+                        break;
                 }
             } catch (error) {
                 console.error("Error setting up modal pricing:", error.message);
             }
         };
-
+    
         setUpModalPricing();
     }, [isModalOpen]);
 
     const openModal = async () => {
-
         setIsModalOpen(true);
-
     };
 
     const resetConfirmModal = () => {
@@ -135,7 +146,7 @@ const Marketplace = () => {
         setCreateState('empty');
         setTransactionSig(null);
         setSolPriceLoaded(false);
-        setClientSecret(null);
+        setStripeSecret(null);
     };
 
     const payWithSol = async () => {
@@ -220,7 +231,7 @@ const Marketplace = () => {
             setTxState('complete'); // Mark the transaction as complete
             setCreateState('started'); // Begin the NFT creation process
             setSolPriceLoaded(true); // Indicate that the Solana price has been successfully loaded
-            setPaymentTracker('Card'); // Set the payment method to "Card"
+            setPaymentTracker('CARD'); // Set the payment method to "Card"
     
             // Fetch the NFT metadata using the provided ID
             const nftToCreate = await fetchSingleNftMetadata(id);
@@ -292,35 +303,20 @@ const Marketplace = () => {
                     setSelectedIndex={setSelectedIndex}
                     divWidth='100vw'
                     location='marketplace'
-                    createNft={openModal}
+                    openModal={openModal}
                     setEditData={setEditData}
                     setPaymentTracker={setPaymentTracker}
                 />
             </div>
-            <TxModal
-                isOpen={isModalOpen}
-                onClose={resetConfirmModal}
-                title={nameTracker || ''}
-                mintCost={preCalcPayment}
-                paymentType={paymentTracker}
-                txState={txState}
-                createState={createState}
-                signature={transactionSig}
+            {isModalOpen && <TxModal
+                resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
-                solPriceLoaded={solPriceLoaded}
-                redirectSecret={redirectSecret}
-            />
+            />}
             {(stripeSecret || redirectSecret) && (
                 <Stripe
-                    stripeSecret={stripeSecret} //When creating a paymentIntent 
-                    redirectSecret={redirectSecret} //When redirection from a successful payment
-                    setStripeModal={setStripeModal}
                     nft={nfts[selectedIndex]}
-                    payment={preCalcPayment}
                     resetConfirmModal={resetConfirmModal}
-                    stripeModal={stripeModal}
                     handleSuccessfulStripePayment={handleSuccessfulStripePayment}
-                    preCalcPayment={preCalcPayment}
                 />
             )}
         </div>
