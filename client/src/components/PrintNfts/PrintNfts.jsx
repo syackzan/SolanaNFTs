@@ -26,7 +26,7 @@ const PrintNfts = ({
                     overflow: "auto", // Enables vertical scrolling
                 }}
             >
-                <div className="d-flex gap-3 flex-wrap">
+                <div className="d-flex gap-3 flex-wrap justify-content-center">
                     {nfts.map((nft, index) => {
                         const rarity = nft.attributes.find(
                             (attr) => attr.trait_type === "rarity"

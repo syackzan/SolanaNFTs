@@ -4,6 +4,8 @@ import "../../css/stripe.css"; // Import your custom CSS
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
+import { URI_SERVER } from "../../config/config";
+
 const CheckoutForm = ({ setStripeModal, nft, resetConfirmModal, preCalcPayment }) => {
 
     const stripe = useStripe();
@@ -26,7 +28,7 @@ const CheckoutForm = ({ setStripeModal, nft, resetConfirmModal, preCalcPayment }
                 // The `Elements` instance used to create the Payment Element.
                 elements,
                 confirmParams: {
-                    return_url: `http://localhost:5173/marketplace/${nft._id}/${wallet.publicKey.toString()}`,
+                    return_url: `${URI_SERVER}/${nft._id}/${wallet.publicKey.toString()}`,
                 },
             });
     

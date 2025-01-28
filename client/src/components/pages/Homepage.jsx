@@ -407,16 +407,6 @@ const Homepage = () => {
         }
     };
 
-    //Get all metadata objects from DB
-    const getMetadata = async () => {
-        try {
-            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-            console.log('NFT DATA', response.data);
-        } catch (e) {
-            console.error('Error when accessing data', error.response?.data || error.message)
-        }
-    }
-
     const deleteMetadata = async (id) => {
 
         setDisabledDeleteButton(true);

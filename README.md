@@ -117,7 +117,7 @@ This application uses **react-router-dom** for navigation and `<Link />` feature
   - Directs users to create, edit, or view documents.
   - Includes components like `<Navbar />` (persistent across pages) and `<ImageCarousel />` (scrolls through NFT metadata).
 
-### Homepage: [https://nft.boohworld/io](https://nft.boohworld.io/dashboard?=update)
+### Homepage: [https://nft.boohworld/io/dashboard](https://nft.boohworld.io/dashboard?action=update)
 This is where all the magic happens in terms of members creating and managing their Booh NFT metadata. Within the `<Homepage />`, several components work together.
 
 #### Key Components:

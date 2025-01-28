@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import { LuRefreshCcw } from "react-icons/lu";
 
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import Switch from 'react-switch';
+
+import '../../css/mobile-Filter.css'
 
 const Filter = ({
     title,
@@ -22,11 +24,22 @@ const Filter = ({
 
     const [checked, setChecked] = useState(false);
 
+    const [isDropdownOpenType, setIsDropdownOpenType] = useState(false);
+    const [isDropdownOpenRarity, setIsDropdownOpenRarity] = useState(false);
+
+    const handleDropdownToggleOfType = () => {
+        setIsDropdownOpenType(!isDropdownOpenType);
+    };
+
+    const handleDropdownToggleOfRarity = () => {
+        setIsDropdownOpenRarity(!isDropdownOpenRarity);
+    };
+
     const address = wallet.publicKey ? wallet.publicKey.toString() : 'all';
 
     const handleChange = () => {
 
-        if(selectedCreator === 'all'){
+        if (selectedCreator === 'all') {
             setSelectedCreator(address);
             setChecked(!checked);
         } else {
@@ -37,9 +50,11 @@ const Filter = ({
 
     return (
         <div className="d-flex flex-column" style={{ color: 'white', padding: '0px 25px' }}>
-            <h1 className="align-self-start">{title} <span style={{ fontSize: '16px' }}>[solana]</span></h1>
+            <h1 className="align-self-start filter-title">{title} <span className='disable-on-mobile' style={{ fontSize: '16px' }}>[solana]</span></h1>
             <div className="d-flex justify-content-between align-items-end">
-                <div className="d-flex gap-3">
+
+                {/* Desktop Button Group */}
+                <div className="disable-on-mobile d-flex gap-3">
                     {["skin", "weapon", "armor", "accessory", "all"].map((item) => (
                         <button
                             key={item}
@@ -51,11 +66,35 @@ const Filter = ({
                         </button>
                     ))}
                 </div>
-                {/* <div>
-                    <button className="" onClick={() => setSelectedCreator(address)}>My NFTs</button>
-                    <button className="" onClick={() => setSelectedCreator('all')}>All NFTs</button>
-                </div> */}
-                <div className="d-flex align-items-end gap-2">
+
+                {/* Mobile Dropdown */}
+                <div className="dropdown">
+                    <div className="d-flex gap-2">
+                        <div className="marykate" style={{ fontSize: '1.25rem' }}>Type</div>
+                        <button
+                            className="dropdown-toggle"
+                            onClick={handleDropdownToggleOfType}
+                        >
+                            {selectedType ? selectedType.toUpperCase() : "SELECT"}
+                        </button>
+                    </div>
+                    {isDropdownOpenType && (
+                        <ul className="dropdown-menu">
+                            {["skin", "weapon", "armor", "accessory", "all"].map((item) => (
+                                <li key={item} className="dropdown-item">
+                                    <button
+                                        className="dropdown-item-button"
+                                        onClick={() => handleItemClick(item)}
+                                    >
+                                        {item.toUpperCase()}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                <div className="d-flex align-items-center gap-2">
                     <Switch
                         onChange={handleChange}
                         checked={checked}
@@ -66,7 +105,7 @@ const Filter = ({
                         uncheckedIcon={false}
                         checkedIcon={false}
                     />
-                    <p className="m-0 marykate" style={{fontSize: '1.3rem'}}>Created By Me</p>
+                    <p className="m-0 marykate" style={{ fontSize: '1.3rem' }}>By Me</p>
                 </div>
                 <div>
                     <button className="strip-button" onClick={() => setIsFetched(false)}>
@@ -108,7 +147,9 @@ const Filter = ({
                         </div>
                     </div>
                 )}
-                <div className="d-flex gap-2">
+
+                {/* Desktop Filter */}
+                <div className="d-flex gap-2 disable-on-mobile">
                     +
                     {["common", "uncommon", "rare", "epic", "legendary", "all"].map((item) => (
                         <button
@@ -119,6 +160,33 @@ const Filter = ({
                             {item}
                         </button>
                     ))}
+                </div>
+
+                {/* Mobile Filter */}
+                <div className="dropdown">
+                    <div className="d-flex gap-2">
+                        <div className="marykate" style={{ fontSize: '1.25rem' }}>Rarity</div>
+                        <button
+                            className="dropdown-toggle"
+                            onClick={handleDropdownToggleOfRarity}
+                        >
+                            {selectedType ? selectedType.toUpperCase() : "SELECT"}
+                        </button>
+                    </div>
+                    {isDropdownOpenRarity && (
+                        <ul className="dropdown-menu">
+                            {["common", "uncommon", "rare", "epic", "legendary", "all"].map((item) => (
+                                <li key={item} className="dropdown-item">
+                                    <button
+                                        className="dropdown-item-button"
+                                        onClick={() => handleItemClick(item)}
+                                    >
+                                        {item}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>

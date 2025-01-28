@@ -24,7 +24,7 @@
   font-style: normal;
 }
 
-.lazy-dog{
+.lazy-dog {
   font-family: "lazy-dog", "sans-serif";
 }
 
@@ -61,6 +61,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -154,11 +155,19 @@ button:focus-visible {
 
 .store-nav li {
   font-weight: bold;
-  font-size: 22px;
 }
 
 .store-nav a {
   color: #D6D6ED;
+  font-size: 1.5rem !important;
+}
+
+/* Responsive Styling */
+@media (max-width: 1023px) {
+  .store-nav a {
+    color: #D6D6ED;
+    font-size: 1.2rem !important;
+  }
 }
 
 .store-nav a:hover {
@@ -227,7 +236,7 @@ button:focus-visible {
   background-color: gainsboro !important;
 }
 
-.disconnect-button{
+.disconnect-button {
   font-size: 14px;
   width: 125px;
   color: white;
@@ -249,11 +258,11 @@ button:focus-visible {
 /* Media Queries */
 @media (max-width: 1374px) {
   .style-links {
-      display: none !important;
+    display: none !important;
   }
 
   .hamburger-menu {
-      display: flex;
+    display: flex;
   }
 }
 
@@ -261,8 +270,10 @@ button:focus-visible {
 .button-style-regular {
   background-color: #3a3a4f;
   color: #ffffff;
-  border: 1px solid #555555; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
+  border: 1px solid #555555;
+  /* Subtle border */
+  border-radius: 8px;
+  /* Rounded corners */
   border-radius: 5px;
   padding: 8px 12px;
   cursor: pointer;
@@ -275,21 +286,29 @@ button:focus-visible {
   background-color: #57576c;
 }
 
-.button-style-thin{
+.button-style-thin {
   background-color: #3a3a4f;
   color: #ffffff;
-  border: 1px solid #555555; /* Subtle border */
-  padding: 0px 5px; /* Comfortable padding */
-  border-radius: 8px; /* Rounded corners */
-  font-size: 16px; /* Readable text */
-  font-weight: 600; /* Slightly bold for emphasis */
+  border: 1px solid #555555;
+  /* Subtle border */
+  padding: 0px 5px;
+  /* Comfortable padding */
+  border-radius: 8px;
+  /* Rounded corners */
+  font-size: 16px;
+  /* Readable text */
+  font-weight: 600;
+  /* Slightly bold for emphasis */
   width: 100px;
-  cursor: pointer; /* Pointer cursor for interactivity */
-  transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+  cursor: pointer;
+  /* Pointer cursor for interactivity */
+  transition: background-color 0.3s, transform 0.2s;
+  /* Smooth hover effect */
 }
 
 .button-style-thin:hover {
-  background-color: #9c9c9c; /* Dark background */
+  background-color: #9c9c9c;
+  /* Dark background */
 }
 
 
@@ -298,8 +317,10 @@ button:focus-visible {
   width: 100%;
   padding: 12px;
   border-radius: 4px;
-  background-color: #3A3A3A; /* Default background */
-  color: #FFF; /* Default text color */
+  background-color: #3A3A3A;
+  /* Default background */
+  color: #FFF;
+  /* Default text color */
   border: none;
   font-weight: bold;
   cursor: pointer;
@@ -313,23 +334,27 @@ button:focus-visible {
 
 /* Disabled button styles */
 .button-click:disabled {
-  background-color: #A9A9A9; /* Gray background for disabled */
-  color: #CCCCCC; /* Faded text color for disabled */
+  background-color: #A9A9A9;
+  /* Gray background for disabled */
+  color: #CCCCCC;
+  /* Faded text color for disabled */
   cursor: not-allowed;
 }
 
 /* Hover styles for enabled button */
 .button-click:not(:disabled):hover {
-  background-color: #505050; /* Hover color */
+  background-color: #505050;
+  /* Hover color */
 }
 
-.metadata-button{
+.metadata-button {
   background-color: rgb(160, 1, 1);
 }
 
 /* Hover styles for enabled button */
 .metadata-button:not(:disabled):hover {
-  background-color: whitesmoke; /* Hover color */
+  background-color: whitesmoke;
+  /* Hover color */
 }
 
 @media (prefers-color-scheme: light) {
@@ -337,9 +362,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
@@ -347,13 +374,16 @@ button:focus-visible {
 
 input::placeholder,
 textarea::placeholder {
-  color: lightgrey; /* Use your preferred light grey color */
-  opacity: 1; /* Ensures the placeholder is fully visible */
+  color: lightgrey;
+  /* Use your preferred light grey color */
+  opacity: 1;
+  /* Ensures the placeholder is fully visible */
 }
 
 input:focus::placeholder,
 textarea:focus::placeholder {
-  color: #cccccc; /* Optional: lighter grey when focused */
+  color: #cccccc;
+  /* Optional: lighter grey when focused */
 }
 
 
@@ -388,57 +418,80 @@ textarea:focus::placeholder {
   height: auto;
 }
 
+@media (max-width: 768px) {
+  .nft-box {
+    all: unset;
+    padding: 15px;
+    width: 320px;
+    height: auto;
+  }
+}
+
 .shadow-common {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.418);
   /* border: 1px solid rgba(255, 255, 255, 0.418); */
   border-radius: 5px;
   background-image: url("./assets/itemBGs/bg_grey.png");
   background-size: 200%;
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-position: center;
+  /* Centers the image */
+  background-repeat: no-repeat;
+  /* Prevents image repetition */
 }
 
 .shadow-uncommon {
-  box-shadow: 0 0 8px rgba(0, 255, 0, 0.3); /* Green shadow */
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+  /* Green shadow */
   /* border: 1px solid rgba(0, 255, 0, 0.3); */
   border-radius: 5px;
   background-image: url("./assets/itemBGs/bg_green.png");
   background-size: 200%;
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-position: center;
+  /* Centers the image */
+  background-repeat: no-repeat;
+  /* Prevents image repetition */
 }
 
 .shadow-rare {
-  box-shadow: 0 0 8px rgba(0, 0, 255, 0.788); /* Blue shadow */
+  box-shadow: 0 0 8px rgba(0, 0, 255, 0.788);
+  /* Blue shadow */
   /* border: 1px solid rgba(0, 0, 255, 0.3); */
   border-radius: 5px;
   background-image: url("./assets/itemBGs/bg_blue.png");
   background-size: 200%;
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-position: center;
+  /* Centers the image */
+  background-repeat: no-repeat;
+  /* Prevents image repetition */
 }
 
 .shadow-epic {
-  box-shadow: 0 0 8px rgba(202, 0, 224, 0.4); /* Purple shadow */
+  box-shadow: 0 0 8px rgba(202, 0, 224, 0.4);
+  /* Purple shadow */
   /* border: 1px solid rgba(202, 0, 224, 0.4); */
   border-radius: 5px;
   background-image: url("./assets/itemBGs/bg_purple.png");
   background-size: 200%;
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-position: center;
+  /* Centers the image */
+  background-repeat: no-repeat;
+  /* Prevents image repetition */
 }
 
 .shadow-legendary {
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5); /* Red shadow */
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5);
+  /* Red shadow */
   /* border: 1px solid rgba(255, 0, 0, 0.1); */
   border-radius: 5px;
   background-image: url("./assets/itemBGs/bg_red.png");
   background-size: 200%;
-  background-position: center; /* Centers the image */
-  background-repeat: no-repeat; /* Prevents image repetition */
+  background-position: center;
+  /* Centers the image */
+  background-repeat: no-repeat;
+  /* Prevents image repetition */
 }
 
-.banner-standards{
+.banner-standards {
   font-size: 14px;
   padding: 0px 2px;
   border-radius: 5px;
@@ -452,26 +505,30 @@ textarea:focus::placeholder {
 }
 
 .banner-uncommon {
-  box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3); /* Green shadow */
+  box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+  /* Green shadow */
   background-color: rgba(0, 255, 0, 0.3);
 }
 
 .banner-rare {
-  box-shadow: 0 4px 8px rgba(0, 0, 255, 0.3); /* Blue shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 255, 0.3);
+  /* Blue shadow */
   background-color: rgba(0, 0, 255, 0.3);
 }
 
 .banner-epic {
-  box-shadow: 0 4px 8px rgba(202, 0, 224, 0.4); /* Purple shadow */
+  box-shadow: 0 4px 8px rgba(202, 0, 224, 0.4);
+  /* Purple shadow */
   background-color: rgba(202, 0, 224, 0.4);
 }
 
 .banner-legendary {
-  box-shadow: 0 4px 8px rgba(255, 0, 0, 0.5); /* Gold shadow */
+  box-shadow: 0 4px 8px rgba(255, 0, 0, 0.5);
+  /* Gold shadow */
   background-color: rgba(255, 0, 0, 0.5);
 }
 
-.blockchain-solana{
+.blockchain-solana {
   font-size: 14px;
   padding: 0px 2px;
   border-radius: 5px;
@@ -480,7 +537,7 @@ textarea:focus::placeholder {
   background: linear-gradient(135deg, #7D33CC, #0FB573, #3D47A5);
 }
 
-.blockchain-ethereum{
+.blockchain-ethereum {
   font-size: 14px;
   padding: 0px 2px;
   border-radius: 5px;
@@ -488,64 +545,91 @@ textarea:focus::placeholder {
   color: #fff;
 }
 
-.darkmode-button{
-  background-color: #3A3A3A; /* Dark background */
-  color: #FFFFFF; /* White text */
-  border: 1px solid #555555; /* Subtle border */
-  padding: 12px 20px; /* Comfortable padding */
-  border-radius: 8px; /* Rounded corners */
-  font-size: 16px; /* Readable text */
-  font-weight: 600; /* Slightly bold for emphasis */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+.darkmode-button {
+  background-color: #3A3A3A;
+  /* Dark background */
+  color: #FFFFFF;
+  /* White text */
+  border: 1px solid #555555;
+  /* Subtle border */
+  padding: 12px 20px;
+  /* Comfortable padding */
+  border-radius: 8px;
+  /* Rounded corners */
+  font-size: 16px;
+  /* Readable text */
+  font-weight: 600;
+  /* Slightly bold for emphasis */
+  cursor: pointer;
+  /* Pointer cursor for interactivity */
+  transition: background-color 0.3s, transform 0.2s;
+  /* Smooth hover effect */
 }
 
-.darkmode-button:hover{
-  background-color: #505050; /* Slightly lighter on hover */
-  border-color: #666666; /* Highlighted border */
-  transform: translateY(-2px); /* Subtle lift effect */
+.darkmode-button:hover {
+  background-color: #505050;
+  /* Slightly lighter on hover */
+  border-color: #666666;
+  /* Highlighted border */
+  transform: translateY(-2px);
+  /* Subtle lift effect */
 }
 
 .nft-box.selected {
-  background-color: #555555; /* Highlight background */
-  color: #ffffff; /* Ensure text remains readable */
-  border: 4px solid #888888; /* Distinguishable border */
-  transform: scale(1.02); /* Slightly enlarge the button */
-  transition: all 0.2s ease; /* Smooth transition */
+  background-color: #555555;
+  /* Highlight background */
+  color: #ffffff;
+  /* Ensure text remains readable */
+  border: 4px solid #888888;
+  /* Distinguishable border */
+  transform: scale(1.02);
+  /* Slightly enlarge the button */
+  transition: all 0.2s ease;
+  /* Smooth transition */
 }
 
 /* SIDE NAV SCROLLBAR */
 /* Apply to the container holding the scrollbar */
 .sidenav {
-  overflow-y: auto; /* Enable vertical scrolling */
-  scrollbar-width: thin; /* For Firefox: thin scrollbar */
-  scrollbar-color: #555 #303030; /* For Firefox: thumb and track colors */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  scrollbar-width: thin;
+  /* For Firefox: thin scrollbar */
+  scrollbar-color: #555 #303030;
+  /* For Firefox: thumb and track colors */
 }
 
 /* For WebKit browsers (e.g., Chrome, Edge, Safari) */
 .sidenav::-webkit-scrollbar {
-  width: 8px; /* Set scrollbar width */
+  width: 8px;
+  /* Set scrollbar width */
 }
 
 .sidenav::-webkit-scrollbar-track {
-  background: #f2f2f2; /* Track color */
+  background: #f2f2f2;
+  /* Track color */
 }
 
 .sidenav::-webkit-scrollbar-thumb {
-  background: #d5d5d5; /* Thumb color */
-  border-radius: 4px; /* Rounded corners for the thumb */
+  background: #d5d5d5;
+  /* Thumb color */
+  border-radius: 4px;
+  /* Rounded corners for the thumb */
 }
 
 .sidenav::-webkit-scrollbar-thumb:hover {
-  background: #f4f4f4; /* Thumb color on hover */
+  background: #f4f4f4;
+  /* Thumb color on hover */
 }
 
 .button-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px; /* Equivalent to p-2 in Bootstrap */
-  gap: 20px; /* Equivalent to gap-5 */
+  padding: 10px;
+  /* Equivalent to p-2 in Bootstrap */
+  gap: 20px;
+  /* Equivalent to gap-5 */
   background-color: #1e1e2f;
   border-radius: 8px;
   color: #ffffff;
@@ -553,20 +637,27 @@ textarea:focus::placeholder {
 
 /* LOADER */
 .loader {
-  border: 4px solid #f3f3f3; /* Light gray border */
-  border-top: 4px solid #0cad52; /* Blue border for the top */
-  border-radius: 50%; /* Make it a circle */
+  border: 4px solid #f3f3f3;
+  /* Light gray border */
+  border-top: 4px solid #0cad52;
+  /* Blue border for the top */
+  border-radius: 50%;
+  /* Make it a circle */
   width: 20px;
   height: 20px;
-  animation: spin 1s linear infinite; /* Spin animation */
+  animation: spin 1s linear infinite;
+  /* Spin animation */
 }
 
 @keyframes spin {
   0% {
-    transform: rotate(0deg); /* Start at 0 degrees */
+    transform: rotate(0deg);
+    /* Start at 0 degrees */
   }
+
   100% {
-    transform: rotate(360deg); /* End at 360 degrees */
+    transform: rotate(360deg);
+    /* End at 360 degrees */
   }
 }
 
@@ -585,7 +676,7 @@ textarea:focus::placeholder {
   transition: color 0.3s ease;
 }
 
-.style-links a:hover{
+.style-links a:hover {
   color: #ad04fc;
 }
 
@@ -597,11 +688,13 @@ textarea:focus::placeholder {
 /* Create Collection Section */
 
 .card {
-  background: #1e1e1e; /* Dark gray for card background */
+  background: #1e1e1e;
+  /* Dark gray for card background */
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  /* Subtle shadow */
 }
 
 .create-collection {
@@ -684,7 +777,7 @@ textarea:focus::placeholder {
   border: none;
 }
 
-.selected-button{
+.selected-button {
   margin: 0px;
   padding: 0px;
   background-color: transparent;
@@ -706,7 +799,7 @@ textarea:focus::placeholder {
   color: white;
 }
 
-.circle-button-selected{
+.circle-button-selected {
   border-radius: 20px;
   border: 1px solid white;
   padding: 3px 6px;
@@ -723,15 +816,20 @@ textarea:focus::placeholder {
 /* CAROUSEL */
 .carousel-wrapper {
   position: relative;
-  width: 100%; /* Adjust to fit your layout */
+  width: 100%;
+  /* Adjust to fit your layout */
   max-width: 600px;
-  height: 200px; /* Set height of the carousel */
-  margin: 0 auto; /* Center the carousel */
-  overflow: hidden; /* Hide overflow for the sliding effect */
+  height: 200px;
+  /* Set height of the carousel */
+  margin: 0 auto;
+  /* Center the carousel */
+  overflow: hidden;
+  /* Hide overflow for the sliding effect */
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #1e1e2f; /* Optional: Background color */
+  background: #1e1e2f;
+  /* Optional: Background color */
   border-radius: 8px;
 }
 
