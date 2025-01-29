@@ -43,54 +43,49 @@ const WalletAdapter = () => {
     // Detect mobile device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    let wallets
+    const wallets = useMemo(
+        () => [
+            new SolanaMobileWalletAdapter({
+                addressSelector: createDefaultAddressSelector(),
+                appIdentity: {
+                    name: 'Booh Brawlers NFTs',
+                    uri: 'https://nft.boohworld.io',
+                    icon: 'https://res.cloudinary.com/dagu222du/image/upload/v1737541236/dlwxdyx5ysbz1obtshhq.png', // Ensure this is a valid URL or Base64 image
+                },
+                authorizationResultCache: createDefaultAuthorizationResultCache(),
+                chain: endpoint, // Ensure cluster is properly defined
+                onWalletNotFound: async (adapter) => {
+                    console.warn('Wallet not found. Handling the case...');
+                    createDefaultWalletNotFoundHandler()(adapter);
+                },
+            }),
+            new UnsafeBurnerWalletAdapter(),
+            new PhantomWalletAdapter(),
+            new SolflareWalletAdapter()
+        ],
+        [],
+    );
 
-    if (isMobile) {
-        wallets = useMemo(
-            () => [
-                new SolanaMobileWalletAdapter({
-                    addressSelector: createDefaultAddressSelector(),
-                    appIdentity: {
-                        name: 'nft.boohworld.io',
-                        uri: 'https://nft.boohworld.io',
-                        icon: boohLogo, // Ensure this is a valid URL or Base64 image
-                    },
-                    authorizationResultCache: createDefaultAuthorizationResultCache(),
-                    chain: endpoint, // Ensure cluster is properly defined
-                    onWalletNotFound: async (adapter) => {
-                        console.warn('Wallet not found. Handling the case...');
-                        createDefaultWalletNotFoundHandler()(adapter);
-                    },
-                }),
-                new UnsafeBurnerWalletAdapter(),
-                new PhantomWalletAdapter(),
-                new SolflareWalletAdapter()
-            ],
-            [network],
-        );
-
-    } else {
-        wallets = useMemo(
-            () => [
-                /**
-                 * Wallets that implement either of these standards will be available automatically.
-                 *
-                 *   - Solana Mobile Stack Mobile Wallet Adapter Protocol
-                 *     (https://github.com/solana-mobile/mobile-wallet-adapter)
-                 *   - Solana Wallet Standard
-                 *     (https://github.com/anza-xyz/wallet-standard)
-                 *
-                 * If you wish to support a wallet that supports neither of those standards,
-                 * instantiate its legacy wallet adapter here. Common legacy adapters can be found
-                 * in the npm package `@solana/wallet-adapter-wallets`.
-                 */
-                new UnsafeBurnerWalletAdapter(),
-                new PhantomWalletAdapter(),
-                new SolflareWalletAdapter()
-            ],
-            [network]
-        );
-    }
+    // const wallets = useMemo(
+    //     () => [
+    //         /**
+    //          * Wallets that implement either of these standards will be available automatically.
+    //          *
+    //          *   - Solana Mobile Stack Mobile Wallet Adapter Protocol
+    //          *     (https://github.com/solana-mobile/mobile-wallet-adapter)
+    //          *   - Solana Wallet Standard
+    //          *     (https://github.com/anza-xyz/wallet-standard)
+    //          *
+    //          * If you wish to support a wallet that supports neither of those standards,
+    //          * instantiate its legacy wallet adapter here. Common legacy adapters can be found
+    //          * in the npm package `@solana/wallet-adapter-wallets`.
+    //          */
+    //         new UnsafeBurnerWalletAdapter(),
+    //         new PhantomWalletAdapter(),
+    //         new SolflareWalletAdapter()
+    //     ],
+    //     [network]
+    // );
 
 
 
