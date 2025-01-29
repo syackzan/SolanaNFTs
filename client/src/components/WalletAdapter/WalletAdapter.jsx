@@ -66,7 +66,7 @@ const WalletAdapter = () => {
                 new PhantomWalletAdapter(),
                 new SolflareWalletAdapter()
             ],
-            [],
+            [network],
         );
 
     } else {
