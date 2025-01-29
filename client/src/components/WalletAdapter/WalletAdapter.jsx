@@ -38,11 +38,6 @@ const WalletAdapter = () => {
         return IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : clusterApiUrl(network);
     }, [network]);
 
-    console.log(endpoint);
-
-    // Detect mobile device
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
     const wallets = useMemo(
         () => [
             new SolanaMobileWalletAdapter({
