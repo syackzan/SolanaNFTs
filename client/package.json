@@ -16,6 +16,8 @@
     "@metaplex-foundation/umi": "^0.9.2",
     "@metaplex-foundation/umi-bundle-defaults": "^0.9.2",
     "@metaplex-foundation/umi-signer-wallet-adapters": "^0.9.2",
+    "@solana-mobile/mobile-wallet-adapter-protocol": "^2.2.0-new-arch-beta",
+    "@solana-mobile/wallet-adapter-mobile": "^2.1.4",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",
