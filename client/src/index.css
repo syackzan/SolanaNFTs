@@ -96,6 +96,12 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.landing-page-container{
+  margin-top: 60px;
+  width: 100vw;
+  height: calc(100vh - 60px);
+}
+
 /* CUSTOM CSS  */
 .landing-page {
   display: flex;
@@ -105,6 +111,77 @@ button:focus-visible {
   width: 100%;
   height: 100%;
   background-color: #1E1E1E;
+  overflow: hidden;
+}
+
+.landing-page-title {
+  color: white;
+  font-size: 4rem; /* Adjust as needed */
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Adds a glowing effect */
+  margin-bottom: 10px;
+}
+
+.landing-page-subtitle {
+  color: #ccc; /* Softer gray for secondary text */
+  font-size: 3rem;
+  text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.3);
+  margin-top: 0;
+  margin-bottom: 0px;
+}
+
+@media (max-width: 850px){
+  .landing-page-title {
+    font-size: 2.5rem;
+  }
+
+  .landing-page-subtitle{
+    font-size: 2.5rem;
+  }
+}
+
+/* Grid container */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  border-radius: 8px;
+  color: #ffffff;
+  width: 100%;
+  max-width: 400px; /* Adjust size if needed */
+  text-align: center;
+  gap: 15px;
+  padding: 10px;
+  place-items: center;
+}
+
+/* Button styling */
+.darkmode-button {
+  display: flex;
+  flex-direction: column; /* Stack icon above text */
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: none;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 150px;
+}
+
+/* Button hover effects */
+.darkmode-button:hover {
+  background-color: #3a3a5c;
+  transform: scale(1.05);
+}
+
+/* Icon styling */
+.dashboard-icon {
+  font-size: 1.5rem; /* Size of icons */
+  margin-bottom: 8px; /* Space between icon & text */
+  color: #ffffff;
 }
 
 .navbar-parent {
@@ -567,36 +644,6 @@ textarea:focus::placeholder {
   color: #fff;
 }
 
-.darkmode-button {
-  background-color: #3A3A3A;
-  /* Dark background */
-  color: #FFFFFF;
-  /* White text */
-  border: 1px solid #555555;
-  /* Subtle border */
-  padding: 12px 20px;
-  /* Comfortable padding */
-  border-radius: 8px;
-  /* Rounded corners */
-  font-size: 16px;
-  /* Readable text */
-  font-weight: 600;
-  /* Slightly bold for emphasis */
-  cursor: pointer;
-  /* Pointer cursor for interactivity */
-  transition: background-color 0.3s, transform 0.2s;
-  /* Smooth hover effect */
-}
-
-.darkmode-button:hover {
-  background-color: #505050;
-  /* Slightly lighter on hover */
-  border-color: #666666;
-  /* Highlighted border */
-  transform: translateY(-2px);
-  /* Subtle lift effect */
-}
-
 .nft-box.selected {
   background-color: #555555;
   /* Highlight background */
@@ -635,7 +682,8 @@ textarea:focus::placeholder {
 /* nft-preview-css */
 .nft-preview-styling {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: 60vw;
   background-color: #1E1E1E;
   color: #FFFFFF;
@@ -906,7 +954,7 @@ textarea:focus::placeholder {
   position: relative;
   width: 100%;
   /* Adjust to fit your layout */
-  max-width: 600px;
+  max-width: 400px;
   height: 200px;
   /* Set height of the carousel */
   margin: 0 auto;

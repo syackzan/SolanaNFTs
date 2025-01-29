@@ -73,3 +73,92 @@
         display: flex !important;
     }
 }
+
+/* Dropdown Container */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Trigger */
+.dropdown-trigger {
+    cursor: pointer;
+    position: relative;
+    display: block;
+}
+
+/* Dropdown Menu - Default Hidden */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* Position right below the link */
+    left: 0;
+    background-color: #29293d;
+    border-radius: 6px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    min-width: 125px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    z-index: 1000;
+    opacity: 0; /* Initially hidden */
+    transform: translateY(-10px); /* Move up slightly */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* Dropdown Menu - Visible */
+.dropdown-container:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0); /* Move to normal position */
+    pointer-events: auto; /* Allow interaction */
+}
+
+/* Dropdown Links */
+.dropdown-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 4px 8px;
+    transition: background 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: #3a3a5c;
+}
+
+/* Dropdown Menu - Default Hidden */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* Position right below the link */
+    left: 0;
+    background-color: #29293d;
+    border-radius: 6px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    min-width: 125px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    z-index: 1000;
+    opacity: 0; /* Initially hidden */
+    transform: translateY(-10px); /* Move up slightly */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* Dropdown Menu - Visible */
+.dropdown-container:hover .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0); /* Move to normal position */
+    pointer-events: auto; /* Allow interaction */
+}
+
+/* Dropdown Links */
+.dropdown-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 4px 8px;
+    transition: background 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background-color: #3a3a5c;
+}

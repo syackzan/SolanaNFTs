@@ -21,7 +21,7 @@ import Stripe from '../Stripe/Stripe';
 import { useParams } from 'react-router-dom';
 import { fetchSingleNftMetadata } from '../../Utils/backendCalls';
 
-import {PublicKey} from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
@@ -62,8 +62,10 @@ const Marketplace = () => {
         redirectSecret,
         setRedirectSecret,
         setNameTracker,
+        inGameSpend,
+        setInGameSpend
     } = useMarketplace();
-    
+
 
     //Handle Stripe re-direction & confirmed payment
     const { id, redirectAddress } = useParams();
@@ -85,13 +87,14 @@ const Marketplace = () => {
         const setUpModalPricing = async () => {
             if (!isModalOpen) return; // Exit early if modal is not open
             if (selectedIndex === null) return;
-    
+
             setNameTracker(nfts[selectedIndex].name);
-    
+
+            const mintCosts = 0.004; // Cost to mint an NFT
+
             try {
                 switch (paymentTracker) {
                     case 'SOL':
-                        const mintCosts = 0.004; // Cost to mint an NFT
                         if (nfts[selectedIndex]?.storeInfo?.price) {
                             const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
                             setPreCalcPayment(priceInSol); // Set SOL price in USD per NFT price
@@ -100,16 +103,20 @@ const Marketplace = () => {
                             console.error("Invalid NFT data or selectedIndex for SOL payment.");
                         }
                         break;
-    
+
                     case 'BABYBOOH':
+                        console.log('In Baby Booh');
                         // TODO: Implement conversion rate for BABY BOOH
+                        setPreCalcPayment(mintCosts);
+                        setSolPriceLoaded(true);
+                        setInGameSpend(5);
                         console.warn("Conversion rate for BABY BOOH is not implemented yet.");
                         break;
-    
+
                     case 'CARD':
                         if (nfts[selectedIndex]?.storeInfo?.price) {
                             const toNumber = Number(nfts[selectedIndex].storeInfo.price);
-    
+
                             // Create a PaymentIntent
                             const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
                             if (data?.client_secret) {
@@ -123,7 +130,7 @@ const Marketplace = () => {
                             console.error("Invalid NFT data or selectedIndex for CARD payment.");
                         }
                         break;
-    
+
                     default:
                         console.warn("Unhandled payment method:", paymentTracker);
                         break;
@@ -132,7 +139,7 @@ const Marketplace = () => {
                 console.error("Error setting up modal pricing:", error.message);
             }
         };
-    
+
         setUpModalPricing();
     }, [isModalOpen]);
 
@@ -147,23 +154,36 @@ const Marketplace = () => {
         setTransactionSig(null);
         setSolPriceLoaded(false);
         setStripeSecret(null);
+        setInGameSpend(null);
     };
 
     const payWithSol = async () => {
 
-        const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment); //Built a sent sol Transaction
-        const signature = await wallet.sendTransaction(transaction, connection); //Send the transaction
-        console.log(`Transaction signature: ${signature}`);
+        try {
+            const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment); //Built a sent sol Transaction
+            const signature = await wallet.sendTransaction(transaction, connection); //Send the transaction
+            console.log(`Transaction signature: ${signature}`);
+            return signature; //Return sig
 
-        return signature; //Return sig
+        } catch (e) {
+            setTxState('failed');
+            console.log(e);
+            return false;
+        }
 
+        
     }
 
     const payWithBabyBooh = async () => {
 
-        const success = deductBabyBooh(wallet.publicKey.toString(), preCalcPayment);
-        return success;
-
+        try{
+            const success = await deductBabyBooh(wallet.publicKey.toString(), inGameSpend);
+            return success;
+        }catch(e){
+            console.log(e);
+            setTxState('failed');
+            return false;
+        }
     }
 
     const payWithCard = async () => {
@@ -188,8 +208,16 @@ const Marketplace = () => {
             }
 
             if (paymentTracker === 'BABYBOOH') {
-                signature = await payWithBabyBooh();
-                setTxState('complete');
+
+                signature = await payWithSol(); //First send Sol Transaction
+
+                if (signature) {
+                    signature = await payWithBabyBooh(); //Then pay Booh Amount
+                }
+                
+                if(signature){
+                    setTxState('complete');
+                }  
             }
 
             if (paymentTracker === 'CARD') {
@@ -232,22 +260,27 @@ const Marketplace = () => {
             setCreateState('started'); // Begin the NFT creation process
             setSolPriceLoaded(true); // Indicate that the Solana price has been successfully loaded
             setPaymentTracker('CARD'); // Set the payment method to "Card"
-    
+
             // Fetch the NFT metadata using the provided ID
             const nftToCreate = await fetchSingleNftMetadata(id);
-    
+
             // Update state with NFT details
             setPreCalcPayment(nftToCreate.storeInfo.price); // Set the payment amount for the NFT
             setNameTracker(nftToCreate.name); // Set the NFT's name in the tracker
-    
+
             // Construct a wallet object using the redirect address
             let walletConstruct = {
                 publicKey: new PublicKey(redirectAddress),
             };
-    
+
             // Handle the NFT creation process
-            await handleNFTCreation(nftToCreate, walletConstruct);
-    
+            const success = await handleNFTCreation(nftToCreate, walletConstruct);
+
+            if(!success){
+                setCreateState('failed');
+                return;
+            }
+
             // Mark the creation process as complete
             setCreateState('complete');
         } catch (error) {
@@ -263,19 +296,22 @@ const Marketplace = () => {
                 console.error("Invalid NFT or wallet data provided.");
                 return; // Exit early if required data is missing
             }
-    
+
             // Call the function to create the NFT on the blockchain
             const resp = await createCoreNft(nft, wallet);
-    
+
             // Log the serialized transaction signature (useful for debugging)
             console.log("Serialized Transaction Signature:", resp.data.serializedSignature);
-    
+
             // Update state with the transaction signature
             setTransactionSig(resp.data.serializedSignature);
+
+            return resp.data.serializedSignature;
         } catch (error) {
             // Handle and log errors during the NFT creation process
             console.error("Error during NFT creation:", error);
             // Optionally: Add error handling logic (e.g., show a message to the user)
+            return false;
         }
     };
 
@@ -301,7 +337,7 @@ const Marketplace = () => {
                     nfts={nfts}
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
-                    
+
                     location='marketplace'
                     openModal={openModal}
                     setEditData={setEditData}

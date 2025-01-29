@@ -16,6 +16,7 @@ export const MarketplaceProvider = ({ children }) => {
     const [stripeModal, setStripeModal] = useState(false);
     const [redirectSecret, setRedirectSecret] = useState('');
     const [nameTracker, setNameTracker] = useState('');
+    const [inGameSpend, setInGameSpend] = useState(null);
 
     return (
         <MarketplaceContext.Provider
@@ -42,6 +43,8 @@ export const MarketplaceProvider = ({ children }) => {
                 setRedirectSecret,
                 nameTracker,
                 setNameTracker,
+                inGameSpend,
+                setInGameSpend
             }}
         >
             {children}

@@ -5,34 +5,37 @@ import { Link } from 'react-router-dom'
 import ImageCarousel from '../ImageCarousel/ImageCarousel';
 import Navbar from '../Navbar/Navbar';
 
+import { FaFileAlt, FaEdit, FaBook, FaGhost } from 'react-icons/fa'; // Import icons
+
 const LandingPage = () => {
 
     return (
-        <div style={{width: '100vw', height: '100vh'}}>
+        <div className='landing-page-container'>
             <Navbar />
             <div className="landing-page">
-                <h1 className='lazy-dog' style={{
-                    color: 'white',
-                    fontSize: '4rem',  // Adjust as needed
-                    fontWeight: 'bold',
-                    textShadow: '2px 2px 4px rgba(255, 255, 255, 0.5)',  // Adds a glowing effect
-                    marginBottom: '10px',
-                }}>
+                <h1 className='lazy-dog landing-page-title'>
                     Booh Brawlers
                 </h1>
-                <h3 className='marykate' style={{
-                    color: '#ccc',  // Softer gray for secondary text
-                    fontSize: '3rem',
-                    textShadow: '1px 1px 3px rgba(255, 255, 255, 0.3)',
-                    marginTop: '0',
-                    marginBottom: '15px'
-                }}>
+                <h3 className='marykate landing-page-subtitle'>
                     NFT Creation Hub
                 </h3>
-                <div className="d-flex justify-content-center gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff", marginBottom: '15px' }}>
-                    <Link className="darkmode-button" to='/dashboard?action=create' >Create</Link>
-                    <Link className="darkmode-button" to='/dashboard?action=update' >Edit</Link>
-                    <Link className="darkmode-button" to='/creatorHubDocs' >Docs & Rules</Link>
+                <div className="dashboard-grid marykate">
+                    <Link className="darkmode-button" to="/dashboard?action=create">
+                        <FaFileAlt className="dashboard-icon" />
+                        Create
+                    </Link>
+                    <Link className="darkmode-button" to="/dashboard?action=update">
+                        <FaEdit className="dashboard-icon" />
+                        Edit
+                    </Link>
+                    <Link className="darkmode-button" to="/creatorHubDocs">
+                        <FaBook className="dashboard-icon" />
+                        Docs & Rules
+                    </Link>
+                    <Link className="darkmode-button" to="/dashboard?action=submit">
+                        <FaGhost className="dashboard-icon" />
+                        Submit Ghost
+                    </Link>
                 </div>
                 <ImageCarousel />
             </div>

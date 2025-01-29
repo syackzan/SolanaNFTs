@@ -1,19 +1,16 @@
 import React, { useMemo } from "react";
-
-import { Link } from 'react-router-dom'
-import "../../Modal.css"; // Optional for styling
+import { motion } from "framer-motion"; // Import Framer Motion
+import { Link } from 'react-router-dom';
+import "../../Modal.css"; // Ensure this CSS file exists
 
 import { IS_MAINNET } from "../../config/config";
-
 import BoohLogo from '../../assets/BoohCoinLogo.svg';
-
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
 const TxModal = ({ resetConfirmModal, createNft }) => {
-
     const {
-        isModalOpen, //stores main transaction modal state
-        txState, //stores payment transaction state to handle UI render
+        isModalOpen,
+        txState,
         createState,
         preCalcPayment,
         paymentTracker,
@@ -21,14 +18,25 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
         transactionSig,
         redirectSecret,
         nameTracker,
+        inGameSpend,
     } = useMarketplace();
 
-    //Solscanner depending on testnet or mainnet
+    // Detect if mobile
+    const isMobile = window.innerWidth <= 650;
+
+    // Solscan URL for transaction tracking
     const solScanner = useMemo(() => {
         return IS_MAINNET
             ? `https://solscan.io/tx/${transactionSig}`
             : `https://solscan.io/tx/${transactionSig}?cluster=devnet`;
     }, [transactionSig]);
+
+    // Function to handle closing and redirecting
+    const handleClose = (e) => {
+        e.preventDefault();
+        resetConfirmModal();
+        window.location.href = '/marketplace';
+    };
 
     const renderTxStateIcon = () => {
         switch (txState) {
@@ -61,41 +69,51 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
     };
 
     return (
-        <div className={`modal-overlay ${isModalOpen ? "open" : ""}`}>
-            <div className="modal-tx">
-
+        <motion.div
+            className={`modal-overlay ${isModalOpen ? "open" : ""}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isModalOpen ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+        >
+            <motion.div
+                className="modal-tx"
+                initial={isMobile ? { y: "100%" } : { scale: 0.95 }}
+                animate={isModalOpen ? { y: 0, scale: 1 } : isMobile ? { y: "100%" } : { scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 120, damping: 15 }}
+            >
+                {/* Close button */}
                 <div className="d-flex justify-content-end">
                     {redirectSecret ? (
-                        <a to='/marketplace'
-                            className="modal-close-top-right" onClick={(e) => {
-                                e.preventDefault(); // Prevent the default anchor behavior
-                                resetConfirmModal(); // Call your modal reset function
-                                window.location.href = '/marketplace'; // Refresh the page
-                            }}>&times;
-                        </a>
+                        <a href="/marketplace" className="modal-close-top-right" onClick={handleClose}>&times;</a>
                     ) : (
                         <button className="modal-close-top-right" onClick={resetConfirmModal}>&times;</button>
                     )}
                 </div>
-                <div className='d-flex justify-content-center align-items-center gap-2' style={{ marginBottom: '10px' }}>
-                    <img src={BoohLogo} style={{ width: '40px', height: '40px' }} />
-                    <h2 className="modal-header marykate m-0" style={{ fontSize: '2rem' }}>Confirmation</h2>
+
+                {/* Header */}
+                <div className="d-flex justify-content-center align-items-center gap-2" style={{ marginBottom: '10px' }}>
+                    <img src={BoohLogo} style={{ width: "40px", height: "40px" }} />
+                    <h2 className="modal-header marykate m-0" style={{ fontSize: "2rem" }}>Confirmation</h2>
                 </div>
+
+                {/* Modal Body */}
                 <div className="modal-body">
                     <div className="tracker-container">
-                        <div className="tracker-row">
-                            <span className="tracker-label">NFT Name:</span>
-                            <span className="tracker-value">{nameTracker}</span>
-                        </div>
-                        <div className="tracker-row">
-                            <span className="tracker-label">Payment type:</span>
-                            <span className="tracker-value">{paymentTracker}</span>
-                        </div>
+                        <div className="tracker-row"><span className="tracker-label">NFT Name:</span><span className="tracker-value">{nameTracker}</span></div>
+                        <div className="tracker-row"><span className="tracker-label">Payment type:</span><span className="tracker-value">{paymentTracker}</span></div>
                         <div className="tracker-row">
                             <span className="tracker-label">Mint cost:</span>
-                            {solPriceLoaded ? (<span className="tracker-value">{preCalcPayment}</span>) : (<div className='loader'></div>)}
+                            {solPriceLoaded ? (<span className="tracker-value">-{preCalcPayment}</span>) : (<div className='loader'></div>)}
                         </div>
+                        {inGameSpend >= 0 &&
+                            <div className="tracker-row">
+                                <span className="tracker-label">In Game Currency:</span>
+                                <span className="tracker-value">-{inGameSpend}</span>
+                            </div>}
                     </div>
+
+                    {/* Status Indicators */}
                     <div className="loading-details">
                         <div className="d-flex gap-2 align-items-center">
                             {renderTxStateIcon()}
@@ -107,19 +125,20 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
                         </div>
                     </div>
                 </div>
-                {/* Confirm button at the bottom */}
-                <div className='d-flex justify-content-center'>
+
+                {/* Confirm Button */}
+                <div className="d-flex justify-content-center">
                     {!transactionSig ? (
                         <div className="d-flex flex-column">
                             {redirectSecret && <div>[DO NOT LEAVE PAGE! NFT CREATION WILL FAIL]</div>}
                             {redirectSecret ? (<div className="button-style-regular">Creating...</div>) : (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)}
                         </div>
                     ) : (
-                        <Link className="button-style-regular" to={solScanner} target='_blank'>View Transaction</Link>
+                        <Link className="button-style-regular" to={solScanner} target="_blank">View Transaction</Link>
                     )}
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

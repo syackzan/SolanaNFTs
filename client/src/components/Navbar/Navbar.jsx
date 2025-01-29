@@ -27,6 +27,7 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
     const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useContext(GlobalVars);
 
     const [isMobileNavbar, setIsMobileNavbar] = useState(false);
+    const [isHubDropdownOpen, setIsHubDropdownOpen] = useState(false);
 
     useEffect(() => {
 
@@ -74,7 +75,23 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}
                         <Link to='/marketplace'>Marketplace</Link>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}
-                        <Link to='/dashboard?action=update'>Creator Hub</Link>
+                        {/* Dropdown Wrapper */}
+                        <div
+                            className="dropdown-container"
+                            onMouseEnter={() => setIsHubDropdownOpen(true)}
+                            onMouseLeave={() => setIsHubDropdownOpen(false)}
+                        >
+                            <Link to="/dashboard?action=update" className="dropdown-trigger">
+                                Creator Hub
+                            </Link>
+
+                            {/* Keep menu in the DOM, just toggle the 'open' class */}
+                            <div className={`dropdown-menu ${isHubDropdownOpen ? "open" : ""}`}>
+                                <Link to="/dashboard?action=create">Create MD</Link>
+                                <Link to="/dashboard?action=update">Edit MD</Link>
+                                <Link to="/submission">Character</Link>
+                            </div>
+                        </div>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}
                         <Link to='https://boohworld.io' target='_blank'>Token</Link>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}

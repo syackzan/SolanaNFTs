@@ -30,6 +30,7 @@ const NFTPreview = ({
 
     return (
         <div className="nft-preview-styling">
+            <h1 className='marykate'>Creator Preview</h1>
             <div style={{ display: 'inline-block' }}>
                 <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
                     <div>Price: ${storeInfo.price}</div>

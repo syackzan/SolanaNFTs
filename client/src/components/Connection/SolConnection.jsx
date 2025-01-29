@@ -41,6 +41,9 @@ const SolConnection = () => {
                             return;
                         }
 
+                        window.location.href = deepLinks.phantom;
+                        return;
+
                         // If no preference, open the modal to select a wallet first
                         walletModal.setVisible(true);
                     } else {
