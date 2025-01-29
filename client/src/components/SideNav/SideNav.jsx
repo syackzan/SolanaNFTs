@@ -11,7 +11,12 @@ import {
     talenPointSpread,
     talents
 } from '../../config/gameConfig';
-import { set } from '@metaplex-foundation/umi/serializers';
+
+import { useScreenContext } from "../../context/ScreenContext";
+
+import { RxDoubleArrowLeft } from "react-icons/rx";
+
+import { motion } from "framer-motion";
 
 const SideNav = ({
     info,
@@ -37,6 +42,13 @@ const SideNav = ({
     setCreateLockStatus,
     disableDeleteButton
 }) => {
+
+    const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
+
+    const IS_MOBILE_SIDENAV_OPEN = windowWidth <= 650 && isSideNavOpen;
+    const MOBILE_SIDENAV_STYLING = IS_MOBILE_SIDENAV_OPEN ? 'nft-styling-mobile-enable' : 'nft-styling-mobile-disable';
+    console.log(IS_MOBILE_SIDENAV_OPEN);
+    console.log(MOBILE_SIDENAV_STYLING);
 
     // State variables
     const [maxTalentPoints, setMaxTalentPoints] = useState(0); // Maximum talent points based on rarity
@@ -139,24 +151,15 @@ const SideNav = ({
     };
 
     return (
-        <div
-            className="sidenav"
-            style={{
-                width: '40vw',
-                backgroundColor: '#1E1E1E',
-                color: '#FFFFFF',
-                padding: '10px 20px 20px 20px',
-                height: 'calc(100vh - 60px)',
-                position: 'relative'
-            }}
-        >
-            <div className="d-flex justify-content-end" style={{ marginBottom: '5px' }}>
+        <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
+            <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
                 <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
                     <button className="button-style-thin" onClick={() => { setPage('create'); resetEverything(); }}>Create</button>
                     <button className="button-style-thin" onClick={() => { setPage('update'); resetEverything() }}>Edit</button>
                 </div>
+                {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
             </div>
-            <h2 className="marykate" style={{ textAlign: 'center', marginBottom: '20px', fontSize: '3.5rem' }}>{title}</h2>
+            <h2 className="sidenav-title marykate" >{title}</h2>
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;

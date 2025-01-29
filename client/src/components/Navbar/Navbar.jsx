@@ -13,6 +13,7 @@ import { fetchBabyBooh } from '../../Utils/babyBooh';
 import { getTokenBalance } from '../BlockchainInteractions/blockchainInteractions';
 
 import { GiHamburgerMenu } from "react-icons/gi";
+import { motion } from 'framer-motion'
 
 import { IS_MAINNET } from '../../config/config';
 
@@ -113,13 +114,19 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                 </div>
 
                 {isMobileNavbar && (
-                    <div
-                        className={`nav-modal-overlay ${isMobileNavbar ? "open" : ""}`}
-                        onClick={() => setIsMobileNavbar(false)} // Close modal when clicking on the overlay
+                    <motion.div
+                        className="nav-modal-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        onClick={() => setIsMobileNavbar(false)}
                     >
-                        <div
-                            className={`nav-modal-tx ${isMobileNavbar ? "open" : ""}`}
-                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+                        <motion.div
+                            className="nav-modal-tx"
+                            initial={{ x: "100%" }} // Start off-screen to the right
+                            animate={isMobileNavbar ? { x: 0 } : { x: "100%" }} // Slide in/out based on state
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         >
                             <div className="modal-content d-flex flex-column justify-content-between">
                                 {/* Navigation Links */}
@@ -132,7 +139,7 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                                     <Link to="/creatorHubDocs">Docs & Rules</Link>
                                 </div>
                                 <div className="mobile-nav-login">
-                                    <div className="d-flex gap-5 justify-content-between align-items-center h-100" style={{padding: '0px 20px'}}>
+                                    <div className="d-flex gap-5 justify-content-between align-items-center h-100" style={{ padding: '0px 20px' }}>
                                         <div className="d-flex flex-column marykate" style={{ fontSize: '0.9rem' }}>
                                             <p className="m-0">Baby Booh: {inGameCurrency}</p>
                                             <p className="m-0">Booh Token: {boohToken}</p>
@@ -143,12 +150,12 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 )}
 
             </div>
-        </nav>
+        </nav >
     )
 }
 

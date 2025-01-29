@@ -1,0 +1,48 @@
+/* Night mode styling for Open Details Button */
+.mini-open-details {
+    position: fixed;
+    left: 0; /* Stick to the left side */
+    bottom: 10%; /* 10% up from the bottom */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #7a7a7a; /* Dark background */
+    padding: 3px 3px 5px 3px;
+    border-radius: 0px 10px 10px 0px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Hide when the nav is closed & window is large */
+.mini-open-details.hidden {
+    display: none;
+}
+
+/* Open button */
+.open-details-button {
+    background: none;
+    color: #fff;
+    border: none;
+    padding: 0px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-self: center;
+}
+
+/* Rotate arrow on hover */
+.open-details-button:hover {
+    background: #444;
+}
+
+/* Vertical text */
+.vertical-text {
+    writing-mode: vertical-rl; /* Rotates text vertically */
+    text-orientation: mixed;
+    font-size: 1rem;
+    color: #fff;
+    margin-top: 5px;
+}

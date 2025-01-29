@@ -4,6 +4,7 @@ import tempImage from '../../assets/itemBGs/tempImage.png';
 
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
+import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 
 const NFTPreview = ({
     info,
@@ -28,15 +29,7 @@ const NFTPreview = ({
 
 
     return (
-        <div
-            style={{
-                width: '60vw',
-                backgroundColor: '#1E1E1E',
-                color: '#FFFFFF',
-                padding: '20px',
-                boxShadow: '2px 0 5px rgba(0, 0, 0, 0.5)',
-            }}
-        >
+        <div className="nft-preview-styling">
             <div style={{ display: 'inline-block' }}>
                 <div className="d-flex justify-content-between" style={{ marginBottom: '5px' }}>
                     <div>Price: ${storeInfo.price}</div>
@@ -107,6 +100,7 @@ const NFTPreview = ({
                     </div>
                 </button>
             </div>
+            <MobileDetailsButton />
         </div>
     );
 };

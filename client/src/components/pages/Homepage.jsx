@@ -20,14 +20,17 @@ import { useConnection } from '@solana/wallet-adapter-react';
 
 //Configs
 import { URI_SERVER } from '../../config/config';
-import { infoData, 
-    getAttributesData, 
-    storeInfoData, 
-    propertiesData, 
-    creatorCosts } from '../../config/gameConfig';
+import {
+    infoData,
+    getAttributesData,
+    storeInfoData,
+    propertiesData,
+    creatorCosts
+} from '../../config/gameConfig';
 
 //Imported images
 import tempImage from '../../assets/itemBGs/tempImage.png';
+import { ScreenProvider } from '../../context/ScreenContext';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -44,9 +47,9 @@ const Homepage = () => {
     useEffect(() => {
 
         const runAsync = async () => {
-            
 
-            if(wallet.publicKey){
+
+            if (wallet.publicKey) {
                 // fetchAssets(wallet);
 
                 // const success = await deductBabyBooh(wallet.publicKey);
@@ -56,7 +59,7 @@ const Homepage = () => {
                 // console.log(resp);
             }
         }
-        
+
         runAsync();
 
     }, [wallet.publicKey])
@@ -97,7 +100,7 @@ const Homepage = () => {
         setProperties(propertiesData);
         setStoreInfo(storeInfoData);
 
-        setImage(tempImage);
+        setImage(null);
         setNewMetadata(null);
     }
 
@@ -162,14 +165,14 @@ const Homepage = () => {
     //Handle Image uploads
     const handleImageChange = (e) => {
         const file = e.target.files[0]; // Get the selected file
-    
+
         if (file) {
             const img = new Image();
             const fileURL = URL.createObjectURL(file); // Create a temporary URL for the image
-    
+
             img.onload = () => {
                 const { width, height } = img;
-    
+
                 // Validate image dimensions
                 if (width >= 512 || height >= 512 || width !== height) {
                     alert("Image dimensions must be 512x512 or smaller, and same width/height.");
@@ -178,15 +181,15 @@ const Homepage = () => {
                 } else {
                     setImage(file); // Set the image as usual if valid
                 }
-    
+
                 URL.revokeObjectURL(fileURL); // Clean up the temporary URL
             };
-    
+
             img.onerror = () => {
                 alert("Invalid image file.");
                 URL.revokeObjectURL(fileURL); // Clean up the temporary URL
             };
-    
+
             img.src = fileURL; // Trigger the `onload` handler by setting the image source
         }
     };
@@ -425,48 +428,52 @@ const Homepage = () => {
     }
 
     return (
-        <div style={{ overflow: 'hidden' }}>
-            <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
-            <div className="d-flex" style={{ marginTop: '60px' }}>
-                <SideNav info={info}
-                    attributes={attributes}
-                    storeInfo={storeInfo}
-                    setStoreInfo={setStoreInfo}
-                    handleInputChange={handleInputChange}
-                    handleStoreChange={handleStoreChange}
-                    handleAttributeChange={handleAttributeChange}
-                    handleImageChange={handleImageChange}
-                    addOrUpdateToDB={addOrUpdateToDB}
-                    page={page}
-                    setPage={setPage}
-                    createOffchainMetadata={createOffchainMetadata}
-                    deleteMetadata={deleteMetadata}
-                    isDisabled={isDisabled}
-                    setIsDisabled={setIsDisabled}
-                    userRole={userRole}
-                    walletAddress={wallet.publicKey?.toBase58()}
-                    resetMetadata={resetMetadata}
-                    lockedStatus={lockStatus}
-                    createLockStatus={createLockStatus}
-                    setCreateLockStatus={setCreateLockStatus}
-                    disableDeleteButton={disableDeleteButton} />
-                {page === "create" &&
-                    <NFTPreview
-                        info={info}
+        // SCREEN PROVIDER IS TO TRACK SCREEN SIZE AND DYNAMICALLY UPDATE CSS
+        <ScreenProvider>
+            {/* THIS Handles bulk of Homepage Components */}
+            <div style={{ overflow: 'hidden' }}>
+                <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
+                <div className="d-flex" style={{ marginTop: '60px' }}>
+                    <SideNav info={info}
                         attributes={attributes}
                         storeInfo={storeInfo}
-                        image={image} />}
-                {page === "update" &&
-                    <NFTUpdate
-                        setInfo={setInfo}
-                        setAttributes={setAttributes}
-                        setProperties={setProperties}
                         setStoreInfo={setStoreInfo}
-                        refetchNFTs={refetchNFTs}
+                        handleInputChange={handleInputChange}
+                        handleStoreChange={handleStoreChange}
+                        handleAttributeChange={handleAttributeChange}
+                        handleImageChange={handleImageChange}
+                        addOrUpdateToDB={addOrUpdateToDB}
+                        page={page}
+                        setPage={setPage}
+                        createOffchainMetadata={createOffchainMetadata}
+                        deleteMetadata={deleteMetadata}
+                        isDisabled={isDisabled}
+                        setIsDisabled={setIsDisabled}
                         userRole={userRole}
-                        wallet={wallet} />}
+                        walletAddress={wallet.publicKey?.toBase58()}
+                        resetMetadata={resetMetadata}
+                        lockedStatus={lockStatus}
+                        createLockStatus={createLockStatus}
+                        setCreateLockStatus={setCreateLockStatus}
+                        disableDeleteButton={disableDeleteButton} />
+                    {page === "create" &&
+                        <NFTPreview
+                            info={info}
+                            attributes={attributes}
+                            storeInfo={storeInfo}
+                            image={image} />}
+                    {page === "update" &&
+                        <NFTUpdate
+                            setInfo={setInfo}
+                            setAttributes={setAttributes}
+                            setProperties={setProperties}
+                            setStoreInfo={setStoreInfo}
+                            refetchNFTs={refetchNFTs}
+                            userRole={userRole}
+                            wallet={wallet} />}
+                </div>
             </div>
-        </div>
+        </ScreenProvider>
     );
 };
 

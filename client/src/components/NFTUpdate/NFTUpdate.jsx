@@ -14,6 +14,8 @@ import { defaultMintCost } from '../../config/gameConfig';
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
+import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
+
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
 
     const { publicKey, sendTransaction } = useWallet();
@@ -124,7 +126,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     }
 
     return (
-        <div className="d-flex flex-column sidenav" style={{ backgroundColor: 'rgb(30, 30, 30)', height: 'calc(100vh - 60px)' }}>
+        <div className="nft-update-styling sidenav-scrollbar" style={{height: 'calc(100vh - 60px)'}}>
             {/* <button onClick={() => openModal()}>Open</button> */}
             <Filter
                 title={"CREATOR HUB"}
@@ -151,6 +153,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
             /> }
+            <MobileDetailsButton />
         </div>
     );
 };

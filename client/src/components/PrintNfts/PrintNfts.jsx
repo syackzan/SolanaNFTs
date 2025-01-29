@@ -7,7 +7,7 @@ const PrintNfts = ({
     nfts, 
     selectedIndex, 
     setSelectedIndex, 
-    divWidth = "60vw", 
+    
     location, 
     openModal, 
     isAdmin = false, 
@@ -18,7 +18,7 @@ const PrintNfts = ({
         <>
             <div
                 style={{
-                    width: divWidth,
+                    width: '100%',
                     backgroundColor: "#1E1E1E",
                     color: "#FFFFFF",
                     padding: "20px",

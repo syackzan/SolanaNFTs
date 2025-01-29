@@ -10,43 +10,24 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    /* Semi-transparent black background */
-    display: none;
-    /* Hidden by default */
     z-index: 900;
 }
 
-.nav-modal-overlay.open {
-    display: block;
-    /* Show the overlay when 'open' class is added */
-}
-
 /* Modal container (Sliding Nav) */
+/* Mobile navbar sliding container */
 .nav-modal-tx {
     position: fixed;
     top: 55px;
-    right: -350px;
-    /* Start hidden, off the screen to the right */
+    right: 0;
     height: 100%;
-    /* Full height */
-    width: 350px;
-    /* Customizable width */
+    width: 300px; /* Adjust width as needed */
     background: #1e1e1e;
-    /* Dark gray background */
     box-shadow: -4px 0 10px rgba(0, 0, 0, 0.7);
-    /* Shadow on the left edge */
-    color: #ffffff;
-    /* Light text color */
-    /* padding: 20px; */
-    transition: transform 0.3s ease-in-out;
-    /* Smooth slide-in effect */
     z-index: 1100;
-}
-
-/* Open state for sliding in */
-.nav-modal-tx.open {
-    transform: translateX(-350px);
-    /* Slide in by the width of the modal */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transform: translateX(100%); /* Default hidden state */
 }
 
 .close-nav-modal-button {

@@ -282,7 +282,7 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <div style={{ height: 'calc(100vh-60px)', marginTop: '60px' }}>
+        <div style={{ height: 'calc(100vh-60px)', marginTop: '60px', width: '100vw' }}>
             <Navbar />
             <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
                 <Filter
@@ -301,7 +301,7 @@ const Marketplace = () => {
                     nfts={nfts}
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
-                    divWidth='100vw'
+                    
                     location='marketplace'
                     openModal={openModal}
                     setEditData={setEditData}

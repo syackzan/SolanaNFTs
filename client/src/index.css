@@ -286,6 +286,28 @@ button:focus-visible {
   background-color: #57576c;
 }
 
+.button-style-sidenav-close{
+  position: fixed;
+  top: 80px;
+  right: 5%;
+  background-color: #3a3a4f;
+  color: #ffffff;
+  border: 1px solid #555555;
+  /* Subtle border */
+  border-radius: 8px;
+  /* Rounded corners */
+  border-radius: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Button hover style */
+.button-style-sidenav-close:hover {
+  background-color: #57576c;
+}
+
 .button-style-thin {
   background-color: #3a3a4f;
   color: #ffffff;
@@ -588,9 +610,75 @@ textarea:focus::placeholder {
   /* Smooth transition */
 }
 
+/* SIDENAV CSS */
+.sidenav-styling {
+  width: 40vw;
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+  padding: 10px 20px 20px 20px;
+  height: calc(100vh - 60px);
+  position: relative;
+}
+
+.sidenav-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 3.5rem;
+}
+
+@media (max-width: 850px){
+  .sidenav-title{
+    font-size: 2.5rem;
+  }
+}
+
+/* nft-preview-css */
+.nft-preview-styling {
+  display: flex;
+  justify-content: center;
+  width: 60vw;
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.nft-update-styling {
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  background-color: rgb(30, 30, 30); /* Same color as #1E1E1E */
+}
+
+
+@media (max-width: 650px) {
+  .sidenav-styling{
+    position: absolute;
+    width: 100vw;
+    z-index: 5;
+  }
+
+  .nft-preview-styling{
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .nft-update-styling{
+    width: 100vw;
+  }
+
+  .nft-styling-mobile-enable{
+    display: block;
+  }
+
+  .nft-styling-mobile-disable{
+    display: none;
+  }
+}
+
 /* SIDE NAV SCROLLBAR */
 /* Apply to the container holding the scrollbar */
-.sidenav {
+.sidenav-scrollbar {
   overflow-y: auto;
   /* Enable vertical scrolling */
   scrollbar-width: thin;
@@ -600,24 +688,24 @@ textarea:focus::placeholder {
 }
 
 /* For WebKit browsers (e.g., Chrome, Edge, Safari) */
-.sidenav::-webkit-scrollbar {
+.sidenav-scrollbar::-webkit-scrollbar {
   width: 8px;
   /* Set scrollbar width */
 }
 
-.sidenav::-webkit-scrollbar-track {
+.sidenav-scrollbar::-webkit-scrollbar-track {
   background: #f2f2f2;
   /* Track color */
 }
 
-.sidenav::-webkit-scrollbar-thumb {
+.sidenav-scrollbar::-webkit-scrollbar-thumb {
   background: #d5d5d5;
   /* Thumb color */
   border-radius: 4px;
   /* Rounded corners for the thumb */
 }
 
-.sidenav::-webkit-scrollbar-thumb:hover {
+.sidenav-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #f4f4f4;
   /* Thumb color on hover */
 }
