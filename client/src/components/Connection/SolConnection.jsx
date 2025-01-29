@@ -8,6 +8,9 @@ const SolConnection = () => {
 
     const [selectedAddress, setSelectedAddress] = useState('');
 
+    // Detect mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     // Update the selected address whenever the wallet connection changes
     useEffect(() => {
         if (publicKey) {
@@ -23,7 +26,27 @@ const SolConnection = () => {
             if (!publicKey) {
                 try {
                     console.log('Trying to connect...');
-                    walletModal.setVisible(true); // Show the wallet modal
+                    
+                    // Detect if on mobile and deep link directly to the wallet app
+                    if (isMobile) {
+                        const deepLinks = {
+                            phantom: "https://phantom.app/ul/v1/connect?redirect_url=" + encodeURIComponent(window.location.href),
+                            solflare: "https://solflare.com/ul/v1/connect?redirect_url=" + encodeURIComponent(window.location.href),
+                        };
+
+                        // Automatically redirect to the user's preferred wallet if known
+                        const preferredWallet = localStorage.getItem("preferred_wallet");
+                        if (preferredWallet && deepLinks[preferredWallet]) {
+                            window.location.href = deepLinks[preferredWallet];
+                            return;
+                        }
+
+                        // If no preference, open the modal to select a wallet first
+                        walletModal.setVisible(true);
+                    } else {
+                        // On desktop, just open the modal normally
+                        walletModal.setVisible(true);
+                    }
                 } catch (e) {
                     console.error('Failed to open wallet modal:', e);
                 }
@@ -37,6 +60,7 @@ const SolConnection = () => {
         }
     };
 
+    // Function to shorten long wallet addresses
     const shortenAddress = (address, chars = 4) => {
         if (!address) return '';
         return `${address.slice(0, chars)}...${address.slice(-chars)}`;
