@@ -62,6 +62,9 @@ const WalletAdapter = () => {
                         createDefaultWalletNotFoundHandler()(adapter);
                     },
                 }),
+                new UnsafeBurnerWalletAdapter(),
+                new PhantomWalletAdapter(),
+                new SolflareWalletAdapter()
             ],
             [],
         );
