@@ -97,7 +97,7 @@ const Marketplace = () => {
                     case 'SOL':
                         if (nfts[selectedIndex]?.storeInfo?.price) {
                             const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
-                            setPreCalcPayment(priceInSol); // Set SOL price in USD per NFT price
+                            setPreCalcPayment(priceInSol.toFixed(4)); // Set SOL price in USD per NFT price
                             setSolPriceLoaded(true);
                         } else {
                             console.error("Invalid NFT data or selectedIndex for SOL payment.");

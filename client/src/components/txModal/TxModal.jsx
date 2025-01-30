@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo  } from "react";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { Link } from 'react-router-dom';
 import "../../Modal.css"; // Ensure this CSS file exists
@@ -68,6 +68,25 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
         }
     };
 
+    const renderCostSign = () => {
+        let sign = ''; // Local variable to store the correct value
+    
+        switch (paymentTracker) {
+            case 'CARD':
+                sign = 'usd';
+                break;
+            case 'SOL':
+            case 'BABYBOOH': // Both cases set sign to 'sol'
+                sign = 'sol';
+                break;
+            default:
+                sign = '';
+                break;
+        }
+    
+        return <>{sign}</>;
+    };
+
     return (
         <motion.div
             className={`modal-overlay ${isModalOpen ? "open" : ""}`}
@@ -104,9 +123,9 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
                         <div className="tracker-row"><span className="tracker-label">Payment type:</span><span className="tracker-value">{paymentTracker}</span></div>
                         <div className="tracker-row">
                             <span className="tracker-label">Mint cost:</span>
-                            {solPriceLoaded ? (<span className="tracker-value">-{preCalcPayment}</span>) : (<div className='loader'></div>)}
+                            {solPriceLoaded ? (<span className="tracker-value">-{preCalcPayment} {renderCostSign()}</span>) : (<div className='loader'></div>)}
                         </div>
-                        {inGameSpend >= 0 &&
+                        {(inGameSpend >= 0 && paymentTracker === 'BABYBOOH') &&
                             <div className="tracker-row">
                                 <span className="tracker-label">In Game Currency:</span>
                                 <span className="tracker-value">-{inGameSpend}</span>
@@ -131,7 +150,9 @@ const TxModal = ({ resetConfirmModal, createNft }) => {
                     {!transactionSig ? (
                         <div className="d-flex flex-column">
                             {redirectSecret && <div>[DO NOT LEAVE PAGE! NFT CREATION WILL FAIL]</div>}
-                            {redirectSecret ? (<div className="button-style-regular">Creating...</div>) : (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)}
+                            {redirectSecret ? 
+                            (<div className="button-style-regular">Creating...</div>) : 
+                            (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)}
                         </div>
                     ) : (
                         <Link className="button-style-regular" to={solScanner} target="_blank">View Transaction</Link>
