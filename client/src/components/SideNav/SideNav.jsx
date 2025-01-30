@@ -464,7 +464,7 @@ const SideNav = ({
                                     <select
                                         value={attribute.value}
                                         onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                        disabled={!canEditFields || page === 'update'}
+                                        disabled={!canEditFields || (page === 'update' && !isAdmin)}
                                         style={{
                                             width: "100%",
                                             padding: "10px",
