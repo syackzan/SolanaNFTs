@@ -26,7 +26,7 @@ const LandingPage = () => {
                     </Link>
                     <Link className="darkmode-button" to="/dashboard?action=create">
                         <FaEdit className="dashboard-icon" />
-                        Creat/Edit
+                        Create/Edit
                     </Link>
                     <Link className="darkmode-button" to="/creatorHubDocs">
                         <FaBook className="dashboard-icon" />
