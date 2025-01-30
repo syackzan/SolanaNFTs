@@ -281,7 +281,7 @@ const Homepage = () => {
     const creatorPayment = async () => {
 
         if (userRole === 'admin') //Admins are exempt from creator costs
-            return;
+            return true;
 
         try {
             //Pay for higher level creation items
@@ -324,6 +324,7 @@ const Homepage = () => {
 
                 const success = await creatorPayment(); //Higher level items have creator costs
 
+                console.log(success);
                 if (!success)
                     return false;
 

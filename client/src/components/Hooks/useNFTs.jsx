@@ -34,10 +34,18 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
                     filteredNFTs = allNFTs.filter((nft) => nft.storeInfo.available === true);
                 }
 
+                const searchFilter = {
+                    type: selectedType,
+                    subtype: selectedSubType,
+                    rarity: selectedRarity,
+                    creator: selectedCreator
+                };
+
                 const nftsForStore = sortNFTsByRarity(filteredNFTs);
-                setNfts(nftsForStore);
                 setNftsToSort(nftsForStore);
 
+                setNfts(filterNFTs(nftsForStore,searchFilter));
+                
                 console.log("store nfts: ", nftsForStore);
                 setIsFetched(true);
             } else {

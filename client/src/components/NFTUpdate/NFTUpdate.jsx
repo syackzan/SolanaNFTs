@@ -139,6 +139,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 selectedCreator={selectedCreator}
                 setSelectedCreator={setSelectedCreator}
                 setIsFetched={setIsFetched}
+                filterByCreator={true}
             />
             <PrintNfts
                 nfts={nfts}

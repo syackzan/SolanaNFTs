@@ -47,8 +47,6 @@ const SideNav = ({
 
     const IS_MOBILE_SIDENAV_OPEN = windowWidth <= 650 && isSideNavOpen;
     const MOBILE_SIDENAV_STYLING = IS_MOBILE_SIDENAV_OPEN ? 'nft-styling-mobile-enable' : 'nft-styling-mobile-disable';
-    console.log(IS_MOBILE_SIDENAV_OPEN);
-    console.log(MOBILE_SIDENAV_STYLING);
 
     // State variables
     const [maxTalentPoints, setMaxTalentPoints] = useState(0); // Maximum talent points based on rarity
@@ -154,8 +152,8 @@ const SideNav = ({
         <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
             <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
                 <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
-                    <button className="button-style-thin" onClick={() => { setPage('create'); resetEverything(); }}>Create</button>
-                    <button className="button-style-thin" onClick={() => { setPage('update'); resetEverything() }}>Edit</button>
+                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('create');  }}>Create</button>
+                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('update');  }}>Edit</button>
                 </div>
                 {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
             </div>
@@ -163,6 +161,8 @@ const SideNav = ({
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
+
+                
 
                 if (page === "update" && !info.name) {
                     alert('Select and item');
@@ -180,11 +180,11 @@ const SideNav = ({
 
                 // Check if the form is valid
                 if (form.checkValidity()) {
-
+                    
                     try {
 
                         const success = await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
-
+                        
                         if (page === 'update') {
                             await delay(1000);
                             setIsDisabled(false);
@@ -574,6 +574,11 @@ const SideNav = ({
             </form>
             {page === "create" && isCreated && (
                 <>
+                    <button
+                        className="button-click"
+                        onClick={() => { setPage('update'), resetEverything() }}>
+                        View New Creation!
+                    </button>
                     <button
                         className="button-click"
                         onClick={() => { resetEverything() }}

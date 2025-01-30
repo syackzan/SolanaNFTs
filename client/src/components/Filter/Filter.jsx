@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { LuRefreshCcw } from "react-icons/lu";
 
@@ -18,7 +18,8 @@ const Filter = ({
     setSelectedRarity,
     selectedCreator,
     setSelectedCreator,
-    setIsFetched }) => {
+    setIsFetched,
+    filterByCreator = false }) => {
 
     const wallet = useWallet();
 
@@ -47,6 +48,16 @@ const Filter = ({
             setChecked(!checked);
         }
     }
+
+    useEffect(() => {
+
+        if (wallet.publicKey && filterByCreator) {
+            console.log(address);
+            setSelectedCreator(address);
+            setChecked(true);
+        }
+
+    }, [wallet.publicKey])
 
     return (
         <div className="d-flex flex-column" style={{ color: 'white', padding: '0px 25px' }}>

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import ImageCarousel from '../ImageCarousel/ImageCarousel';
 import Navbar from '../Navbar/Navbar';
 
-import { FaFileAlt, FaEdit, FaBook, FaGhost } from 'react-icons/fa'; // Import icons
+import { FaFileAlt, FaEdit, FaBook, FaGhost, FaStore } from 'react-icons/fa'; // Import icons
 
 const LandingPage = () => {
 
@@ -20,13 +20,13 @@ const LandingPage = () => {
                     NFT Creation Hub
                 </h3>
                 <div className="dashboard-grid marykate">
-                    <Link className="darkmode-button" to="/dashboard?action=create">
-                        <FaFileAlt className="dashboard-icon" />
-                        Create
+                    <Link className="darkmode-button" to="/marketplace">
+                        <FaStore className="dashboard-icon" />
+                        Marketplace
                     </Link>
-                    <Link className="darkmode-button" to="/dashboard?action=update">
+                    <Link className="darkmode-button" to="/dashboard?action=create">
                         <FaEdit className="dashboard-icon" />
-                        Edit
+                        Creat/Edit
                     </Link>
                     <Link className="darkmode-button" to="/creatorHubDocs">
                         <FaBook className="dashboard-icon" />
