@@ -32,7 +32,7 @@ const LandingPage = () => {
                         <FaBook className="dashboard-icon" />
                         Docs & Rules
                     </Link>
-                    <Link className="darkmode-button" to="/dashboard?action=submit">
+                    <Link className="darkmode-button" to="/#">
                         <FaGhost className="dashboard-icon" />
                         Submit Ghost
                     </Link>
