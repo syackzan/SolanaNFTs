@@ -18,6 +18,8 @@ import { RxDoubleArrowLeft } from "react-icons/rx";
 
 import { motion } from "framer-motion";
 
+import { creatorCosts } from '../../config/gameConfig';
+
 const SideNav = ({
     info,
     attributes,
@@ -51,7 +53,7 @@ const SideNav = ({
     // State variables
     const [maxTalentPoints, setMaxTalentPoints] = useState(0); // Maximum talent points based on rarity
     const [isCreating, setIsCreating] = useState(false); // Indicates if a creation process is ongoing
-    const [isCreated, setIsCreated] = useState(false); // Indicates if the metadata has been successfully created
+    const [isCreated, setIsCreated] = useState(true); // Indicates if the metadata has been successfully created
 
     // Function to update pricing in the storeInfo state
     const updatePricing = (value) => {
@@ -152,8 +154,8 @@ const SideNav = ({
         <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
             <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
                 <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
-                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('create');  }}>Create</button>
-                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('update');  }}>Edit</button>
+                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('create'); }}>Create</button>
+                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('update'); }}>Edit</button>
                 </div>
                 {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
             </div>
@@ -162,7 +164,7 @@ const SideNav = ({
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
 
-                
+
 
                 if (page === "update" && !info.name) {
                     alert('Select and item');
@@ -180,11 +182,11 @@ const SideNav = ({
 
                 // Check if the form is valid
                 if (form.checkValidity()) {
-                    
+
                     try {
 
                         const success = await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
-                        
+
                         if (page === 'update') {
                             await delay(1000);
                             setIsDisabled(false);
@@ -458,26 +460,33 @@ const SideNav = ({
                                     })()}
                                 </select>
                             ) : attribute.trait_type === "rarity" ? (
-                                <select
-                                    value={attribute.value}
-                                    onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                    disabled={!canEditFields}
-                                    style={{
-                                        width: "100%",
-                                        padding: "10px",
-                                        borderRadius: "4px",
-                                        border: "1px solid #555",
-                                        backgroundColor: "#2E2E2E",
-                                        color: "#FFF",
-                                    }}
-                                >
-                                    <option value="">Select...</option>
-                                    {rarityOptions.map((rarity, i) => (
-                                        <option key={i} value={rarity}>
-                                            {rarity.charAt(0).toUpperCase() + rarity.slice(1)}
-                                        </option>
-                                    ))}
-                                </select>
+                                <>
+                                    <select
+                                        value={attribute.value}
+                                        onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                        disabled={!canEditFields || page === 'update'}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            borderRadius: "4px",
+                                            border: "1px solid #555",
+                                            backgroundColor: "#2E2E2E",
+                                            color: "#FFF",
+                                        }}
+                                    >
+                                        <option value="">Select...</option>
+                                        {rarityOptions.map((rarity, i) => (
+                                            <option key={i} value={rarity}>
+                                                {rarity.charAt(0).toUpperCase() + rarity.slice(1)}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {page === 'create' &&
+                                        <div className="d-flex justify-content-end marykate" style={{ paddingRight: '10px', fontSize: '1rem' }}>
+                                            Creator Costs: ${creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value]}
+                                        </div>
+                                    }
+                                </>
                             ) : attribute.trait_type === "affinity" ? (
                                 <select
                                     value={attribute.value}
@@ -548,7 +557,7 @@ const SideNav = ({
                 </div>
 
                 {/* Submit Button */}
-                <button
+                {!isCreated && <button
                     type="submit"
                     className='button-click'
                     style={{ marginTop: '0px' }}
@@ -570,7 +579,7 @@ const SideNav = ({
                     ) : (
                         <div>Update NFT Metadata</div>
                     )}
-                </button>
+                </button>}
             </form>
             {page === "create" && isCreated && (
                 <>

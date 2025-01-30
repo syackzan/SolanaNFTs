@@ -96,6 +96,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+select:disabled{
+  opacity: 0.3
+}
+
+input:disabled{
+  opacity: 0.3
+}
+
 .landing-page-container{
   margin-top: 60px;
   width: 100vw;
