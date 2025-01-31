@@ -159,7 +159,8 @@ const SideNav = ({
                 </div>
                 {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
             </div>
-            <h2 className="sidenav-title marykate" >{title}</h2>
+            <h2 className="sidenav-title marykate m-0" >{title}</h2>
+            {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{fontSize: '1.5rem'}}>[select an item to update]</h5>}
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
@@ -379,7 +380,7 @@ const SideNav = ({
                                 <select
                                     value={attribute.value}
                                     onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                    disabled={!isAdmin}
+                                    disabled={!isAdmin || storeInfo.metadataUri}
                                     style={{
                                         width: "100%",
                                         padding: "10px",
@@ -620,7 +621,7 @@ const SideNav = ({
                 <div className="d-flex justify-content-center align-items-center gap-4 flex-wrap" style={{ width: '100%', marginTop: '10px' }}>
                     {storeInfo.metadataUri ? (
                         <>
-                            <a className="button-style-regular" href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
+                            <a className="button-click text-center" href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
                                 View Off-Chain Data
                             </a>
                         </>

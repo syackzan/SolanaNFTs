@@ -104,6 +104,10 @@ input:disabled{
   opacity: 0.3
 }
 
+textarea:disabled{
+  opacity: 0.3;
+}
+
 .landing-page-container{
   margin-top: 60px;
   width: 100vw;
