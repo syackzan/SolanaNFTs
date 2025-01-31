@@ -102,7 +102,7 @@ const TxModalDelete = ({ resetConfirmModal, deleteMetadata }) => {
                             </button>
                         </div>
                     ) : (
-                        <h5 style={{margin: '0px'}}>[Item Deleted]</h5>
+                        <h5 style={{margin: '0px'}}>[Item Deleted!]</h5>
                     )}
                 </div>
             </motion.div>
