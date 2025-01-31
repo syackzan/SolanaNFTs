@@ -4,8 +4,8 @@ import Navbar from "../Navbar/Navbar";
 
 import { infoData, attributesData, talents, rarityOptions, talenPointSpread, pricingValues, creatorCosts } from "../../config/gameConfig";
 
-import boohLogo from '../../assets/BoohCoinLogo.svg'
-import metadataClip from '../../assets/metadataClip.png'
+import boohLogo from '../../assets/BoohLogo.svg'
+import metadataClipx from '../../assets/metadataClipx.png'
 
 const CreatorHubDocs = () => {
 
@@ -105,7 +105,7 @@ const CreatorHubDocs = () => {
 
                     </div>
                     <div className="d-flex align-items-center" style={{ paddingRight: '50px' }}>
-                        <img src={metadataClip} style={{ width: 'auto', height: '500px', borderRadius: '5px' }} />
+                        <img src={metadataClipx} style={{ width: 'auto', height: '500px', borderRadius: '5px' }} />
                     </div>
                 </section>
 

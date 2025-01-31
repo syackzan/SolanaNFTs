@@ -27,7 +27,7 @@ import App from '../../App';
 import { IS_MAINNET } from '../../config/config';
 import { GlobalVariables } from '../GlobalVariables/GlobalVariables';
 
-import boohLogo from '../../assets/BoohCoinLogo.svg';
+import boohLogo from '../../assets/BoohLogo.svg';
 
 const WalletAdapter = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.

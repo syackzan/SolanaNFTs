@@ -28,7 +28,6 @@ export const uploadMetadata = async (metadata) => {
         return metadataUri;
     } catch (e) {
         console.error(`Failed Transaction: ${e.message}`);
-        alert("Offchain data creation failed. Please try again");
         throw e; // Propagate the error
     }
 };

@@ -32,6 +32,8 @@ import {
 import tempImage from '../../assets/itemBGs/tempImage.png';
 import { ScreenProvider } from '../../context/ScreenContext';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
 const Homepage = () => {
@@ -66,6 +68,12 @@ const Homepage = () => {
 
     const [searchParams] = useSearchParams();
     const action = searchParams.get('action'); // "create" or "view"
+
+    const {
+        setTxState,
+        setCreateState,
+        setTransactionSig
+    } = useMarketplace();
 
     //Handles Page switching for UI
     const [page, setPage] = useState(action);
@@ -369,12 +377,15 @@ const Homepage = () => {
 
         try {
 
-            setLockStatus(true);
+            setTxState('started');
+
             // Combine offchain metadata
             const metadataForJSONUpload = await combineOffchainMetatdata();
 
             // Upload metadata and get the URI
             const metadataUri = await uploadMetadata(metadataForJSONUpload);
+
+            setTxState('complete');
 
             // Determine the object ID based on the page
             let objectId;
@@ -383,6 +394,8 @@ const Homepage = () => {
             } else {
                 objectId = info._id; // Metadata existing in DB already
             }
+
+            setCreateState('started')
 
             // Make the PATCH request to lock the NFT
             const response = await axios.patch(
@@ -394,33 +407,33 @@ const Homepage = () => {
             // Handle response
             if (response.status >= 200 && response.status < 300) {
                 console.log('Update Successful:', response.data);
-                alert("Metadata Locked Successfully");
+                setCreateState('complete');
+                setTransactionSig(metadataUri);
                 resetMetadata(); // Reset metadata
                 setRefetchNFTs(!refetchNFTs); // Trigger refetch
-                setLockStatus(false); //(this shows a loader to UI) Complete so turn off 
-                setCreateLockStatus(true); //Offchain data was locked via creater page
             } else {
+                setCreateState('failed');
                 console.error('Failed to update metadata:', response);
                 alert("Metadata failed to lock");
             }
         } catch (error) {
             // Log and handle any errors
             console.error('Error in createOffchainMetadata:', error);
-            alert("An error occurred while locking metadata. Please try again.");
-            setLockStatus(false);
+            setTxState('failed');
         }
     };
 
-    const deleteMetadata = async (id) => {
+    const deleteMetadata = async () => {
 
-        setDisabledDeleteButton(true);
+        setTxState('started');
         await delay(2000);
+
         try {
-            const response = await axios.delete(`${URI_SERVER}/api/nft/delete/${info._id}`);
-            alert('Deleting Metadata Successful')
+            await axios.delete(`${URI_SERVER}/api/nft/delete/${info._id}`);
+            setTxState('complete');
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
-            setDisabledDeleteButton(true);
+            setTxState('failed');
         }
 
         setRefetchNFTs(!refetchNFTs);
@@ -471,7 +484,9 @@ const Homepage = () => {
                             setStoreInfo={setStoreInfo}
                             refetchNFTs={refetchNFTs}
                             userRole={userRole}
-                            wallet={wallet} />}
+                            wallet={wallet}
+                            createOffchainMetadata={createOffchainMetadata}
+                            deleteMetadata={deleteMetadata} />}
                 </div>
             </div>
         </ScreenProvider>

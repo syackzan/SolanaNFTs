@@ -3,16 +3,20 @@ import React from 'react'
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
-const PrintNfts = ({ 
-    nfts, 
-    selectedIndex, 
-    setSelectedIndex, 
-    
-    location, 
-    openModal, 
-    isAdmin = false, 
+const PrintNfts = ({
+    nfts,
+    selectedIndex,
+    setSelectedIndex,
+    location,
+    openModal,
+    isAdmin = false,
     setEditData,
-    setPaymentTracker }) => {
+    setPaymentTracker,
+    createOffchainMetadata,
+    setIsDeleteModalOpen,
+    setIsLockModalOpen }) => {
+
+    const isLocked = nfts[selectedIndex]?.storeInfo?.metadataUri ? true : false;
 
     return (
         <>
@@ -133,7 +137,19 @@ const PrintNfts = ({
                                     <div className="d-flex align-items-center justify-content-between p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
                                         <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                         <div className="d-flex gap-2">
-                                            <button onClick={() => { openModal() }} className='button-style-regular'>CREATE NFT</button>
+                                            <button onClick={() => {setIsDeleteModalOpen(true)}} className='button-style-delete'>
+                                                DELETE
+                                            </button>
+                                            {isLocked ?
+                                                (
+                                                    <button onClick={() => { openModal() }} className='button-style-regular'>
+                                                        CREATE NFT
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => { setIsLockModalOpen(true) }} className='button-style-regular'>
+                                                        LOCK DATA
+                                                    </button>
+                                                )}
                                         </div>
                                     </div>
                                 ) : location === "marketplace" && isSelected ? (

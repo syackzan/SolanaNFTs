@@ -371,6 +371,26 @@ input:disabled{
   background-color: #57576c;
 }
 
+/* Button base style */
+.button-style-delete {
+  background-color: #c01b1b;
+  color: #ffffff;
+  border: 1px solid #555555;
+  /* Subtle border */
+  border-radius: 8px;
+  /* Rounded corners */
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Button hover style */
+.button-style-delete:hover {
+  background-color: #da3d3d;
+}
+
 .button-style-sidenav-close{
   position: fixed;
   top: 80px;

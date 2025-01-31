@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
 
@@ -15,8 +15,10 @@ import { defaultMintCost } from '../../config/gameConfig';
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
+import TxModalDelete from '../txModal/TxModalDelete';
+import TxModalLockData from '../txModal/TxModalLockData';
 
-const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet }) => {
+const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet, createOffchainMetadata, deleteMetadata }) => {
 
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
@@ -34,22 +36,25 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         selectedCreator,
         setSelectedCreator,
         setIsFetched,
-    } = useNFTs({inStoreOnly: false, refetchNFTs});
+    } = useNFTs({ inStoreOnly: false, refetchNFTs });
 
     const {
-            isModalOpen, //stores main transaction modal state
-            setIsModalOpen, //updates main transaction state
-            setTxState, //updates payment transaction state to handle UI render
-            setCreateState,
-            setTransactionSig,
-            setPreCalcPayment,
-            setPaymentTracker,
-            setSolPriceLoaded,
-            setNameTracker,
-        } = useMarketplace();
+        isModalOpen, //stores main transaction modal state
+        setIsModalOpen, //updates main transaction state
+        setTxState, //updates payment transaction state to handle UI render
+        setCreateState,
+        setTransactionSig,
+        setPreCalcPayment,
+        setPaymentTracker,
+        setSolPriceLoaded,
+        setNameTracker,
+        isDeleteModalOpen,
+        setIsDeleteModalOpen,
+        isLockModalOpen,
+        setIsLockModalOpen
+    } = useMarketplace();
 
     const openModal = () => {
-        
         setIsModalOpen(true);
         setNameTracker(nfts[selectedIndex].name);
         setPreCalcPayment(defaultMintCost);
@@ -62,6 +67,8 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setTxState('empty');
         setCreateState('empty');
         setTransactionSig(null);
+        setIsDeleteModalOpen(null);
+        setIsLockModalOpen(null);
     };
 
     const setEditData = async (nft) => {
@@ -80,6 +87,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setProperties(nft.properties);
         setAttributes(nft.attributes);
         setStoreInfo(nft.storeInfo);
+        setNameTracker(nft.name);
     }
 
 
@@ -126,7 +134,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     }
 
     return (
-        <div className="nft-update-styling sidenav-scrollbar" style={{height: 'calc(100vh - 60px)'}}>
+        <div className="nft-update-styling sidenav-scrollbar" style={{ height: 'calc(100vh - 60px)' }}>
             {/* <button onClick={() => openModal()}>Open</button> */}
             <Filter
                 title={"CREATOR HUB"}
@@ -149,11 +157,22 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 openModal={openModal}
                 isAdmin={isAdmin}
                 setEditData={setEditData}
+                createOffchainMetadata={createOffchainMetadata}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                setIsLockModalOpen={setIsLockModalOpen}
             />
             {isModalOpen && <TxModal
                 resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
-            /> }
+            />}
+            {isDeleteModalOpen && <TxModalDelete
+                resetConfirmModal={resetConfirmModal}
+                deleteMetadata={deleteMetadata}
+            />}
+            {isLockModalOpen && <TxModalLockData
+                resetConfirmModal={resetConfirmModal}
+                createOffchainMetadata={createOffchainMetadata}
+            />}
             <MobileDetailsButton />
         </div>
     );

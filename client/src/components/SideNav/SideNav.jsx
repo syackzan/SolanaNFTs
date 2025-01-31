@@ -53,7 +53,7 @@ const SideNav = ({
     // State variables
     const [maxTalentPoints, setMaxTalentPoints] = useState(0); // Maximum talent points based on rarity
     const [isCreating, setIsCreating] = useState(false); // Indicates if a creation process is ongoing
-    const [isCreated, setIsCreated] = useState(true); // Indicates if the metadata has been successfully created
+    const [isCreated, setIsCreated] = useState(false); // Indicates if the metadata has been successfully created
 
     // Function to update pricing in the storeInfo state
     const updatePricing = (value) => {
@@ -623,27 +623,6 @@ const SideNav = ({
                             <a className="button-style-regular" href={storeInfo.metadataUri} target="_blank" rel="noopener noreferrer">
                                 View Off-Chain Data
                             </a>
-                            {isAdmin && (
-                                <div className="button-container">
-                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                    <div className="d-flex gap-2">
-                                        <button
-                                            onClick={() => { deleteMetadata(); }}
-                                            disabled={disableDeleteButton} // Use 'disabled' to disable the button
-                                            className='button-style-regular'
-                                        >
-                                            {disableDeleteButton ? ( // Conditionally render based on 'disableDeleteButton'
-                                                <div className="d-flex gap-2">
-                                                    <strong>DELETING...</strong>
-                                                    <div className='loader'></div>
-                                                </div>
-                                            ) : (
-                                                "Delete NFT"
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </>
                     ) : (
                         <div className="d-flex flex-column w-100 gap-2">
@@ -665,27 +644,6 @@ const SideNav = ({
                                     </div>
                                 )}
                             </>)}
-                            {isAdmin && (
-                                <div className="button-container">
-                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                    <div className="d-flex gap-2">
-                                        <button
-                                            onClick={() => { deleteMetadata(); }}
-                                            disabled={disableDeleteButton} // Use 'disabled' to disable the button
-                                            className='button-style-regular'
-                                        >
-                                            {disableDeleteButton ? ( // Conditionally render based on 'disableDeleteButton'
-                                                <div className="d-flex gap-2">
-                                                    <strong>DELETING...</strong>
-                                                    <div className='loader'></div>
-                                                </div>
-                                            ) : (
-                                                "Delete NFT"
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>

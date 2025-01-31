@@ -5,7 +5,7 @@ import { GlobalVars } from '../GlobalVariables/GlobalVariables';
 
 import SolConnection from '../Connection/SolConnection';
 
-import BoohLogo from '../../assets/BoohCoinLogo.svg';
+import BoohLogo from '../../assets/BoohLogo.svg';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
