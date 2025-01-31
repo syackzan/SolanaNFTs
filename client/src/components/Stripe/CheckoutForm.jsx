@@ -6,12 +6,18 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 import { URI_SERVER } from "../../config/config";
 
-const CheckoutForm = ({ setStripeModal, nft, resetConfirmModal, preCalcPayment }) => {
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
+const CheckoutForm = ({ setStripeModal, nft, preCalcPayment }) => {
 
     const stripe = useStripe();
     const elements = useElements();
 
     const wallet = useWallet();
+
+    const {
+        resetTxModal
+    } = useMarketplace()
 
     const handleSubmit = async (event) => {
         // Prevent the default form submission, which would refresh the page.
@@ -56,7 +62,7 @@ const CheckoutForm = ({ setStripeModal, nft, resetConfirmModal, preCalcPayment }
                             <h5>NFT: {nft.name}</h5>
                             <h5>Cost: {preCalcPayment}</h5>
                         </div>
-                        <button className="modal-close-top-right" onClick={() => { setStripeModal(false), resetConfirmModal() }}>&times;</button>
+                        <button className="modal-close-top-right" onClick={() => { setStripeModal(false), resetTxModal() }}>&times;</button>
                     </div>
                     <PaymentElement />
                     <button className='stripe-button' style={{ marginTop: "20px" }}>Submit</button>

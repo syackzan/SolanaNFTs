@@ -3,6 +3,8 @@ import React from 'react'
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 const PrintNfts = ({
     nfts,
     selectedIndex,
@@ -12,11 +14,14 @@ const PrintNfts = ({
     isAdmin = false,
     setEditData,
     setPaymentTracker,
-    createOffchainMetadata,
-    setIsDeleteModalOpen,
     setIsLockModalOpen }) => {
 
     const isLocked = nfts[selectedIndex]?.storeInfo?.metadataUri ? true : false;
+
+    const {
+            setIsModalOpen,
+            setModalType,
+        } = useMarketplace();
 
     return (
         <>
@@ -137,12 +142,12 @@ const PrintNfts = ({
                                     <div className="d-flex align-items-center justify-content-between p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
                                         <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
                                         <div className="d-flex gap-2">
-                                            <button onClick={() => {setIsDeleteModalOpen(true)}} className='button-style-delete'>
+                                            <button onClick={() => {setIsModalOpen(true); setModalType('delete')}} className='button-style-delete'>
                                                 DELETE
                                             </button>
                                             {isLocked ?
                                                 (
-                                                    <button onClick={() => { openModal() }} className='button-style-regular'>
+                                                    <button onClick={() => { openModal('SOL') }} className='button-style-regular'>
                                                         CREATE NFT
                                                     </button>
                                                 ) : (

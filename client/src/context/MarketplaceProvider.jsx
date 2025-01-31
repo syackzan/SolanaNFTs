@@ -5,7 +5,10 @@ const MarketplaceContext = createContext();
 
 // Provider Component
 export const MarketplaceProvider = ({ children }) => {
-    
+
+    //Modal Type
+    const [modalType, setModalType] = useState(''); //mint, create, lock, delete
+
     //MODAL CONTROLLERS
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -32,9 +35,21 @@ export const MarketplaceProvider = ({ children }) => {
     //RENDER INFO CONTROLLER
     const [nameTracker, setNameTracker] = useState('');
 
+    const resetTxModal = () => {
+        setIsModalOpen(false);
+        setTxState('empty');
+        setCreateState('empty');
+        setTransactionSig(null);
+        setSolPriceLoaded(false);
+        setStripeSecret(null);
+        setInGameSpend(null);
+    };
+
     return (
         <MarketplaceContext.Provider
             value={{
+                modalType,
+                setModalType,
                 isModalOpen,
                 setIsModalOpen,
                 txState,
@@ -62,7 +77,8 @@ export const MarketplaceProvider = ({ children }) => {
                 isDeleteModalOpen,
                 setIsDeleteModalOpen,
                 isLockModalOpen,
-                setIsLockModalOpen
+                setIsLockModalOpen,
+                resetTxModal
             }}
         >
             {children}

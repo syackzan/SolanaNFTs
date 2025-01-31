@@ -8,15 +8,12 @@ import PrintNfts from '../PrintNfts/PrintNfts';
 import Filter from '../Filter/Filter';
 import useNFTs from '../Hooks/useNFTs';
 
-import TxModal from '../txModal/TxModal';
-
 import { defaultMintCost } from '../../config/gameConfig';
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
-import TxModalDelete from '../txModal/TxModalDelete';
-import TxModalLockData from '../txModal/TxModalLockData';
+import TxModalManager from '../txModal/TxModalManager';
 
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet, createOffchainMetadata, deleteMetadata }) => {
 
@@ -51,11 +48,13 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         isDeleteModalOpen,
         setIsDeleteModalOpen,
         isLockModalOpen,
-        setIsLockModalOpen
+        setIsLockModalOpen,
+        setModalType
     } = useMarketplace();
 
     const openModal = () => {
         setIsModalOpen(true);
+        setModalType('mint');
         setNameTracker(nfts[selectedIndex].name);
         setPreCalcPayment(defaultMintCost);
         setSolPriceLoaded(true);
@@ -63,6 +62,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     };
 
     const resetConfirmModal = () => {
+        console.log("Reset");
         setIsModalOpen(false);
         setTxState('empty');
         setCreateState('empty');
@@ -161,7 +161,14 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
                 setIsLockModalOpen={setIsLockModalOpen}
             />
-            {isModalOpen && <TxModal
+            {isModalOpen && <TxModalManager
+                resetConfirmModal={resetConfirmModal}
+                createNft={createNft}
+                createOffchainMetadata={createOffchainMetadata}
+                deleteMetadata={deleteMetadata}
+            />}
+
+            {/* {isModalOpen && <TxModal
                 resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
             />}
@@ -172,7 +179,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
             {isLockModalOpen && <TxModalLockData
                 resetConfirmModal={resetConfirmModal}
                 createOffchainMetadata={createOffchainMetadata}
-            />}
+            />} */}
             <MobileDetailsButton />
         </div>
     );

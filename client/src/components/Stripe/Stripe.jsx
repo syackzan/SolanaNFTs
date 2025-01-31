@@ -12,7 +12,7 @@ import { useMarketplace } from '../../context/MarketplaceProvider';
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUB_KEY);
 
-const Stripe = ({ nft, resetConfirmModal, handleSuccessfulStripePayment }) => {
+const Stripe = ({ nft, handleSuccessfulStripePayment }) => {
 
     const {
         preCalcPayment,
@@ -36,7 +36,6 @@ const Stripe = ({ nft, resetConfirmModal, handleSuccessfulStripePayment }) => {
             {stripeModal && <CheckoutForm
                 setStripeModal={setStripeModal}
                 nft={nft}
-                resetConfirmModal={resetConfirmModal}
                 clientSecret={clientSecret}
                 preCalcPayment={preCalcPayment}
             />}

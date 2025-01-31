@@ -12,7 +12,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { priceToSol } from '../../Utils/Utils';
 
-import TxModal from '../txModal/TxModal';
+import TxModalManager from '../txModal/TxModalManager'
 import { deductBabyBooh } from '../../Utils/babyBooh';
 import { createPaymentIntent } from '../../Utils/stripeInteractions';
 
@@ -145,16 +145,6 @@ const Marketplace = () => {
 
     const openModal = async () => {
         setIsModalOpen(true);
-    };
-
-    const resetConfirmModal = () => {
-        setIsModalOpen(false);
-        setTxState('empty');
-        setCreateState('empty');
-        setTransactionSig(null);
-        setSolPriceLoaded(false);
-        setStripeSecret(null);
-        setInGameSpend(null);
     };
 
     const payWithSol = async () => {
@@ -344,14 +334,12 @@ const Marketplace = () => {
                     setPaymentTracker={setPaymentTracker}
                 />
             </div>
-            {isModalOpen && <TxModal
-                resetConfirmModal={resetConfirmModal}
+            {isModalOpen && <TxModalManager
                 createNft={createNft}
             />}
             {(stripeSecret || redirectSecret) && (
                 <Stripe
                     nft={nfts[selectedIndex]}
-                    resetConfirmModal={resetConfirmModal}
                     handleSuccessfulStripePayment={handleSuccessfulStripePayment}
                 />
             )}
