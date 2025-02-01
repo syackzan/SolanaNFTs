@@ -151,7 +151,7 @@ const PrintNfts = ({
                                                         CREATE NFT
                                                     </button>
                                                 ) : (
-                                                    <button onClick={() => { setIsLockModalOpen(true) }} className='button-style-regular'>
+                                                    <button onClick={() => { setIsModalOpen(true); setModalType('lock') }} className='button-style-regular'>
                                                         LOCK DATA
                                                     </button>
                                                 )}

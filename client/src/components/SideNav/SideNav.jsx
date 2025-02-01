@@ -16,9 +16,9 @@ import { useScreenContext } from "../../context/ScreenContext";
 
 import { RxDoubleArrowLeft } from "react-icons/rx";
 
-import { motion } from "framer-motion";
-
 import { creatorCosts } from '../../config/gameConfig';
+
+import { useMarketplace } from '../../context/MarketplaceProvider';
 
 const SideNav = ({
     info,
@@ -33,7 +33,6 @@ const SideNav = ({
     page,
     setPage,
     createOffchainMetadata,
-    deleteMetadata,
     isDisabled,
     setIsDisabled,
     userRole,
@@ -42,8 +41,12 @@ const SideNav = ({
     lockedStatus,
     createLockStatus,
     setCreateLockStatus,
-    disableDeleteButton
 }) => {
+
+    const {
+        setIsModalOpen,
+        setModalType
+    } = useMarketplace()
 
     const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
 
@@ -98,11 +101,6 @@ const SideNav = ({
     const canEditFields =
         (isAdmin && !isMetadataLocked) ||
         (userRole === 'member' && isCreator && !isMetadataLocked);
-
-    // Determine if the user can edit storeInfo
-    const canEditStoreInfo =
-        isAdmin ||
-        (userRole === 'member' && page === 'create');
 
     // List of attributes to track for talents
     const attributesToTrack = talents;
@@ -342,21 +340,9 @@ const SideNav = ({
                 {/* Image Upload */}
                 {page === 'create' && <div>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>Upload Image:</label>
-                    <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        required
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            border: '1px solid #555',
-                            backgroundColor: '#2E2E2E',
-                            color: '#FFF',
-                        }}
-                    />
+                    <div className="d-flex align-items-center gap-2" style={{width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray'}}>
+                        <button type="button" className='button-style-regular' onClick={() => {setIsModalOpen(true); setModalType('image')}}>Select Image</button>
+                    </div>
                 </div>}
 
                 {/* Attributes */}

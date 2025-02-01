@@ -9,8 +9,9 @@ import TxModalDelete from './ModalTypes/TxModalDelete';
 import TxModalLockData from './ModalTypes/TxModalLockData';
 
 import "../../Modal.css"; // Ensure this CSS file exists
+import TxModalUploadImage from './ModalTypes/TxModalUploadImage';
 
-const ModalManager = ({  resetConfirmModal, createNft, createOffchainMetadata, deleteMetadata }) => {
+const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, handleImageChange }) => {
     
     const {
         modalType
@@ -22,11 +23,13 @@ const ModalManager = ({  resetConfirmModal, createNft, createOffchainMetadata, d
 
         switch (modalType) {
             case "mint":
-                return <TxModalMint resetConfirmModal={resetConfirmModal} createNft={createNft} />;
+                return <TxModalMint createNft={createNft} />;
             case "delete":
-                return <TxModalDelete resetConfirmModal={resetConfirmModal} deleteMetadata={deleteMetadata} />;
+                return <TxModalDelete deleteMetadata={deleteMetadata} />;
             case "lock":
-                return <TxModalLockData resetConfirmModal={resetConfirmModal} createOffchainMetadata={createOffchainMetadata} />;
+                return <TxModalLockData createOffchainMetadata={createOffchainMetadata} />;
+            case "image":
+                return <TxModalUploadImage handleImageChange={handleImageChange} />
             default:
                 return <TxModal createNft={createNft} />; //Default for Stripe Redirect
         }

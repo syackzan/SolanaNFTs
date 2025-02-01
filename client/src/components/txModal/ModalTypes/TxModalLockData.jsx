@@ -19,7 +19,7 @@ const TxModalLockData = ({ createOffchainMetadata }) => {
     return (
         <>
             {/* TX Header */}
-            <TxModalHeader />
+            <TxModalHeader title={'Lock Data'} />
 
             {/* Modal Body */}
             <div className="modal-body">
@@ -28,9 +28,10 @@ const TxModalLockData = ({ createOffchainMetadata }) => {
                 </div>
                 {/* Status Indicators */}
                 <div className="loading-details">
+                    <div className='text-start marykate' style={{fontSize:'1.4rem'}}>Transactions List</div>
                     <div className="d-flex gap-2 align-items-center">
                         {renderTxStateIcon(txState)}
-                        <h5 className="modal-title">Create OffChain Data</h5>
+                        <h5 className="modal-title">Create Off-Chain Data</h5>
                     </div>
                     <div className="d-flex gap-2 align-items-center">
                         {renderCreateStateIcon(createState)}

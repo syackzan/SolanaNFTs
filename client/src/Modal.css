@@ -147,9 +147,9 @@
 
 /* Circle styling for 'empty' state */
 .tx-state-icon.circle {
-    background-color: #ccc;
+    background-color: #454545;
     /* Light gray for 'empty' state */
-    border: 2px solid #aaa;
+    border: 2px solid #626262;
     /* Slightly darker border */
 }
 

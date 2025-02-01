@@ -6,12 +6,21 @@ import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
+import TxModalManager from '../txModal/TxModalManager';
+
 const NFTPreview = ({
     info,
     attributes,
     storeInfo,
     image,
+    handleImageChange
 }) => {
+
+    const {
+        isModalOpen
+    } = useMarketplace();
 
     // Determine rarity and background shadow
     const rarity = attributes.find(attr => attr.trait_type === "rarity")?.value || "Epic";
@@ -101,6 +110,7 @@ const NFTPreview = ({
                     </div>
                 </button>
             </div>
+            {isModalOpen && <TxModalManager handleImageChange={handleImageChange} />}
             <MobileDetailsButton />
         </div>
     );

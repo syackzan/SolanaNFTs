@@ -184,7 +184,6 @@ const Homepage = () => {
                 // Validate image dimensions
                 if (width >= 512 || height >= 512 || width !== height) {
                     alert("Image dimensions must be 512x512 or smaller, and same width/height.");
-                    setImage(tempImage);
                     e.target.value = ""; // Reset the file input
                 } else {
                     setImage(file); // Set the image as usual if valid
@@ -475,7 +474,8 @@ const Homepage = () => {
                             info={info}
                             attributes={attributes}
                             storeInfo={storeInfo}
-                            image={image} />}
+                            image={image}
+                            handleImageChange={handleImageChange} />}
                     {page === "update" &&
                         <NFTUpdate
                             setInfo={setInfo}

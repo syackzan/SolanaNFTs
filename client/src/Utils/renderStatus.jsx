@@ -1,7 +1,7 @@
 export const renderTxStateIcon = (txState) => {
     switch (txState) {
         case 'empty':
-            return <div className="tx-state-icon circle"></div>;
+            return <div className="tx-state-icon">-</div>;
         case 'started':
             return <div className="loader"></div>;
         case 'complete':
@@ -16,7 +16,7 @@ export const renderTxStateIcon = (txState) => {
 export const renderCreateStateIcon = (createState) => {
     switch (createState) {
         case 'empty':
-            return <div className="tx-state-icon circle"></div>;
+            return <div className="tx-state-icon">-</div>;
         case 'started':
             return <div className="loader"></div>;
         case 'complete':
