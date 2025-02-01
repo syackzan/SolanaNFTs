@@ -327,7 +327,6 @@ const Marketplace = () => {
                     nfts={nfts}
                     selectedIndex={selectedIndex}
                     setSelectedIndex={setSelectedIndex}
-
                     location='marketplace'
                     openModal={openModal}
                     setEditData={setEditData}

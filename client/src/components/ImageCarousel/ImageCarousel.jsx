@@ -41,7 +41,7 @@ const ImageCarousel = () => {
     return (
         <div className="carousel-wrapper">
             <AnimatePresence mode="wait">
-                {nfts.length > 0 && (
+                {nfts.length > 0 ? (
                     <motion.div
                         key={currentIndex} // Key ensures AnimatePresence recognizes slide changes
                         initial={{ x: 300, opacity: 0 }} // Start off-screen to the right
@@ -141,7 +141,7 @@ const ImageCarousel = () => {
                             );
                         })()}
                     </motion.div>
-                )}
+                ) : (<div className="loader-advanced"></div>)}
             </AnimatePresence>
         </div>
     );

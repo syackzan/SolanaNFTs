@@ -31,7 +31,7 @@ const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, hand
             case "image":
                 return <TxModalUploadImage handleImageChange={handleImageChange} />
             default:
-                return <TxModal createNft={createNft} />; //Default for Stripe Redirect
+                return <TxModalMint createNft={createNft} />; //Default for Stripe Redirect
         }
     };
 

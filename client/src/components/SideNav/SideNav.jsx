@@ -152,13 +152,25 @@ const SideNav = ({
         <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
             <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
                 <div className="d-flex gap-3 p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
-                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('create'); }}>Create</button>
-                    <button className="button-style-thin" onClick={() => { resetEverything(); setPage('update'); }}>Edit</button>
+                    <button
+                        className={`button-style-thin ${page === 'create' ? 'selected' : ''}`}
+                        onClick={() => { resetEverything(); setPage('create'); }}
+                    >
+                        Create
+                    </button>
+
+                    <button
+                        className={`button-style-thin ${page === 'update' ? 'selected' : ''}`}
+                        onClick={() => { resetEverything(); setPage('update'); }}
+                    >
+                        Edit
+                    </button>
+
                 </div>
                 {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
             </div>
             <h2 className="sidenav-title marykate m-0" >{title}</h2>
-            {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{fontSize: '1.5rem'}}>[select an item to update]</h5>}
+            {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[select an item to update]</h5>}
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
@@ -340,8 +352,8 @@ const SideNav = ({
                 {/* Image Upload */}
                 {page === 'create' && <div>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>Upload Image:</label>
-                    <div className="d-flex align-items-center gap-2" style={{width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray'}}>
-                        <button type="button" className='button-style-regular' onClick={() => {setIsModalOpen(true); setModalType('image')}}>Select Image</button>
+                    <div className="d-flex align-items-center gap-2" style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray' }}>
+                        <button type="button" className='button-style-regular' onClick={() => { setIsModalOpen(true); setModalType('image') }}>Select Image</button>
                     </div>
                 </div>}
 

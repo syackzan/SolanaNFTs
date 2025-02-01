@@ -4,6 +4,8 @@ import { filterNFTs, sortNFTsByRarity } from '../../Utils/filterUtils'
 
 import { URI_SERVER } from "../../config/config";
 
+import { useWallet } from "@solana/wallet-adapter-react";
+
 const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     const [nfts, setNfts] = useState([]);
     const [nftsToSort, setNftsToSort] = useState([]);
@@ -14,6 +16,8 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     const [selectedRarity, setSelectedRarity] = useState("all");
     const [selectedCreator, setSelectedCreator] = useState('all');
     const [isFetched, setIsFetched] = useState(false);
+
+    const wallet = useWallet();
 
     // Fetch NFT metadata
     const fetchNFTs = async () => {
@@ -41,10 +45,15 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
                     creator: selectedCreator
                 };
 
+                if(wallet.publicKey){
+                    searchFilter.creator = wallet.publicKey.toString();
+                    setSelectedCreator(wallet.publicKey.toString());
+                }
+
                 const nftsForStore = sortNFTsByRarity(filteredNFTs);
                 setNftsToSort(nftsForStore);
 
-                setNfts(filterNFTs(nftsForStore,searchFilter));
+                setNfts(filterNFTs(nftsForStore, searchFilter));
                 
                 console.log("store nfts: ", nftsForStore);
                 setIsFetched(true);
