@@ -4,7 +4,7 @@ import "../../css/stripe.css"; // Import your custom CSS
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
-import { URI_SERVER } from "../../config/config";
+import { URI_FRONTEND } from "../../config/config";
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
@@ -34,7 +34,7 @@ const CheckoutForm = ({ setStripeModal, nft, preCalcPayment }) => {
                 // The `Elements` instance used to create the Payment Element.
                 elements,
                 confirmParams: {
-                    return_url: `${URI_SERVER}/${nft._id}/${wallet.publicKey.toString()}`,
+                    return_url: `${URI_FRONTEND}/marketplace/${nft._id}/${wallet.publicKey.toString()}`,
                 },
             });
     

@@ -22,8 +22,7 @@ function App() {
             <MarketplaceProvider>
               <Marketplace />
             </MarketplaceProvider>} />
-          <Route path='/marketplace/:id/:redirectAddress/' element={
-            <MarketplaceProvider>
+          <Route path='/marketplace/:id/:redirectAddress' element={<MarketplaceProvider>
               <Marketplace />
             </MarketplaceProvider>} />
           <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />

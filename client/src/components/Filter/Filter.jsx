@@ -51,7 +51,7 @@ const Filter = ({
 
     useEffect(() => {
 
-        if (wallet.publicKey) {
+        if (wallet.publicKey && filterByCreator) {
             setChecked(true);
         }
 
