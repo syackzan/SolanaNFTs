@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
+
+import { GlobalVars } from '../GlobalVariables/GlobalVariables';
 
 const PrintNfts = ({
     nfts,
@@ -13,15 +15,25 @@ const PrintNfts = ({
     openModal,
     isAdmin = false,
     setEditData,
-    setPaymentTracker,
-    setIsLockModalOpen }) => {
+    setPaymentTracker }) => {
+
+    const { userNfts } = useContext(GlobalVars);
+
+    const [reBuying, setReBuying] = useState({}); // Track NFTs that can be rebought
 
     const isLocked = nfts[selectedIndex]?.storeInfo?.metadataUri ? true : false;
 
     const {
         setIsModalOpen,
-        setModalType,
+        setModalType
     } = useMarketplace();
+
+    // Check if NFT is purchased
+    const isPurchased = (nft) => userNfts.some((ownedNft) => ownedNft.name === nft.description);
+
+    const buyAgain = (nft) => {
+        setReBuying((prev) => ({ ...prev, [nft.description]: true }));
+    };
 
     return (
         <>
@@ -70,6 +82,7 @@ const PrintNfts = ({
                                 )?.value || 0;
 
                                 const isSelected = selectedIndex === index;
+                                const purchased = isPurchased(nft); // Check if the NFT is owned
 
                                 return (
                                     <div key={index} style={{ display: 'inline-block' }}>
@@ -80,7 +93,11 @@ const PrintNfts = ({
                                         </div>
                                         <button
                                             className={`${rarityClass} ${isSelected ? "selected" : ""}`}
-                                            style={{ marginBottom: "5px" }}
+                                            style={{
+                                                marginBottom: "5px",
+                                                opacity: purchased ? 0.6 : 1,  // 🔹 Gray effect for owned items
+                                                filter: purchased ? "grayscale(50%)" : "none", // 🔹 Subtle desaturation effect
+                                            }}
                                             onClick={() => { setEditData(nft), setSelectedIndex(index) }}
                                         >
                                             <div className="d-flex" style={{ marginBottom: '10px' }}>
@@ -162,12 +179,21 @@ const PrintNfts = ({
                                         ) : location === "marketplace" && isSelected ? (
                                             <>
                                                 <div className="d-flex align-items-center justify-content-between p-2" style={{ backgroundColor: "#1e1e2f", borderRadius: "8px", color: "#ffffff" }}>
-                                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>BUY WITH:</div>
-                                                    <div className="d-flex gap-2">
-                                                        <button onClick={() => { openModal('CARD'), setPaymentTracker('CARD') }} className='button-style-regular'>Card</button>
-                                                        <button onClick={() => { openModal('BABYBOOH'), setPaymentTracker('BABYBOOH') }} className='button-style-regular'>BabyBooh</button>
-                                                        <button onClick={() => { openModal('SOL'), setPaymentTracker('SOL') }} className='button-style-regular'>SOL</button>
-                                                    </div>
+                                                    {purchased && !reBuying[nft.description] ? (
+                                                        <>
+                                                            <div style={{ fontSize: "1rem", fontWeight: "500" }}>ALREADY OWNED:</div>
+                                                            <button onClick={() => buyAgain(nft)} className='button-style-regular'>BUY AGAIN</button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <div style={{ fontSize: "1rem", fontWeight: "500" }}>BUY WITH:</div>
+                                                            <div className="d-flex gap-2">
+                                                                <button onClick={() => { openModal('CARD'); setPaymentTracker('CARD'); }} className='button-style-regular'>Card</button>
+                                                                <button onClick={() => { openModal('BABYBOOH'); setPaymentTracker('BABYBOOH'); }} className='button-style-regular'>BabyBooh</button>
+                                                                <button onClick={() => { openModal('SOL'); setPaymentTracker('SOL'); }} className='button-style-regular'>SOL</button>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </>
                                         ) : null}
@@ -188,7 +214,7 @@ const PrintNfts = ({
                 }}
             >
                 <div className='loader'></div>
-                <div className="marykate" style={{fontSize: '1.5rem'}}>Loading Up...</div>
+                <div className="marykate" style={{ fontSize: '1.5rem' }}>Loading Up...</div>
             </div>)}
         </>
     )

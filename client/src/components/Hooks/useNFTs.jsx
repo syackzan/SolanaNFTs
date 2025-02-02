@@ -45,10 +45,9 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
                     creator: selectedCreator
                 };
 
-                if(wallet.publicKey){
-                    searchFilter.creator = wallet.publicKey.toString();
-                    setSelectedCreator(wallet.publicKey.toString());
-                }
+                // if(sortByPlayer && wallet.publicKey){
+                //     searchFilter.creator = wallet.publicKey.toString();
+                // }
 
                 const nftsForStore = sortNFTsByRarity(filteredNFTs);
                 setNftsToSort(nftsForStore);
@@ -67,6 +66,8 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
                     creator: selectedCreator
                 };
 
+                console.log(searchFilter);
+
                 setNfts(sortNFTsByRarity(filterNFTs(nftsToSort, searchFilter)));
             }
         } catch (e) {
@@ -77,7 +78,7 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
     // Re-fetch whenever filters change
     useEffect(() => {
         fetchNFTs();
-    }, [selectedType, selectedRarity, selectedSubType, selectedCreator]);
+    }, [selectedType, selectedRarity, selectedSubType, selectedCreator, refetchNFTs]);
 
     useEffect(() => {
         const updatedDatabase = async () => {

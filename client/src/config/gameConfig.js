@@ -88,6 +88,14 @@ export const storeInfoData = {
 };
 
 // Option Types for Select Inputs
+
+export const generalTypes = [
+    'skin',
+    'weapon',
+    'armor',
+    'accessory'
+]
+
 export const affinityOptions = [
     'fire',
     'ice',
@@ -113,6 +121,7 @@ export const weaponOptions = [
     'dagger',
     'staff',
     'bow',
+    'scythe'
 ];
 
 export const skinOptions = [

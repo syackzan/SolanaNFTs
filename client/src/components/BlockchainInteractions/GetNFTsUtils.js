@@ -1,8 +1,11 @@
-import { IS_MAINNET } from "../config";
+import { IS_MAINNET, COLLECTION_ADDRESS } from "../../config/config";
+
+import axios from 'axios';
+import { URI_SERVER } from '../../config/config';
 
 export const fetchNFTsUtils = async (ownerAddress) => {
     try {
-      const wallet = 'B8autx5b8RH4po9XPshCiPc2buyApDpG2nmmCmvJXrn5';
+      const wallet = ownerAddress;
   
       const body = {
         method: "qn_fetchNFTs", // QuickNode's method for fetching NFTs
@@ -29,7 +32,7 @@ export const fetchNFTsUtils = async (ownerAddress) => {
   
       const data = await response.json();
 
-      // const collection = data.result.assets.filter((nft) => nft.tokenAddress === "8FnXjSmuZBEcnvB9fceHoMBjMpFQgtXjhmVisBATXCyV");
+      const collection = data.result.assets.filter((nft) => nft.tokenAddress === COLLECTION_ADDRESS);
   
       if (data.error) {
         throw new Error(`QuickNode Error: ${data.error.message}`);
@@ -44,3 +47,29 @@ export const fetchNFTsUtils = async (ownerAddress) => {
     }
   };
   
+  // Function to fetch NFTs owned by the wallet
+export const getCoreNftsServer = async (walletString) => {
+  try {
+      if (!walletString) {
+          console.error("No wallet public key provided.");
+          return;
+      }
+
+      // Send request to backend to fetch assets
+      const response = await axios.post(`${URI_SERVER}/api/nft/getCoreNfts`, {
+          walletPublicKey: walletString, // Send wallet address as a string
+      });
+
+      // Extract NFT data from response
+      if (response.data.success) {
+          console.log("Fetched NFTs:", response.data.data);
+          return response.data.data; // Return the NFT data
+      } else {
+          console.error("Error fetching NFTs:", response.data.message);
+          return [];
+      }
+  } catch (error) {
+      console.error("Error fetching assets:", error.message || error);
+      return [];
+  }
+};

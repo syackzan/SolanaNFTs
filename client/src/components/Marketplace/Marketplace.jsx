@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreNft, createSendSolTx, getCoreNftsClient } from '../BlockchainInteractions/blockchainInteractions';
 
 import Navbar from '../Navbar/Navbar';
 import PrintNfts from '../PrintNfts/PrintNfts';

@@ -35,6 +35,9 @@ export const MarketplaceProvider = ({ children }) => {
     //RENDER INFO CONTROLLER
     const [nameTracker, setNameTracker] = useState('');
 
+    //TRACK UPLOADED IMAGES NAME
+    const [imageName, setImageName] = useState('');
+
     const resetTxModal = () => {
         setIsModalOpen(false);
         setTxState('empty');
@@ -78,7 +81,9 @@ export const MarketplaceProvider = ({ children }) => {
                 setIsDeleteModalOpen,
                 isLockModalOpen,
                 setIsLockModalOpen,
-                resetTxModal
+                resetTxModal,
+                imageName,
+                setImageName
             }}
         >
             {children}

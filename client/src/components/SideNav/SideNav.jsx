@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {
+    generalTypes,
     affinityOptions,
     armorOptions,
     weaponOptions,
@@ -45,7 +46,8 @@ const SideNav = ({
 
     const {
         setIsModalOpen,
-        setModalType
+        setModalType,
+        imageName
     } = useMarketplace()
 
     const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
@@ -353,7 +355,13 @@ const SideNav = ({
                 {page === 'create' && <div>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>Upload Image:</label>
                     <div className="d-flex align-items-center gap-2" style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray' }}>
-                        <button type="button" className='button-style-regular' onClick={() => { setIsModalOpen(true); setModalType('image') }}>Select Image</button>
+                        <button
+                            type="button"
+                            className='button-style-regular'
+                            onClick={() => { setIsModalOpen(true); setModalType('image') }}>
+                            Select Image
+                        </button>
+                        {imageName ? (<>{imageName}</>) : (<>No image selected</>)} 
                     </div>
                 </div>}
 
@@ -407,10 +415,11 @@ const SideNav = ({
                                     }}
                                 >
                                     <option value="">Select...</option>
-                                    <option value="weapon">Weapon</option>
-                                    <option value="armor">Armor</option>
-                                    <option value="skin">Skin</option>
-                                    <option value="accessories">Accessory</option>
+                                    {generalTypes.map((type) => (
+                                        <option key={type} value={type}>
+                                            {type.charAt(0).toUpperCase() + type.slice(1)} {/* Capitalizes first letter */}
+                                        </option>
+                                    ))}
                                 </select>
                             ) : attribute.trait_type === "subType" ? (
                                 <select

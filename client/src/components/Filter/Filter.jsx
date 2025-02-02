@@ -8,6 +8,19 @@ import Switch from 'react-switch';
 
 import '../../css/mobile-Filter.css'
 
+import {
+    generalTypes,
+    affinityOptions,
+    armorOptions,
+    weaponOptions,
+    skinOptions,
+    accessoriesOptions,
+    rarityOptions,
+    pricingValues,
+    talenPointSpread,
+    talents
+} from '../../config/gameConfig';
+
 const Filter = ({
     title,
     selectedType,
@@ -49,13 +62,10 @@ const Filter = ({
         }
     }
 
-    useEffect(() => {
-
-        if (wallet.publicKey && filterByCreator) {
-            setChecked(true);
-        }
-
-    }, [wallet.publicKey])
+    const filteredGeneralTypes = [...generalTypes, 'all'];; //Add all for search filters
+    const filteredWeaponOptions = [...weaponOptions, 'all'];
+    const filteredArmorOptions = [...armorOptions, 'all'];
+    const filteredRarityOptions = [...rarityOptions, 'all'];
 
     return (
         <div className="d-flex flex-column" style={{ color: 'white', padding: '0px 25px' }}>
@@ -64,7 +74,7 @@ const Filter = ({
 
                 {/* Desktop Button Group */}
                 <div className="disable-on-mobile d-flex gap-3">
-                    {["skin", "weapon", "armor", "accessory", "all"].map((item) => (
+                    {filteredGeneralTypes.map((item) => (
                         <button
                             key={item}
                             href="#"
@@ -89,7 +99,7 @@ const Filter = ({
                     </div>
                     {isDropdownOpenType && (
                         <ul className="dropdown-menu">
-                            {["skin", "weapon", "armor", "accessory", "all"].map((item) => (
+                            {filteredGeneralTypes.map((item) => (
                                 <li key={item} className="dropdown-item">
                                     <button
                                         className="dropdown-item-button"
@@ -128,7 +138,7 @@ const Filter = ({
                     <div>
                         <div className="d-flex gap-2" style={{ marginBottom: '10px' }}>
                             +
-                            {["sword", "dagger", "bow", "axe", "staff", "all"].map((item) => (
+                            {filteredWeaponOptions.map((item) => (
                                 <button
                                     key={item}
                                     className={selectedSubType === item ? "circle-button-selected" : "circle-button"}
@@ -144,7 +154,7 @@ const Filter = ({
                     <div>
                         <div className="d-flex gap-2" style={{ marginBottom: '10px' }}>
                             +
-                            {["chest", "leggings", "helm", 'gloves', "all"].map((item) => (
+                            {filteredArmorOptions.map((item) => (
                                 <button
                                     key={item}
                                     className={selectedSubType === item ? "circle-button-selected" : "circle-button"}
@@ -160,7 +170,7 @@ const Filter = ({
                 {/* Desktop Filter */}
                 <div className="d-flex gap-2 disable-on-mobile">
                     +
-                    {["common", "uncommon", "rare", "epic", "legendary", "all"].map((item) => (
+                    {filteredRarityOptions.map((item) => (
                         <button
                             key={item}
                             className={selectedRarity === item ? "circle-button-selected" : "circle-button"}
@@ -184,7 +194,7 @@ const Filter = ({
                     </div>
                     {isDropdownOpenRarity && (
                         <ul className="dropdown-menu">
-                            {["common", "uncommon", "rare", "epic", "legendary", "all"].map((item) => (
+                            {filteredRarityOptions.map((item) => (
                                 <li key={item} className="dropdown-item">
                                     <button
                                         className="dropdown-item-button"

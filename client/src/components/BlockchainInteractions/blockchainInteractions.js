@@ -15,7 +15,7 @@ import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
 
 import { IS_MAINNET } from '../../config/config'
 import axios from 'axios';
-import { URI_SERVER } from '../../config/config'
+import { URI_SERVER, COLLECTION_ADDRESS } from '../../config/config'
 // import { computeTxUnits, getPriorityFee } from './computeUnits'
 
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
@@ -156,3 +156,43 @@ export const getTokenBalance = async (walletAddress, connection) => {
         return null;
     }
 };
+
+export const getCoreNftsClient = async (walletAddress) => {
+
+    try {
+        // Extract wallet public key from the request
+        const ownerType = new PublicKey(walletAddress); // Ensure `walletPublicKey` is sent in the request body
+    
+        // Fetch assets owned by the specified wallet
+        const fetchedAssets = await fetchAssetsByOwner(umi, ownerType, {
+          skipDerivePlugins: false,
+        });
+    
+        // console.log('Fetched assets:', assetsByOwner);
+    
+        // Remove unnecessary fields (rentEpoch, lamports, pluginHeader, immutableMetadata)
+        const sanitizedAssets = fetchedAssets.map(({ header, pluginHeader, immutableMetadata, ...asset }) => {
+          const { rentEpoch, lamports, ...sanitizedHeader } = header; // Remove rentEpoch and lamports
+          return {
+            ...asset,
+            header: sanitizedHeader, // Include sanitized header without rentEpoch and lamports
+          };
+        });
+
+        const collection = sanitizedAssets.filter((nft) => nft.updateAuthority.address === COLLECTION_ADDRESS);
+
+        console.log("collection", collection);
+
+        return collection;
+    
+      } catch (error) {
+        console.error('Error fetching assets:', error);
+    
+        // Return an error response
+        res.status(500).json({
+          success: false,
+          message: 'Failed to fetch assets',
+          error: error.message || 'An unexpected error occurred',
+        });
+      }
+}

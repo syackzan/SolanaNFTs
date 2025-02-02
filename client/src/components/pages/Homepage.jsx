@@ -72,7 +72,8 @@ const Homepage = () => {
     const {
         setTxState,
         setCreateState,
-        setTransactionSig
+        setTransactionSig,
+        setImageName
     } = useMarketplace();
 
     //Handles Page switching for UI
@@ -107,7 +108,7 @@ const Homepage = () => {
         setAttributes(attributesData);
         setProperties(propertiesData);
         setStoreInfo(storeInfoData);
-
+        setImageName('');
         setImage(null);
         setNewMetadata(null);
     }
@@ -187,6 +188,7 @@ const Homepage = () => {
                     e.target.value = ""; // Reset the file input
                 } else {
                     setImage(file); // Set the image as usual if valid
+                    setImageName(file.name);
                 }
 
                 URL.revokeObjectURL(fileURL); // Clean up the temporary URL

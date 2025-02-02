@@ -45,10 +45,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setPaymentTracker,
         setSolPriceLoaded,
         setNameTracker,
-        isDeleteModalOpen,
-        setIsDeleteModalOpen,
-        isLockModalOpen,
-        setIsLockModalOpen,
         setModalType
     } = useMarketplace();
 
@@ -67,8 +63,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setTxState('empty');
         setCreateState('empty');
         setTransactionSig(null);
-        setIsDeleteModalOpen(null);
-        setIsLockModalOpen(null);
     };
 
     const setEditData = async (nft) => {
@@ -158,8 +152,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 isAdmin={isAdmin}
                 setEditData={setEditData}
                 createOffchainMetadata={createOffchainMetadata}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-                setIsLockModalOpen={setIsLockModalOpen}
             />
             {isModalOpen && <TxModalManager
                 resetConfirmModal={resetConfirmModal}
@@ -167,19 +159,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 createOffchainMetadata={createOffchainMetadata}
                 deleteMetadata={deleteMetadata}
             />}
-
-            {/* {isModalOpen && <TxModal
-                resetConfirmModal={resetConfirmModal}
-                createNft={createNft}
-            />}
-            {isDeleteModalOpen && <TxModalDelete
-                resetConfirmModal={resetConfirmModal}
-                deleteMetadata={deleteMetadata}
-            />}
-            {isLockModalOpen && <TxModalLockData
-                resetConfirmModal={resetConfirmModal}
-                createOffchainMetadata={createOffchainMetadata}
-            />} */}
             <MobileDetailsButton />
         </div>
     );
