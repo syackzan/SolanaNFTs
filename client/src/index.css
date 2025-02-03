@@ -13,9 +13,9 @@
   -moz-osx-font-smoothing: grayscale;
 } */
 
-/* html{
-  overflow: hidden;
-} */
+html{
+  background-color: rgb(30, 30, 30);
+}
 
 @font-face {
   font-family: "lazy-dog";
@@ -303,8 +303,8 @@ textarea:disabled{
 }
 
 .login-nav-button {
-  font-size: 16px;
-  width: 125px;
+  font-size: 14px;
+  width: 175px;
   color: white;
   background: linear-gradient(90deg, #6a0dad 0%, #3e0076 100%);
   /* Deeper purple gradient */
@@ -317,7 +317,16 @@ textarea:disabled{
   /* Maintained text glow */
   font-weight: bold;
   text-align: center;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
+  padding: 10px 0px;
+}
+
+@media (max-width: 768px){
+  .login-nav-button{
+    font-size: 12px;
+    width: 125px;
+    letter-spacing: 0px;
+  }
 }
 
 .login-nav-button:hover {

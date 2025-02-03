@@ -117,6 +117,8 @@ const Marketplace = () => {
                         if (nfts[selectedIndex]?.storeInfo?.price) {
                             const toNumber = Number(nfts[selectedIndex].storeInfo.price);
 
+                            if(!wallet.publicKey) return;
+
                             // Create a PaymentIntent
                             const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
                             if (data?.client_secret) {
@@ -141,7 +143,7 @@ const Marketplace = () => {
         };
 
         setUpModalPricing();
-    }, [isModalOpen]);
+    }, [isModalOpen, wallet.publicKey]);
 
     const openModal = async () => {
         setIsModalOpen(true);

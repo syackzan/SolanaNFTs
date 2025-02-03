@@ -21,6 +21,9 @@ import { creatorCosts } from '../../config/gameConfig';
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
+import { useWallet } from '@solana/wallet-adapter-react';
+import SolConnection from '../Connection/SolConnection';
+
 const SideNav = ({
     info,
     attributes,
@@ -49,6 +52,8 @@ const SideNav = ({
         setModalType,
         imageName
     } = useMarketplace()
+
+    const wallet = useWallet();
 
     const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
 
@@ -88,7 +93,7 @@ const SideNav = ({
     }
 
     // Determine the page title dynamically
-    const title = page === 'create' ? 'Metadata Creator' : 'Metadata Editor';
+    const title = page === 'create' ? 'Concept Creator' : 'Concept Editor';
 
     // Check if the metadata is locked
     const isMetadataLocked = !!storeInfo.metadataUri;
@@ -173,6 +178,7 @@ const SideNav = ({
             </div>
             <h2 className="sidenav-title marykate m-0" >{title}</h2>
             {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[select an item to update]</h5>}
+            {page === 'create'&& <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[Connect Wallet - Fill out form below]</h5>}
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
@@ -197,6 +203,10 @@ const SideNav = ({
                 if (form.checkValidity()) {
 
                     try {
+
+                        if(page === 'create'){
+                            setIsCreating(true);
+                        }
 
                         const success = await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
 
@@ -354,10 +364,12 @@ const SideNav = ({
                 {/* Image Upload */}
                 {page === 'create' && <div>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>Upload Image:</label>
-                    <div className="d-flex align-items-center gap-2" style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray' }}>
+                    <div className="d-flex align-items-center gap-2" 
+                    style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray', opacity: !canEditFields ? '0.5' : '1' }}>
                         <button
                             type="button"
                             className='button-style-regular'
+                            disabled={!canEditFields} //disabled
                             onClick={() => { setIsModalOpen(true); setModalType('image') }}>
                             Select Image
                         </button>
@@ -575,17 +587,19 @@ const SideNav = ({
                         <>
                             {isCreating ? (
                                 <div className="d-flex justify-content-center gap-3 align-items-center">
-                                    <div>Creating...</div>
                                     <div className='loader'></div>
+                                    <div>Generating concept...</div>
                                 </div>
                             ) : isCreated ? (
-                                <div>Metadata Created!</div>
+                                <div>NFT Concept Created!</div>
                             ) : (
-                                <div>Generate NFT Metadata</div>
+                                <>
+                                    {wallet.publicKey ? <>Create NFT Concept</> : <SolConnection />}
+                                </>
                             )}
                         </>
                     ) : (
-                        <div>Update NFT Metadata</div>
+                        <div>Update NFT Concept</div>
                     )}
                 </button>}
             </form>

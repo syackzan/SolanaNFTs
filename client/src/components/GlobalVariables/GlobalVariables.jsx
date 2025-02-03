@@ -20,7 +20,6 @@ export const GlobalVariables = ({ children }) => {
 
             if (wallet.publicKey) {
                 const data = await getCoreNftsClient(wallet.publicKey.toString());
-                console.log('Global Variables:', data);
                 setUserNfts(data);
             }
 

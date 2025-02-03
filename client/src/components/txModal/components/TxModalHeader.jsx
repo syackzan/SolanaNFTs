@@ -4,30 +4,45 @@ import { useMarketplace } from '../../../context/MarketplaceProvider';
 
 import BoohLogo from '../../../assets/BoohLogo.svg';
 
-const TxModalHeader = ({title = 'Confirmation', disableCloseButton = false}) => {
+const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) => {
 
     const {
-            redirectSecret,
-            resetTxModal
-        } = useMarketplace();
+        redirectSecret,
+        resetTxModal,
+        setIsModalOpen,
+        setModalType
+    } = useMarketplace();
 
-        // Function to handle closing and redirecting
+    // Function to handle closing and redirecting
     const handleClose = (e) => {
         e.preventDefault();
         resetTxModal();
         window.location.href = '/marketplace';
     };
 
+    const simpleModalClose = () => {
+        console.log('simple close');
+        setIsModalOpen(false);
+        setModalType('');
+    }
+
     return (
         <>
             {/* Close button */}
-            {!disableCloseButton && <div className="d-flex justify-content-end">
-                {redirectSecret ? (
-                    <a href="/marketplace" className="modal-close-top-right" onClick={handleClose}>&times;</a>
+            {!disableSimpleClose ?
+                (<div className="d-flex justify-content-end">
+                    {redirectSecret ? (
+                        <a href="/marketplace" className="modal-close-top-right" onClick={handleClose}>&times;</a>
+                    ) : (
+                        <button className="modal-close-top-right" onClick={resetTxModal}>&times;</button>
+                    )}
+                </div> 
                 ) : (
-                    <button className="modal-close-top-right" onClick={resetTxModal}>&times;</button>
-                )}
-            </div>}
+                    <div className="d-flex justify-content-end">
+                        <button className="modal-close-top-right" onClick={simpleModalClose}>&times;</button>
+                    </div>
+                )
+            }
 
             {/* Header */}
             <div className="d-flex justify-content-center align-items-center gap-2" style={{ marginBottom: '10px' }}>

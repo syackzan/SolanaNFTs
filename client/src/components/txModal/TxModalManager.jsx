@@ -10,6 +10,7 @@ import TxModalLockData from './ModalTypes/TxModalLockData';
 
 import "../../Modal.css"; // Ensure this CSS file exists
 import TxModalUploadImage from './ModalTypes/TxModalUploadImage';
+import TxModalDisconnect from './ModalTypes/TxModalDisconnect';
 
 const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, handleImageChange }) => {
     
@@ -30,6 +31,8 @@ const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, hand
                 return <TxModalLockData createOffchainMetadata={createOffchainMetadata} />;
             case "image":
                 return <TxModalUploadImage handleImageChange={handleImageChange} />
+            case "disconnect":
+                return <TxModalDisconnect />
             default:
                 return <TxModalMint createNft={createNft} />; //Default for Stripe Redirect
         }

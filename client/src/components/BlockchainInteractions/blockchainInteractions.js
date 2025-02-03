@@ -142,7 +142,7 @@ export const getTokenBalance = async (walletAddress, connection) => {
         const tokenAccountInfo = await connection.getParsedAccountInfo(associatedTokenAddress[0]);
 
         if (!tokenAccountInfo.value) {
-            console.log("Token account does not exist");
+            // console.log("Token account does not exist");
             return 0; // No balance if account doesn't exist
         }
 
@@ -180,8 +180,6 @@ export const getCoreNftsClient = async (walletAddress) => {
         });
 
         const collection = sanitizedAssets.filter((nft) => nft.updateAuthority.address === COLLECTION_ADDRESS);
-
-        console.log("collection", collection);
 
         return collection;
     

@@ -67,7 +67,7 @@ const Homepage = () => {
     }, [wallet.publicKey])
 
     const [searchParams] = useSearchParams();
-    const action = searchParams.get('action'); // "create" or "view"
+    const action = searchParams.get('action'); // "create" or "update"
 
     const {
         setTxState,
@@ -121,7 +121,6 @@ const Homepage = () => {
         const checkAdminStatus = async () => {
 
             if (wallet.connected) {
-                console.log("Wallet connected:", wallet.publicKey?.toBase58());
 
                 // Call the checkIfAdmin function and await the response
                 const isAdmin = await checkIfAdmin(wallet.publicKey?.toBase58());

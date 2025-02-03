@@ -15,6 +15,9 @@ const LandingPage = () => {
         exit: { opacity: 0, transition: { duration: 0.3 } }, // Ensures smooth transition on exit
     };
 
+    // Detect if mobile
+    const isMobile = window.innerWidth <= 650;
+
     return (
         <div className='landing-page-container'>
             <Navbar />
@@ -63,7 +66,7 @@ const LandingPage = () => {
                             exit="exit"
                             variants={fadeIn}
                         >
-                            <div className="d-flex justify-content-start" style={{ width: '400px' }}>
+                            <div className="d-flex justify-content-start" style={{ width: isMobile ? "350px" : "400px" }}>
                                 <button className="strip-button" onClick={() => setLandingPage('main')}>
                                     <FaArrowLeft />
                                 </button>

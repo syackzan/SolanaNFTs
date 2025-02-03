@@ -1,12 +1,14 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion"; // Import Framer Motion
 import { Link } from 'react-router-dom';
 
-import { IS_MAINNET } from "../../../config/config";
-import { useMarketplace } from '../../../context/MarketplaceProvider';
+import SolConnection from '../../Connection/SolConnection';
+import TxModalHeader from "../components/TxModalHeader";
 
 import { renderTxStateIcon, renderCreateStateIcon, renderCostSign } from "../../../Utils/renderStatus";
-import TxModalHeader from "../components/TxModalHeader";
+import { IS_MAINNET } from "../../../config/config";
+
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useMarketplace } from '../../../context/MarketplaceProvider';
 
 const TxModalMint = ({ createNft }) => {
     const {
@@ -19,7 +21,10 @@ const TxModalMint = ({ createNft }) => {
         redirectSecret,
         nameTracker,
         inGameSpend,
+        setRedirectSecret
     } = useMarketplace();
+
+    const wallet = useWallet();
 
     // Solscan URL for transaction tracking
     const solScanner = useMemo(() => {
@@ -62,15 +67,35 @@ const TxModalMint = ({ createNft }) => {
 
             {/* Confirm Button */}
             <div className="d-flex justify-content-center">
-                {!transactionSig ? (
-                    <div className="d-flex flex-column">
-                        {redirectSecret && <div>[DO NOT LEAVE PAGE! NFT CREATION WILL FAIL]</div>}
-                        {redirectSecret ?
-                            (<div className="button-style-regular">Creating...</div>) :
-                            (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)}
-                    </div>
+                {wallet.publicKey ? (
+                    <>
+                        {!transactionSig ? (
+                            <div className="d-flex flex-column">
+                                {redirectSecret && <div className='center-text'>[DO NOT LEAVE PAGE! SENDING NFT!]</div>}
+                                {redirectSecret ?
+                                    (<div className="text-center">
+                                        Generating...</div>) :
+                                    (
+                                    <button className="button-style-regular" onClick={() => createNft()}>Confirm</button>
+                                    )}
+                            </div>
+                        ) : (
+                            <div className="d-flex flex-column gap-2">
+                                <div className='tracker-container marykate text-center d-flex flex-column' style={{ fontSize: '1.3rem' }}>
+                                    <div>
+                                        <strong>"{nameTracker}"</strong> has been sent to your wallet! Please open your wallet to confirm.
+                                    </div>
+                                    <div>View the transaction on Solscan below.</div>
+                                </div>
+                                <div className='d-flex justify-content-center'>
+                                    <Link className="button-style-regular" to={solScanner} target="_blank">View Transaction</Link>
+                                </div>
+                            </div>
+
+                        )}
+                    </>
                 ) : (
-                    <Link className="button-style-regular" to={solScanner} target="_blank">View Transaction</Link>
+                    <SolConnection />
                 )}
             </div>
         </>

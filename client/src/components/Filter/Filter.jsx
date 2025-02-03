@@ -20,6 +20,7 @@ import {
     talenPointSpread,
     talents
 } from '../../config/gameConfig';
+import { useLocation } from 'react-router-dom';
 
 const Filter = ({
     title,
@@ -61,6 +62,19 @@ const Filter = ({
             setChecked(!checked);
         }
     }
+
+    const location = useLocation();
+    useEffect(() => {
+        
+        if(location.pathname === '/dashboard' && wallet.publicKey){
+            setChecked(true);
+            setSelectedCreator(wallet.publicKey.toString())
+        } else if (location.pathname === '/dashboard' && !wallet.publicKey){
+            setChecked(false);
+            setSelectedCreator('all');
+        }
+
+    }, [wallet.publicKey])
 
     const filteredGeneralTypes = [...generalTypes, 'all'];; //Add all for search filters
     const filteredWeaponOptions = [...weaponOptions, 'all'];

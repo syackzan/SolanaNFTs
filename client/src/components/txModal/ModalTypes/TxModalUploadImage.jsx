@@ -14,19 +14,19 @@ const TxModalUploadImage = ({ handleImageChange }) => {
     return (
         <>
             {/* Close button */}
-            <TxModalHeader title={'Upload Rules'} disableCloseButton={true} />
+            <TxModalHeader title={'Upload Rules'} disableSimpleClose={true} />
 
             {/* Modal Body */}
             <div className="modal-body">
-                <div className="tracker-container d-flex flex-column marykate" style={{fontSize: '1.25rem'}}>
+                <div className="tracker-container d-flex flex-column" style={{ fontSize: '1rem' }}>
+                    <div className='text-center'>Increase chances to turn concept into store NFT by following rules below!</div>
                     <ul>
-                        <li>512px x 512px or less</li>
+                        <li>512px by 512px or less</li>
                         <li>Square</li>
                         <li>SFW (Safe for Work)</li>
                         <li>Transparent background</li>
                         <li>.jpg | .png | .svg </li>
                     </ul>
-                    <div className='text-center'>Items not meeting standards will be deleted with no creator refund.</div>
                 </div>
 
                 {/* Image Upload */}

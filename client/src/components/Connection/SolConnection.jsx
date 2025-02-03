@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
 const SolConnection = () => {
     const walletModal = useWalletModal(); // Wallet modal hook
     const { publicKey, connected, disconnect } = useWallet(); // Wallet hook
 
     const [selectedAddress, setSelectedAddress] = useState('');
+
+    const {setIsModalOpen, setModalType} = useMarketplace();
 
     // Update the selected address whenever the wallet connection changes
     useEffect(() => {
@@ -48,7 +52,9 @@ const SolConnection = () => {
 
     const connectOrDisconnect = () => {
         if (connected) {
-            disconnect(); // Disconnect if already connected
+            // disconnect(); // Disconnect if already connected
+            setIsModalOpen(true);
+            setModalType('disconnect');
         } else {
             connectWallet('sol'); // Attempt to connect
         }
@@ -59,7 +65,7 @@ const SolConnection = () => {
             className={`${connected ? 'disconnect-button' : 'login-nav-button'}`}
             onClick={connectOrDisconnect}
         >
-            {connected ? shortenAddress(selectedAddress, 4) : 'LOGIN'}
+            {connected ? shortenAddress(selectedAddress, 4) : 'CONNECT WALLET'}
         </button>
     );
 };
