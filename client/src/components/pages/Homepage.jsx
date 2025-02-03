@@ -182,7 +182,7 @@ const Homepage = () => {
                 const { width, height } = img;
 
                 // Validate image dimensions
-                if (width >= 512 || height >= 512 || width !== height) {
+                if (width > 512 || height > 512 || width !== height) {
                     alert("Image dimensions must be 512x512 or smaller, and same width/height.");
                     e.target.value = ""; // Reset the file input
                 } else {
