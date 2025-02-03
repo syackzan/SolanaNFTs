@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -14,19 +14,19 @@ function App() {
   return (
     <div>
       <MarketplaceProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard" element={<Homepage />} />
-          <Route path='/collection' element={<Collection />} />
-          <Route path='/marketplace' element={
-            <MarketplaceProvider>
-              <Marketplace />
-            </MarketplaceProvider>} />
-          <Route path='/marketplace/:id/:redirectAddress' element={<Marketplace />} />
-          <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
-        </Routes>
-      </Router>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard" element={<Homepage />} />
+            <Route path='/collection' element={<Collection />} />
+            <Route path='/marketplace' element={
+              <MarketplaceProvider>
+                <Marketplace />
+              </MarketplaceProvider>} />
+            <Route path='/marketplace/:id/:redirectAddress' element={<Marketplace />} />
+            <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
+          </Routes>
+        </Router>
       </MarketplaceProvider>
     </div>
   )
