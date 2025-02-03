@@ -6,8 +6,6 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { FaEdit, FaBook, FaGhost, FaStore } from 'react-icons/fa';
 import { motion, AnimatePresence } from "framer-motion"; // Import AnimatePresence
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
-
 const LandingPage = () => {
     const [landingPage, setLandingPage] = useState('main');
 
@@ -19,10 +17,6 @@ const LandingPage = () => {
 
     // Detect if mobile
     const isMobile = window.innerWidth <= 650;
-
-    const marketplace = useMarketplace();
-    console.log("Marketplace context in production:", marketplace);
-
 
     return (
         <div className='landing-page-container'>
