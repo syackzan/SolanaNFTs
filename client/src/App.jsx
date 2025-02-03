@@ -12,7 +12,6 @@ import { MarketplaceProvider } from './context/MarketplaceProvider';
 function App() {
 
   return (
-    <div>
       <MarketplaceProvider>
         <Router>
           <Routes>
@@ -25,7 +24,6 @@ function App() {
           </Routes>
         </Router>
       </MarketplaceProvider>
-    </div>
   )
 }
 
