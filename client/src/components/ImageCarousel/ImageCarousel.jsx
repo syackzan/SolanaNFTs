@@ -16,6 +16,8 @@ const ImageCarousel = () => {
     const fetchNFTs = async () => {
         try {
             const response = await axios.get(`${URI_SERVER}/api/nft/all`);
+            console.log(URI_SERVER);
+            console.log(response.data);
             setNfts(response.data || []);
         } catch (e) {
             console.error("Error when accessing data", e.response?.data || e.message);
@@ -55,7 +57,7 @@ const ImageCarousel = () => {
                             if (!nft) {
                                 return <div className="loader-advanced"></div>; // Show loading if NFT is undefined
                             }
-                            
+
                             const rarity =
                                 nft.attributes.find((attr) => attr.trait_type === "rarity")?.value ||
                                 "unknown";
