@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { GlobalVars } from '../GlobalVariables/GlobalVariables';
 
@@ -19,12 +19,18 @@ import { IS_MAINNET } from '../../config/config';
 
 import '../../css/mobile-Navbar.css'
 
-const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
+import { useMarketplace } from '../../context/MarketplaceProvider';
+
+const Navbar = ({ resetMetadata, setIsDisabled }) => {
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const wallet = useWallet();
     const { connection } = useConnection();
 
     const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useContext(GlobalVars);
+    const {setPage} = useMarketplace();
 
     const [isMobileNavbar, setIsMobileNavbar] = useState(false);
     const [isHubDropdownOpen, setIsHubDropdownOpen] = useState(false);
@@ -51,6 +57,19 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
         callAsync();
 
     }, [wallet.publicKey]);
+
+    const handlePageChange = (action) => {
+        const isOnDashboard = location.pathname === "/dashboard";
+
+        console.log('Hello, ', isOnDashboard);
+
+        if (isOnDashboard) {
+            setPage(action);
+            console.log('Page is set')
+        } else {
+            navigate(`/dashboard?action=${action}`);
+        }
+    };
 
     return (
         <nav className="store-navbar-main">
@@ -81,15 +100,15 @@ const Navbar = ({ setPage, resetMetadata, setIsDisabled }) => {
                             onMouseEnter={() => setIsHubDropdownOpen(true)}
                             onMouseLeave={() => setIsHubDropdownOpen(false)}
                         >
-                            <Link to="/dashboard?action=update" className="dropdown-trigger">
+                            <Link to="#" className="dropdown-trigger">
                                 Creator Hub
                             </Link>
 
                             {/* Keep menu in the DOM, just toggle the 'open' class */}
                             <div className={`dropdown-menu ${isHubDropdownOpen ? "open" : ""}`}>
-                                <Link to="/dashboard?action=create">Create MD</Link>
-                                <Link to="/dashboard?action=update">Edit MD</Link>
-                                <Link to="/submission">Character</Link>
+                                <button onClick={() => handlePageChange("create")}>Create Concept</button>
+                                <button onClick={() => handlePageChange("update")}>Edit Concept</button>
+                                <Link to="/submission">Subm. Character</Link>
                             </div>
                         </div>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}

@@ -38,6 +38,9 @@ export const MarketplaceProvider = ({ children }) => {
     //TRACK UPLOADED IMAGES NAME
     const [imageName, setImageName] = useState('');
 
+    //MANAGES PAGE SWITCH BETWEEN CREATE & EDIT
+    const [page, setPage] = useState(null);
+
     const resetTxModal = () => {
         setIsModalOpen(false);
         setTxState('empty');
@@ -83,7 +86,9 @@ export const MarketplaceProvider = ({ children }) => {
                 setIsLockModalOpen,
                 resetTxModal,
                 imageName,
-                setImageName
+                setImageName,
+                page,
+                setPage
             }}
         >
             {children}

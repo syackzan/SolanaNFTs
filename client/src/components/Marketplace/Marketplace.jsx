@@ -117,7 +117,7 @@ const Marketplace = () => {
                         if (nfts[selectedIndex]?.storeInfo?.price) {
                             const toNumber = Number(nfts[selectedIndex].storeInfo.price);
 
-                            if(!wallet.publicKey) return;
+                            if (!wallet.publicKey) return;
 
                             // Create a PaymentIntent
                             const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
@@ -163,15 +163,15 @@ const Marketplace = () => {
             return false;
         }
 
-        
+
     }
 
     const payWithBabyBooh = async () => {
 
-        try{
+        try {
             const success = await deductBabyBooh(wallet.publicKey.toString(), inGameSpend);
             return success;
-        }catch(e){
+        } catch (e) {
             console.log(e);
             setTxState('failed');
             return false;
@@ -206,10 +206,10 @@ const Marketplace = () => {
                 if (signature) {
                     signature = await payWithBabyBooh(); //Then pay Booh Amount
                 }
-                
-                if(signature){
+
+                if (signature) {
                     setTxState('complete');
-                }  
+                }
             }
 
             if (paymentTracker === 'CARD') {
@@ -268,7 +268,7 @@ const Marketplace = () => {
             // Handle the NFT creation process
             const success = await handleNFTCreation(nftToCreate, walletConstruct);
 
-            if(!success){
+            if (!success) {
                 setCreateState('failed');
                 return;
             }
@@ -310,30 +310,32 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <div style={{ height: 'calc(100vh-60px)', marginTop: '60px', width: '100vw' }}>
+        <div style={{overflow: 'hidden'}}>
             <Navbar />
-            <div style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
-                <Filter
-                    title={"MARKETPLACE"}
-                    selectedType={selectedType}
-                    setSelectedType={setSelectedType}
-                    selectedSubType={selectedSubType}
-                    setSelectedSubType={setSelectedSubType}
-                    selectedRarity={selectedRarity}
-                    setSelectedRarity={setSelectedRarity}
-                    setIsFetched={setIsFetched}
-                    selectedCreator={selectedCreator}
-                    setSelectedCreator={setSelectedCreator}
-                />
-                <PrintNfts
-                    nfts={nfts}
-                    selectedIndex={selectedIndex}
-                    setSelectedIndex={setSelectedIndex}
-                    location='marketplace'
-                    openModal={openModal}
-                    setEditData={setEditData}
-                    setPaymentTracker={setPaymentTracker}
-                />
+            <div className='layout-container'>
+                <div className='print-nfts-styling sidenav-scrollbar'>
+                    <Filter
+                        title={"MARKETPLACE"}
+                        selectedType={selectedType}
+                        setSelectedType={setSelectedType}
+                        selectedSubType={selectedSubType}
+                        setSelectedSubType={setSelectedSubType}
+                        selectedRarity={selectedRarity}
+                        setSelectedRarity={setSelectedRarity}
+                        setIsFetched={setIsFetched}
+                        selectedCreator={selectedCreator}
+                        setSelectedCreator={setSelectedCreator}
+                    />
+                    <PrintNfts
+                        nfts={nfts}
+                        selectedIndex={selectedIndex}
+                        setSelectedIndex={setSelectedIndex}
+                        location='marketplace'
+                        openModal={openModal}
+                        setEditData={setEditData}
+                        setPaymentTracker={setPaymentTracker}
+                    />
+                </div>
             </div>
             {isModalOpen && <TxModalManager
                 createNft={createNft}

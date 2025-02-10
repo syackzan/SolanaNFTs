@@ -178,7 +178,7 @@ const SideNav = ({
             </div>
             <h2 className="sidenav-title marykate m-0" >{title}</h2>
             {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[select an item to update]</h5>}
-            {page === 'create'&& <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[Connect Wallet - Fill out form below]</h5>}
+            {page === 'create' && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[Connect Wallet - Fill out form below]</h5>}
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
@@ -204,7 +204,7 @@ const SideNav = ({
 
                     try {
 
-                        if(page === 'create'){
+                        if (page === 'create') {
                             setIsCreating(true);
                         }
 
@@ -364,8 +364,8 @@ const SideNav = ({
                 {/* Image Upload */}
                 {page === 'create' && <div>
                     <label htmlFor="image" style={{ display: 'block', marginBottom: '5px' }}>Upload Image:</label>
-                    <div className="d-flex align-items-center gap-2" 
-                    style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray', opacity: !canEditFields ? '0.5' : '1' }}>
+                    <div className="d-flex align-items-center gap-2"
+                        style={{ width: '100%', backgroundColor: '#2E2E2E', padding: '10px', border: '1px solid gray', opacity: !canEditFields ? '0.5' : '1' }}>
                         <button
                             type="button"
                             className='button-style-regular'
@@ -373,7 +373,7 @@ const SideNav = ({
                             onClick={() => { setIsModalOpen(true); setModalType('image') }}>
                             Select Image
                         </button>
-                        {imageName ? (<>{imageName}</>) : (<>No image selected</>)} 
+                        {imageName ? (<>{imageName}</>) : (<>No image selected</>)}
                     </div>
                 </div>}
 
@@ -575,33 +575,37 @@ const SideNav = ({
                         </div>
                     ))}
                 </div>
-
                 {/* Submit Button */}
-                {!isCreated && <button
-                    type="submit"
-                    className='button-click'
-                    style={{ marginTop: '0px' }}
-                    disabled={isDisabled} // Add the disabled attribute
-                >
-                    {page === 'create' ? (
-                        <>
-                            {isCreating ? (
-                                <div className="d-flex justify-content-center gap-3 align-items-center">
-                                    <div className='loader'></div>
-                                    <div>Generating concept...</div>
-                                </div>
-                            ) : isCreated ? (
-                                <div>NFT Concept Created!</div>
+                {!isCreated && (
+                    <>
+                        <button
+                            type="submit"
+                            className='button-click'
+                            style={{ marginTop: '0px' }}
+                            disabled={isDisabled}
+                        >
+                            {page === 'create' ? (
+                                isCreating ? (
+                                    <div className="d-flex justify-content-center gap-3 align-items-center">
+                                        <div className='loader'></div>
+                                        <div>Generating concept...</div>
+                                    </div>
+                                ) : isCreated ? (
+                                    <div>NFT Concept Created!</div>
+                                ) : wallet.publicKey ? (
+                                    <>Create NFT Concept</>
+                                ) : (
+                                    <>Connect a wallet to submit</> // Placeholder
+                                )
                             ) : (
-                                <>
-                                    {wallet.publicKey ? <>Create NFT Concept</> : <SolConnection />}
-                                </>
+                                <div>Update NFT Concept</div>
                             )}
-                        </>
-                    ) : (
-                        <div>Update NFT Concept</div>
-                    )}
-                </button>}
+                        </button>
+
+                        {/* Render the SolConnection button separately */}
+                        {!wallet.publicKey && <div className='d-flex justify-content-center'><SolConnection /></div>}
+                    </>
+                )}
             </form>
             {page === "create" && isCreated && (
                 <>

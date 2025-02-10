@@ -75,7 +75,7 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
 
         fetchNFTs();
 
-    }, [selectedType, selectedRarity, selectedSubType, selectedCreator, refetchNFTs]);
+    }, [selectedType, selectedRarity, selectedSubType, selectedCreator]);
 
     const firstRender = useRef(true); // Track first render
 

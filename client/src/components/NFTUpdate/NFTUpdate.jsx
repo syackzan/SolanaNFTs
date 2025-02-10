@@ -128,7 +128,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
     }
 
     return (
-        <div className="nft-update-styling sidenav-scrollbar" style={{ height: 'calc(100vh - 60px)' }}>
+        <div className="print-nfts-styling sidenav-scrollbar" style={{ height: 'calc(100vh - 60px)' }}>
             {/* <button onClick={() => openModal()}>Open</button> */}
             <Filter
                 title={"CREATOR HUB"}

@@ -13,8 +13,22 @@
   -moz-osx-font-smoothing: grayscale;
 } */
 
-html{
+/* Ensures no unintended overflow */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents extra page scrolling */
+  height: 100%;
+  width: 100%;
   background-color: rgb(30, 30, 30);
+  display: flex;
+}
+
+/* Layout container to avoid overflow */
+.layout-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
 @font-face {
@@ -66,13 +80,14 @@ a:hover {
   color: #535bf2;
 }
 
-body {
+/* body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-}
+} */
+
 
 h1 {
   font-size: 3.2em;
@@ -723,13 +738,23 @@ textarea:focus::placeholder {
 }
 
 /* SIDENAV CSS */
-.sidenav-styling {
+/* .sidenav-styling {
   width: 40vw;
   background-color: #1E1E1E;
   color: #FFFFFF;
   padding: 10px 20px 20px 20px;
   height: calc(100vh - 60px);
   position: relative;
+} */
+
+.sidenav-styling {
+  max-width: 40%;
+  background-color: #1E1E1E;
+  color: #FFFFFF;
+  padding: 10px 20px 20px 20px;
+  height: calc(100vh - 60px); /* Adjust height after navbar */
+  overflow-y: auto;
+  margin-top: 60px;
 }
 
 .sidenav-title {
@@ -745,7 +770,7 @@ textarea:focus::placeholder {
 }
 
 /* nft-preview-css */
-.nft-preview-styling {
+/* .nft-preview-styling {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -754,20 +779,43 @@ textarea:focus::placeholder {
   color: #FFFFFF;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+} */
+
+.nft-preview-styling {
+  flex-grow: 1; /* Makes sure it takes up remaining space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100vh - 60px); /* Ensure it fits below the navbar */
+  background-color: rgb(30, 30, 30);
+  overflow-y: auto; /* Allow internal scrolling */
+  margin-top: 60px;
+  color: #FFFFFF;
 }
 
-.nft-update-styling {
+/* .print-nfts-styling {
   display: flex;
   flex-direction: column;
   width: 60vw;
-  background-color: rgb(30, 30, 30); /* Same color as #1E1E1E */
+  background-color: rgb(30, 30, 30); 
+} */
+
+/* NFT Update Section */
+.print-nfts-styling {
+  flex-grow: 1; /* Makes sure it takes up remaining space */
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px); /* Ensure it fits below the navbar */
+  background-color: rgb(30, 30, 30);
+  overflow-y: auto; /* Allow internal scrolling */
+  margin-top: 60px;
 }
 
 
 @media (max-width: 650px) {
   .sidenav-styling{
     position: absolute;
-    width: 100vw;
+    max-width: 100%;
     z-index: 5;
   }
 
@@ -776,7 +824,7 @@ textarea:focus::placeholder {
     height: 100vh;
   }
 
-  .nft-update-styling{
+  .print-nfts-styling{
     width: 100vw;
   }
 

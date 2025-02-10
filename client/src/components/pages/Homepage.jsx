@@ -73,11 +73,15 @@ const Homepage = () => {
         setTxState,
         setCreateState,
         setTransactionSig,
-        setImageName
+        setImageName,
+        page,
+        setPage,
     } = useMarketplace();
 
     //Handles Page switching for UI
-    const [page, setPage] = useState(action);
+    useEffect(() => {
+        setPage(action);;
+    }, []);
 
     //Store Image for display
     const [image, setImage] = useState(null);
@@ -446,8 +450,8 @@ const Homepage = () => {
         <ScreenProvider>
             {/* THIS Handles bulk of Homepage Components */}
             <div style={{ overflow: 'hidden' }}>
-                <Navbar setPage={setPage} resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
-                <div className="d-flex" style={{ marginTop: '60px' }}>
+                <Navbar resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
+                <div className="layout-container">
                     <SideNav info={info}
                         attributes={attributes}
                         storeInfo={storeInfo}
