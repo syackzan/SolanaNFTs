@@ -1,5 +1,5 @@
 //React elements
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 //Components
@@ -28,10 +28,9 @@ import {
     creatorCosts
 } from '../../config/gameConfig';
 
-//Imported images
-import tempImage from '../../assets/itemBGs/tempImage.png';
+//CONTEXT AND PROVIDERS
+import { GlobalVars } from '../GlobalVariables/GlobalVariables';
 import { ScreenProvider } from '../../context/ScreenContext';
-
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
@@ -42,32 +41,7 @@ const Homepage = () => {
     const wallet = useWallet();
     const { connection } = useConnection();
 
-    const [userRole, setUserRole] = useState(null);
-
-    const attributesData = getAttributesData();
-
-    useEffect(() => {
-
-        const runAsync = async () => {
-
-
-            if (wallet.publicKey) {
-                // fetchAssets(wallet);
-
-                // const success = await deductBabyBooh(wallet.publicKey);
-                // console.log(success);
-
-                // const resp = await fetchSingleNftMetadata('6789733fcce17af1b40985f3')
-                // console.log(resp);
-            }
-        }
-
-        runAsync();
-
-    }, [wallet.publicKey])
-
-    const [searchParams] = useSearchParams();
-    const action = searchParams.get('action'); // "create" or "update"
+    const {refetchNftConcepts} = useContext(GlobalVars);
 
     const {
         setTxState,
@@ -78,6 +52,27 @@ const Homepage = () => {
         setPage,
     } = useMarketplace();
 
+    const [userRole, setUserRole] = useState(null);
+
+    const attributesData = getAttributesData();
+
+    //TEST USE EFFECT - DELETE FOR PRODUCTION
+    useEffect(() => {
+
+        const runAsync = async () => {
+
+            if (wallet.publicKey) {
+                
+            }
+        }
+
+        runAsync();
+
+    }, [wallet.publicKey])
+
+    const [searchParams] = useSearchParams();
+    const action = searchParams.get('action'); // "create" or "update"
+
     //Handles Page switching for UI
     useEffect(() => {
         setPage(action);;
@@ -85,9 +80,6 @@ const Homepage = () => {
 
     //Store Image for display
     const [image, setImage] = useState(null);
-
-    //Refetches NFTs when flipped
-    const [refetchNFTs, setRefetchNFTs] = useState(false);
 
     //Stores newly created metadata for?
     const [newMetadata, setNewMetadata] = useState(null);
@@ -350,6 +342,8 @@ const Homepage = () => {
                 setNewMetadata(response.data);
                 console.log('NFT Metadata created successfully', response.data);
 
+                refetchNftConcepts();
+
                 return true;
             }
 
@@ -363,7 +357,7 @@ const Homepage = () => {
                 const response = await axios.patch(`${URI_SERVER}/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
                 console.log('Update Successfull,', response.data);
 
-                setRefetchNFTs(!refetchNFTs);
+                refetchNftConcepts();
 
                 return true;
             }
@@ -414,7 +408,7 @@ const Homepage = () => {
                 setCreateState('complete');
                 setTransactionSig(metadataUri);
                 resetMetadata(); // Reset metadata
-                setRefetchNFTs(!refetchNFTs); // Trigger refetch
+                refetchNftConcepts();
             } else {
                 setCreateState('failed');
                 console.error('Failed to update metadata:', response);
@@ -440,7 +434,7 @@ const Homepage = () => {
             setTxState('failed');
         }
 
-        setRefetchNFTs(!refetchNFTs);
+        refetchNftConcepts();
         resetMetadata();
         setDisabledDeleteButton(false);
     }
@@ -487,7 +481,6 @@ const Homepage = () => {
                             setAttributes={setAttributes}
                             setProperties={setProperties}
                             setStoreInfo={setStoreInfo}
-                            refetchNFTs={refetchNFTs}
                             userRole={userRole}
                             wallet={wallet}
                             createOffchainMetadata={createOffchainMetadata}

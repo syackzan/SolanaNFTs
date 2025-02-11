@@ -42,7 +42,6 @@ const Marketplace = () => {
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
-        setIsFetched,
     } = useNFTs({ inStoreOnly: true });
 
     const {
@@ -310,9 +309,9 @@ const Marketplace = () => {
     const setEditData = () => { }
 
     return (
-        <div style={{overflow: 'hidden'}}>
+        <div>
             <Navbar />
-            <div className='layout-container'>
+            <div className='layout-container-marketplace'>
                 <div className='print-nfts-styling sidenav-scrollbar'>
                     <Filter
                         title={"MARKETPLACE"}
@@ -322,7 +321,6 @@ const Marketplace = () => {
                         setSelectedSubType={setSelectedSubType}
                         selectedRarity={selectedRarity}
                         setSelectedRarity={setSelectedRarity}
-                        setIsFetched={setIsFetched}
                         selectedCreator={selectedCreator}
                         setSelectedCreator={setSelectedCreator}
                     />

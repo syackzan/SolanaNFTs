@@ -31,6 +31,13 @@ html, body {
   overflow: hidden;
 }
 
+.layout-container-marketplace{
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
 @font-face {
   font-family: "lazy-dog";
   src: url("./assets/fonts/lazy_dog_x.TTF") format("truetype");

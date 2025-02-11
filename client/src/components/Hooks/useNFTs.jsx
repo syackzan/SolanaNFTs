@@ -1,116 +1,59 @@
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef, useContext } from "react";
+
 import { filterNFTs, sortNFTsByRarity } from '../../Utils/filterUtils'
 
-import { URI_SERVER } from "../../config/config";
+import { GlobalVars } from "../GlobalVariables/GlobalVariables";
 
-import { useWallet } from "@solana/wallet-adapter-react";
+const useNFTs = ({ inStoreOnly = false } = {}) => {
 
-const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
+    const { nftConcepts } = useContext(GlobalVars); // Retrieve all Nft Concepts from database
+
     const [nfts, setNfts] = useState([]);
-    const [nftsToSort, setNftsToSort] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button
 
     const [selectedType, setSelectedType] = useState("all");
     const [selectedSubType, setSelectedSubType] = useState("all");
     const [selectedRarity, setSelectedRarity] = useState("all");
     const [selectedCreator, setSelectedCreator] = useState('all');
-    const [isFetched, setIsFetched] = useState(false);
 
-    const wallet = useWallet();
+    const isFetched = useRef(false); // 🔥 UseRef to persist across renders
 
-    // Re-fetch whenever filters change
-    useEffect(() => {
-        // Fetch NFT metadata
-        const fetchNFTs = async () => {
-
-            try {
-
-                setSelectedIndex(null);
-
-                if (!isFetched) {
-                    // console.log("Fetching NFT data from API...");
-                    const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-                    const allNFTs = response.data || [];
-
-                    let filteredNFTs = allNFTs;
-
-                    // Apply the inStoreOnly filter if the flag is true
-                    if (inStoreOnly) {
-                        filteredNFTs = allNFTs.filter((nft) => nft.storeInfo.available === true);
-                    }
-
-                    const searchFilter = {
-                        type: selectedType,
-                        subtype: selectedSubType,
-                        rarity: selectedRarity,
-                        creator: selectedCreator
-                    };
-
-                    const nftsForStore = sortNFTsByRarity(filteredNFTs);
-                    setNftsToSort(nftsForStore);
-
-                    setNfts(filterNFTs(nftsForStore, searchFilter));
-
-                    console.log("store nfts: ", nftsForStore);
-                    setIsFetched(true);
-                } else {
-                    console.log("NFT data already fetched. Running filter.");
-
-                    const searchFilter = {
-                        type: selectedType,
-                        subtype: selectedSubType,
-                        rarity: selectedRarity,
-                        creator: selectedCreator
-                    };
-
-                    console.log(searchFilter);
-
-                    setNfts(sortNFTsByRarity(filterNFTs(nftsToSort, searchFilter)));
-                }
-            } catch (e) {
-                console.error("Error when accessing data", e.response?.data || e.message);
-            }
-        };
-
-        fetchNFTs();
-
-    }, [selectedType, selectedRarity, selectedSubType, selectedCreator]);
-
-    const firstRender = useRef(true); // Track first render
-
-    useEffect(() => {
-        const updatedDatabase = async () => {
-
-            if (firstRender.current) {
-                firstRender.current = false; // Skip the first run
-                return;
-            }
-
-            console.log("Fetching NFT data from API... from UpdateDatabase");
-            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-            const allNFTs = response.data || [];
-
-            let filteredNFTs = allNFTs;
-
-            // Apply the inStoreOnly filter if the flag is true
+    const fetchAndFilterNFTs = async () => {
+        if (nftConcepts.length === 0) return;
+    
+        try {
+            console.log("Fetching and filtering NFT Concepts...");
+    
+            // ✅ Apply initial filtering on store availability without tracking `inStoreOnly`
+            let filteredNFTs = nftConcepts;
             if (inStoreOnly) {
-                filteredNFTs = allNFTs.filter((nft) => nft.storeInfo.available === true);
+                filteredNFTs = nftConcepts.filter((nft) => nft.storeInfo.available === true);
             }
-
+    
+            // ✅ Apply selected filters
             const searchFilter = {
                 type: selectedType,
                 subtype: selectedSubType,
                 rarity: selectedRarity,
                 creator: selectedCreator
             };
-
-            setNfts(sortNFTsByRarity(filterNFTs(filteredNFTs, searchFilter)));
-            setSelectedIndex(null);
+    
+            const finalNFTs = sortNFTsByRarity(filterNFTs(filteredNFTs, searchFilter));
+    
+            // ✅ Update state once (avoid multiple re-renders)
+            setNfts(finalNFTs);
+    
+            isFetched.current = true;
+            console.log("Final Filtered NFTs: ", finalNFTs);
+        } catch (e) {
+            console.error("Error when accessing data", e.response?.data || e.message);
         }
-
-        updatedDatabase();
-    }, [refetchNFTs])
+    };
+    
+    // ✅ useEffect: Fetch & Filter NFTs on Load and when Filters Change
+    useEffect(() => {
+        fetchAndFilterNFTs();
+    }, [nftConcepts, selectedType, selectedSubType, selectedRarity, selectedCreator]); 
 
     return {
         nfts,
@@ -123,7 +66,6 @@ const useNFTs = ({ inStoreOnly = false, refetchNFTs } = {}) => {
         selectedCreator,
         setSelectedCreator,
         isFetched,
-        setIsFetched,
         setSelectedIndex,
         selectedIndex,
     };

@@ -32,7 +32,6 @@ const Filter = ({
     setSelectedRarity,
     selectedCreator,
     setSelectedCreator,
-    setIsFetched,
     filterByCreator = false }) => {
 
     const wallet = useWallet();
@@ -63,18 +62,18 @@ const Filter = ({
         }
     }
 
-    const location = useLocation();
-    useEffect(() => {
+    // const location = useLocation();
+    // useEffect(() => {
         
-        if(location.pathname === '/dashboard' && wallet.publicKey){
-            setChecked(true);
-            setSelectedCreator(wallet.publicKey.toString())
-        } else if (location.pathname === '/dashboard' && !wallet.publicKey){
-            setChecked(false);
-            setSelectedCreator('all');
-        }
+    //     if(location.pathname === '/dashboard' && wallet.publicKey){
+    //         setChecked(true);
+    //         setSelectedCreator(wallet.publicKey.toString())
+    //     } else if (location.pathname === '/dashboard' && !wallet.publicKey){
+    //         setChecked(false);
+    //         setSelectedCreator('all');
+    //     }
 
-    }, [wallet.publicKey])
+    // }, [wallet.publicKey])
 
     const filteredGeneralTypes = [...generalTypes, 'all'];; //Add all for search filters
     const filteredWeaponOptions = [...weaponOptions, 'all'];
@@ -141,7 +140,7 @@ const Filter = ({
                     <p className="m-0 marykate" style={{ fontSize: '1.3rem' }}>By Me</p>
                 </div>
                 <div>
-                    <button className="strip-button" onClick={() => setIsFetched(false)}>
+                    <button className="strip-button">
                         <LuRefreshCcw />
                     </button>
                 </div>

@@ -15,7 +15,7 @@ import { useMarketplace } from '../../context/MarketplaceProvider';
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 import TxModalManager from '../txModal/TxModalManager';
 
-const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetchNFTs, userRole, wallet, createOffchainMetadata, deleteMetadata }) => {
+const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRole, wallet, createOffchainMetadata, deleteMetadata }) => {
 
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
@@ -32,8 +32,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
-        setIsFetched,
-    } = useNFTs({ inStoreOnly: false, refetchNFTs });
+    } = useNFTs({ inStoreOnly: false });
 
     const {
         isModalOpen, //stores main transaction modal state
@@ -140,7 +139,6 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, refetc
                 setSelectedRarity={setSelectedRarity}
                 selectedCreator={selectedCreator}
                 setSelectedCreator={setSelectedCreator}
-                setIsFetched={setIsFetched}
                 filterByCreator={true}
             />
             <PrintNfts
