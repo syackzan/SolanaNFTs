@@ -51,20 +51,3 @@ export const deductBabyBooh = async (address, amount = 5) => {
         throw e; // Optionally re-throw for the caller to handle
     }
 };
-
-// const buildURL = `${import.meta.env.VITE_VERCEL_URL}${import.meta.env.VITE_VERCEL_GET}${address}`;
-    // console.log(buildURL);
-
-    // try {
-    //     const response = await axios.get(buildURL, {
-    //         headers: {
-    //             Authorization: `Bearer ${import.meta.env.VITE_TOKEN_BEARER}`,
-    //         },
-    //     });
-
-    //     console.log(response.data);
-    //     return response.data; // Return the data for further use
-    // } catch (e) {
-    //     console.error("Get Baby Booh Amount failed:", e.message);
-    //     throw e; // Optionally re-throw the error for the calling function to handle
-    // }

@@ -9,9 +9,11 @@ import NFTUpdate from '../NFTUpdate/NFTUpdate';
 import Navbar from '../Navbar/Navbar';
 
 //Utility functions
-import { priceToSol, uploadIcon, uploadMetadata } from '../../Utils/Utils';
-import { checkIfAdmin } from '../../Utils/checkRole';
-import { createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
+import { convertUsdToSol } from '../../Utils/pricingModifiers';
+import { uploadMetadata } from '../../services/pinataServices';
+import { uploadIcon } from '../../services/cloudinaryServices';
+import { checkIfAdmin } from '../../services/dbServices';
+import { createSendSolTx } from '../../services/blockchainServices';
 
 //Imported packages
 import axios from 'axios';
@@ -29,9 +31,9 @@ import {
 } from '../../config/gameConfig';
 
 //CONTEXT AND PROVIDERS
-import { useGlobalVariables } from '../GlobalVariables/GlobalVariables';
-import { ScreenProvider } from '../../context/ScreenContext';
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
+import { ScreenProvider } from '../../providers/ScreenProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
@@ -41,7 +43,7 @@ const Homepage = () => {
     const wallet = useWallet();
     const { connection } = useConnection();
 
-    const {refetchNftConcepts} = useGlobalVariables;
+    const {refetchNftConcepts} = useGlobalVariables();
 
     const {
         setTxState,
@@ -50,7 +52,7 @@ const Homepage = () => {
         setImageName,
         page,
         setPage,
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const [userRole, setUserRole] = useState(null);
 
@@ -296,7 +298,7 @@ const Homepage = () => {
             if (paymentInUSD === 0)
                 return true;
 
-            const paymentInSol = await priceToSol(paymentInUSD);
+            const paymentInSol = await convertUsdToSol(paymentInUSD);
 
             const transaction = await createSendSolTx(wallet.publicKey, paymentInSol);
 

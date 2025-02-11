@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 import TxModalWrapper from './TxModalWrapper';
 
@@ -16,7 +16,7 @@ const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, hand
     
     const {
         modalType
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const renderModalContent = () => {
 

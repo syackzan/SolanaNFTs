@@ -13,31 +13,17 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters' //If connecting a wallet via WalletProvider
 import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
 
-import { IS_MAINNET } from '../../config/config'
+import { IS_MAINNET } from '../config/config'
+import { URI_SERVER, COLLECTION_ADDRESS } from '../config/config'
+
 import axios from 'axios';
-import { URI_SERVER, COLLECTION_ADDRESS } from '../../config/config'
-// import { computeTxUnits, getPriorityFee } from './computeUnits'
 
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
 
-const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz"
+const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz" //Update to Wallet that will receive money in production
 
 //CREATE AND CONNECT TO UMI WITH mplTokenMetadata Program
 const umi = createUmi(solanaNode)
-
-export const fetchAssets = async (wallet) => {
-
-    if (!wallet.publicKey)
-        return;
-
-    const ownerType = new PublicKey(wallet.publicKey);
-    const assetsByOwner = await fetchAssetsByOwner(umi, ownerType, {
-        skipDerivePlugins: false,
-    })
-
-    console.log(assetsByOwner);
-
-}
 
 export const createCoreNft = async (nft, wallet) => {
 

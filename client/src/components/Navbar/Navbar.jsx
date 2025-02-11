@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { useGlobalVariables } from '../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
 
 import SolConnection from '../Connection/SolConnection';
 
@@ -9,8 +9,8 @@ import BoohLogo from '../../assets/BoohLogo.svg';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { fetchBabyBooh } from '../../Utils/babyBooh';
-import { getTokenBalance } from '../BlockchainInteractions/blockchainInteractions';
+import { fetchBabyBooh } from '../../services/gameServices';
+import { getTokenBalance } from '../../services/blockchainServices';
 
 import { GiHamburgerMenu } from "react-icons/gi";
 import { motion } from 'framer-motion'
@@ -19,7 +19,7 @@ import { IS_MAINNET } from '../../config/config';
 
 import '../../css/mobile-Navbar.css'
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const Navbar = ({ resetMetadata, setIsDisabled }) => {
 
@@ -30,7 +30,7 @@ const Navbar = ({ resetMetadata, setIsDisabled }) => {
     const { connection } = useConnection();
 
     const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useGlobalVariables();
-    const {setPage} = useMarketplace();
+    const {setPage} = useTransactionsController();
 
     const [isMobileNavbar, setIsMobileNavbar] = useState(false);
     const [isHubDropdownOpen, setIsHubDropdownOpen] = useState(false);

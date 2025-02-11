@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 import { IS_MAINNET } from "../../../config/config";
 
-import { useMarketplace } from '../../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../../providers/TransactionsProvider';
 import TxModalHeader from "../components/TxModalHeader";
 
-import { renderTxStateIcon, renderCreateStateIcon } from "../../../Utils/renderStatus";
+import { renderTxStateIcon, renderCreateStateIcon } from "../renderStatus";
 
 const TxModalLockData = ({ createOffchainMetadata }) => {
     const {
@@ -14,7 +14,7 @@ const TxModalLockData = ({ createOffchainMetadata }) => {
         createState,
         transactionSig,
         nameTracker,
-    } = useMarketplace();
+    } = useTransactionsController();
 
     return (
         <>

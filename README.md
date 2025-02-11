@@ -91,13 +91,13 @@ Any helper functions, such as recurring API calls, blockchain interactions, or s
 
 ---
 
-## APP's Parent Component `<App />` && `<WalletAdapter />`
+## APP's Parent Component `<App />` && `<WalletAdapterProvider />`
 
 ### App Wrappers
 The `<App>` component is wrapped by two parent components allowing access to variables throughout the frontend components.
 
 #### Wrappers
-1. **`<WalletAdapter />`**:
+1. **`<WalletAdapterProvider />`**:
    - Manages and controls Solana-based wallet connections.
    - Allows users to log in, reference public keys, and approve transactions.
 
@@ -241,7 +241,7 @@ Below are the state variables used in this component and their purposes:
 #### **External Utilities and APIs**
 
 - **`useNFTs` Hook**: Handles fetching and filtering NFT metadata.
-- **`priceToSol` Utility**: Converts the NFT price into SOL, accounting for minting costs.
+- **`convertUsdToSol` Utility**: Converts the NFT price into SOL, accounting for minting costs.
 - **`createPaymentIntent` API**: Creates a Stripe PaymentIntent for credit card payments.
 - **`deductBabyBooh` API**: Deducts Baby Booh tokens for NFT purchases.
 - **`fetchSingleNftMetadata` API**: Retrieves metadata for a specific NFT during the Stripe redirect workflow.

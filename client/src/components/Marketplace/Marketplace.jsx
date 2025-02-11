@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { createCoreNft, createSendSolTx, getCoreNftsClient } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreNft, createSendSolTx } from '../../services/blockchainServices';
 
 import Navbar from '../Navbar/Navbar';
 import PrintNfts from '../PrintNfts/PrintNfts';
 
 import Filter from '../Filter/Filter';
-import useNFTs from '../Hooks/useNFTs';
+import useNFTs from '../../hooks/useNFTs';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { priceToSol } from '../../Utils/Utils';
+import { convertUsdToSol } from '../../Utils/pricingModifiers';
 
 import TxModalManager from '../txModal/TxModalManager'
-import { deductBabyBooh } from '../../Utils/babyBooh';
-import { createPaymentIntent } from '../../Utils/stripeInteractions';
+import { deductBabyBooh } from '../../services/gameServices';
+import { createPaymentIntent } from '../../services/stripeServices';
 
 import Stripe from '../Stripe/Stripe';
 
 import { useParams } from 'react-router-dom';
-import { fetchSingleNftMetadata } from '../../Utils/backendCalls';
+import { fetchSingleNftMetadata } from '../../services/dbServices';
 
 import { PublicKey } from '@solana/web3.js';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const Marketplace = () => {
 
@@ -42,6 +42,7 @@ const Marketplace = () => {
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
+        nftConceptsLoadingState
     } = useNFTs({ inStoreOnly: true });
 
     const {
@@ -63,7 +64,7 @@ const Marketplace = () => {
         setNameTracker,
         inGameSpend,
         setInGameSpend
-    } = useMarketplace();
+    } = useTransactionsController();
 
 
     //Handle Stripe re-direction & confirmed payment
@@ -95,7 +96,7 @@ const Marketplace = () => {
                 switch (paymentTracker) {
                     case 'SOL':
                         if (nfts[selectedIndex]?.storeInfo?.price) {
-                            const priceInSol = await priceToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
+                            const priceInSol = await convertUsdToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
                             setPreCalcPayment(priceInSol.toFixed(4)); // Set SOL price in USD per NFT price
                             setSolPriceLoaded(true);
                         } else {
@@ -332,6 +333,7 @@ const Marketplace = () => {
                         openModal={openModal}
                         setEditData={setEditData}
                         setPaymentTracker={setPaymentTracker}
+                        nftConceptsLoadingState={nftConceptsLoadingState}
                     />
                 </div>
             </div>

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-import { useMarketplace } from '../../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../../providers/TransactionsProvider';
 import TxModalHeader from "../components/TxModalHeader";
 
-import { renderTxStateIcon } from "../../../Utils/renderStatus";
+import { renderTxStateIcon } from "../renderStatus";
 
 const TxModalDelete = ({ deleteMetadata }) => {
     const {
         txState,
         nameTracker,
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const [deleteConfirmText, setDeleteConfirmText] = useState('');
 

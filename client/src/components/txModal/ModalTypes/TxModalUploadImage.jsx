@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useMarketplace } from "../../../context/MarketplaceProvider";
+import { useTransactionsController } from "../../../providers/TransactionsProvider";
 import TxModalHeader from "../components/TxModalHeader";
-import { renderTxStateIcon } from "../../../Utils/renderStatus";
+import { renderTxStateIcon } from "../renderStatus";
 
 const TxModalUploadImage = ({ handleImageChange }) => {
 
@@ -9,7 +9,7 @@ const TxModalUploadImage = ({ handleImageChange }) => {
     const {
         setIsModalOpen,
         setModalType
-    } = useMarketplace()
+    } = useTransactionsController()
 
     return (
         <>

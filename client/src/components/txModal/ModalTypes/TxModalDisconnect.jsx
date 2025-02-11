@@ -4,9 +4,9 @@ import TxModalHeader from "../components/TxModalHeader";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
-import { useGlobalVariables } from '../../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../../../providers/GlobalVariablesProvider';
 
-import { useMarketplace } from "../../../context/MarketplaceProvider";
+import { useTransactionsController } from "../../../providers/TransactionsProvider";
 
 const TxModalDisconnect = ({ }) => {
 
@@ -15,7 +15,7 @@ const TxModalDisconnect = ({ }) => {
 
     const {inGameCurrency, boohToken, userNfts} = useGlobalVariables();
 
-    const {setIsModalOpen, setModalType} = useMarketplace();
+    const {setIsModalOpen, setModalType} = useTransactionsController();
 
     const disconnectWallet = () => {
         disconnect();

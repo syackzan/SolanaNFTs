@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
-import { createCoreNft, createSendSolTx } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreNft, createSendSolTx } from '../../services/blockchainServices';
 
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import PrintNfts from '../PrintNfts/PrintNfts';
 
 import Filter from '../Filter/Filter';
-import useNFTs from '../Hooks/useNFTs';
+import useNFTs from '../../hooks/useNFTs';
 
 import { defaultMintCost } from '../../config/gameConfig';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 import TxModalManager from '../txModal/TxModalManager';
@@ -32,6 +32,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
+        nftConceptsLoadingState
     } = useNFTs({ inStoreOnly: false });
 
     const {
@@ -45,7 +46,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
         setSolPriceLoaded,
         setNameTracker,
         setModalType
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -150,6 +151,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
                 isAdmin={isAdmin}
                 setEditData={setEditData}
                 createOffchainMetadata={createOffchainMetadata}
+                nftConceptsLoadingState={nftConceptsLoadingState}
             />
             {isModalOpen && <TxModalManager
                 resetConfirmModal={resetConfirmModal}

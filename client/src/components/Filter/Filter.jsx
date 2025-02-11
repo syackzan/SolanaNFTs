@@ -8,6 +8,8 @@ import Switch from 'react-switch';
 
 import '../../css/mobile-Filter.css'
 
+import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
+
 import {
     generalTypes,
     affinityOptions,
@@ -35,6 +37,8 @@ const Filter = ({
     filterByCreator = false }) => {
 
     const wallet = useWallet();
+
+    const {refetchNftConcepts} = useGlobalVariables();
 
     const [checked, setChecked] = useState(false);
 
@@ -140,7 +144,7 @@ const Filter = ({
                     <p className="m-0 marykate" style={{ fontSize: '1.3rem' }}>By Me</p>
                 </div>
                 <div>
-                    <button className="strip-button">
+                    <button className="strip-button" onClick={refetchNftConcepts}>
                         <LuRefreshCcw />
                     </button>
                 </div>

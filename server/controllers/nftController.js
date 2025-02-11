@@ -144,7 +144,7 @@ exports.updateMetadataUri = async (req, res) => {
     const updatedNft = await NftMetadata.findByIdAndUpdate(
       id,
       { $set: { 'storeInfo.metadataUri': metadataUri } }, // Update only metadataUri
-      { new: true, runValidators: true, context: 'query' } // Return updated document and run validation
+      { new: true, runValidators: true, providers: 'query' } // Return updated document and run validation
     );
 
     // Handle case where NFT does not exist

@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { getCoreNftsClient } from "../BlockchainInteractions/blockchainInteractions";
+import { getCoreNftsClient } from "../services/blockchainServices";
 import axios from "axios";
-import { URI_SERVER } from "../../config/config";
+import { URI_SERVER } from "../config/config";
 
 // ✅ Create Context (Renamed to `GlobalVariablesContext`)
 const GlobalVariablesContext = createContext();
@@ -40,6 +40,7 @@ export const GlobalVariablesProvider = ({ children }) => {
                 setNftConcepts(response.data || []);
             } catch (error) {
                 console.error("Error fetching NFT Concepts:", error);
+                alert('Issue loading Concept Nfts');
             }
         };
 

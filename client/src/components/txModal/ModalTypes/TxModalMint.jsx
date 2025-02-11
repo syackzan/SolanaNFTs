@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import SolConnection from '../../Connection/SolConnection';
 import TxModalHeader from "../components/TxModalHeader";
 
-import { renderTxStateIcon, renderCreateStateIcon, renderCostSign } from "../../../Utils/renderStatus";
+import { renderTxStateIcon, renderCreateStateIcon, renderCostSign } from "../renderStatus";
 import { IS_MAINNET } from "../../../config/config";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { useMarketplace } from '../../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../../providers/TransactionsProvider';
 
 const TxModalMint = ({ createNft }) => {
     const {
@@ -22,7 +22,7 @@ const TxModalMint = ({ createNft }) => {
         nameTracker,
         inGameSpend,
         setRedirectSecret
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const wallet = useWallet();
 

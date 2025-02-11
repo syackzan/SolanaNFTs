@@ -7,7 +7,7 @@ import LandingPage from './components/pages/LandingPage';
 import Collection from './components/pages/Collection';
 import Marketplace from './components/Marketplace/Marketplace';
 import CreatorHubDocs from './components/pages/CreatorHubDocs';
-import { MarketplaceProvider } from './context/MarketplaceProvider';
+import { MarketplaceProvider } from './providers/TransactionsProvider';
 
 function App() {
 

@@ -1,4 +1,4 @@
-// nftFilter.js
+import { rarityOptions } from "../config/gameConfig";
 
 /**
  * Filters an array of NFTs based on provided criteria.
@@ -10,7 +10,7 @@
  * @param {string} [filters.rarity] - The rarity to filter by (e.g., "common", "rare").
  * @returns {Array} - The filtered array of NFTs.
  */
-export const filterNFTs = (nfts, filters) => {
+export const filterNfts = (nfts, filters) => {
     return nfts.filter((nft) => {
         // Check type
         if (
@@ -89,39 +89,9 @@ export const filterNFTs = (nfts, filters) => {
       return true; // Include the NFT if all filters pass
     });
   };
-  
-  /** Example Usage
-   * Import the function and use it to filter your NFT array.
-   *
-   * import { filterNFTs, advancedFilterNFTs } from './nftFilter';
-   *
-   * const nfts = [
-   *   { type: 'weapon', subtype: 'sword', rarity: 'rare' },
-   *   { type: 'armor', subtype: 'shield', rarity: 'common' },
-   *   { type: 'weapon', subtype: 'bow', rarity: 'legendary' },
-   * ];
-   *
-   * // Simple filter
-   * const filtered = filterNFTs(nfts, { type: 'weapon', rarity: 'rare' });
-   * console.log(filtered);
-   *
-   * // Advanced filter
-   * const advancedFiltered = advancedFilterNFTs(nfts, {
-   *   types: ['weapon', 'armor'],
-   *   rarities: ['rare', 'legendary'],
-   * });
-   * console.log(advancedFiltered);
-   */
 
   // Function to sort NFTs by rarity
-  export const sortNFTsByRarity = (nfts) => {
-    const rarityOptions = [
-        'common',
-        'uncommon',
-        'rare',
-        'epic',
-        'legendary'
-    ];
+  export const sortNftsByRarity = (nfts) => {
 
     // Create a map for rarity ranks
     const rarityRank = rarityOptions.reduce((map, rarity, index) => {

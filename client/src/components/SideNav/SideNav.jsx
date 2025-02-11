@@ -13,13 +13,13 @@ import {
     talents
 } from '../../config/gameConfig';
 
-import { useScreenContext } from "../../context/ScreenContext";
+import { useScreen } from "../../providers/ScreenProvider";
 
 import { RxDoubleArrowLeft } from "react-icons/rx";
 
 import { creatorCosts } from '../../config/gameConfig';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import SolConnection from '../Connection/SolConnection';
@@ -51,11 +51,11 @@ const SideNav = ({
         setIsModalOpen,
         setModalType,
         imageName
-    } = useMarketplace()
+    } = useTransactionsController()
 
     const wallet = useWallet();
 
-    const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
+    const { windowWidth, isSideNavOpen, toggleSideNav } = useScreen();
 
     const IS_MOBILE_SIDENAV_OPEN = windowWidth <= 650 && isSideNavOpen;
     const MOBILE_SIDENAV_STYLING = IS_MOBILE_SIDENAV_OPEN ? 'nft-styling-mobile-enable' : 'nft-styling-mobile-disable';

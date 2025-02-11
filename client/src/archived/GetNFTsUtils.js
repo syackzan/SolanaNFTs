@@ -1,7 +1,7 @@
-import { IS_MAINNET, COLLECTION_ADDRESS } from "../../config/config";
+import { IS_MAINNET, COLLECTION_ADDRESS } from "../config/config";
 
 import axios from 'axios';
-import { URI_SERVER } from '../../config/config';
+import { URI_SERVER } from '../config/config';
 
 export const fetchNFTsUtils = async (ownerAddress) => {
     try {

@@ -1,6 +1,3 @@
-// Replace with your QuickNode HTTP URL
-const QUICKNODE_URL = import.meta.env.VITE_SOLANA_NODE;
-
 import axios from 'axios';
 
 export const getSolPriceInUSD = async () => {

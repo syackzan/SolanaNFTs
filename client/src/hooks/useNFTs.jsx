@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-import { filterNFTs, sortNFTsByRarity } from '../../Utils/filterUtils'
+import { filterNfts, sortNftsByRarity } from '../Utils/filterByNfts'
 
-import { useGlobalVariables } from "../GlobalVariables/GlobalVariables";
+import { useGlobalVariables } from "../providers/GlobalVariablesProvider";
 
 const useNFTs = ({ inStoreOnly = false } = {}) => {
 
@@ -10,13 +10,12 @@ const useNFTs = ({ inStoreOnly = false } = {}) => {
 
     const [nfts, setNfts] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button
+    const [nftConceptsLoadingState, setNftConceptsLoadingState] = useState("loading");
 
     const [selectedType, setSelectedType] = useState("all");
     const [selectedSubType, setSelectedSubType] = useState("all");
     const [selectedRarity, setSelectedRarity] = useState("all");
     const [selectedCreator, setSelectedCreator] = useState('all');
-
-    const isFetched = useRef(false); // 🔥 UseRef to persist across renders
 
     const fetchAndFilterNFTs = async () => {
         if (nftConcepts.length === 0) return;
@@ -38,12 +37,12 @@ const useNFTs = ({ inStoreOnly = false } = {}) => {
                 creator: selectedCreator
             };
     
-            const finalNFTs = sortNFTsByRarity(filterNFTs(filteredNFTs, searchFilter));
+            const finalNFTs = sortNftsByRarity(filterNfts(filteredNFTs, searchFilter));
     
             // ✅ Update state once (avoid multiple re-renders)
+            setNftConceptsLoadingState(finalNFTs.length > 0 ? "loaded" : "empty"); // ✅ Set state accordingly
             setNfts(finalNFTs);
     
-            isFetched.current = true;
             console.log("Final Filtered NFTs: ", finalNFTs);
         } catch (e) {
             console.error("Error when accessing data", e.response?.data || e.message);
@@ -65,9 +64,9 @@ const useNFTs = ({ inStoreOnly = false } = {}) => {
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
-        isFetched,
         setSelectedIndex,
         selectedIndex,
+        nftConceptsLoadingState,
     };
 };
 

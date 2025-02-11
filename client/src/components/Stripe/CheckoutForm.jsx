@@ -6,7 +6,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 import { URI_FRONTEND } from "../../config/config";
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const CheckoutForm = ({ setStripeModal, nft, preCalcPayment }) => {
 
@@ -17,7 +17,7 @@ const CheckoutForm = ({ setStripeModal, nft, preCalcPayment }) => {
 
     const {
         resetTxModal
-    } = useMarketplace()
+    } = useTransactionsController()
 
     const handleSubmit = async (event) => {
         // Prevent the default form submission, which would refresh the page.

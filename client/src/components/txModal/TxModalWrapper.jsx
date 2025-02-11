@@ -2,13 +2,13 @@ import React from 'react';
 
 import { motion } from "framer-motion"; // Import Framer Motion
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const TxModalWrapper  = ({children}) => {
 
     const {
         isModalOpen
-    } = useMarketplace();
+    } = useTransactionsController();
 
     // Detect if mobile
     const isMobile = window.innerWidth <= 650;

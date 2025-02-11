@@ -1,5 +1,5 @@
 import React from "react";
-import { useScreenContext } from "../../context/ScreenContext";
+import { useScreen } from "../../providers/ScreenProvider";
 import { motion } from "framer-motion";
 
 import { RxDoubleArrowRight } from "react-icons/rx";
@@ -7,7 +7,7 @@ import { RxDoubleArrowRight } from "react-icons/rx";
 import '../../css/mobile-DetailsButton.css'
 
 const MobileDetailsButton = () => {
-    const { windowWidth, isSideNavOpen, toggleSideNav } = useScreenContext();
+    const { windowWidth, isSideNavOpen, toggleSideNav } = useScreen();
 
     // Show only if window width is below 650px OR the side nav is open
     const shouldShow = windowWidth <= 650 && !isSideNavOpen;

@@ -22,12 +22,12 @@ import {
 // Default styles that can be overridden by your app
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-import App from '../../App';
+import App from '../App';
 
-import { IS_MAINNET } from '../../config/config';
-import { GlobalVariablesProvider } from '../GlobalVariables/GlobalVariables';
+import { IS_MAINNET } from '../config/config';
+import { GlobalVariablesProvider } from './GlobalVariablesProvider';
 
-const WalletAdapter = () => {
+const WalletAdapterProvider = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
     const network = IS_MAINNET ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet;
 
@@ -52,7 +52,6 @@ const WalletAdapter = () => {
                     createDefaultWalletNotFoundHandler()(adapter);
                 },
             }),
-            new UnsafeBurnerWalletAdapter(),
             new PhantomWalletAdapter(),
             new SolflareWalletAdapter()
         ],
@@ -95,4 +94,4 @@ const WalletAdapter = () => {
     );
 };
 
-export default WalletAdapter;
+export default WalletAdapterProvider;

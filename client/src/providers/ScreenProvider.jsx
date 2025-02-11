@@ -30,6 +30,6 @@ export const ScreenProvider = ({ children }) => {
 };
 
 // Hook to use in components
-export const useScreenContext = () => {
+export const useScreen = () => {
     return useContext(ScreenContext);
 };

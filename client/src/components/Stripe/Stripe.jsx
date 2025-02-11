@@ -6,7 +6,7 @@ import CheckoutForm from './CheckoutForm';
 
 import StripeRedirect from './StripeRedirect';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -20,7 +20,7 @@ const Stripe = ({ nft, handleSuccessfulStripePayment }) => {
         stripeModal,
         setStripeModal,
         redirectSecret,
-    } = useMarketplace();
+    } = useTransactionsController();
 
     const clientSecret = stripeSecret ?? (redirectSecret || "");
     

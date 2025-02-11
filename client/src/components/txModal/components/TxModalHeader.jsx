@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useMarketplace } from '../../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../../providers/TransactionsProvider';
 
 import BoohLogo from '../../../assets/BoohLogo.svg';
 
@@ -11,7 +11,7 @@ const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) =
         resetTxModal,
         setIsModalOpen,
         setModalType
-    } = useMarketplace();
+    } = useTransactionsController();
 
     // Function to handle closing and redirecting
     const handleClose = (e) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
-import { useMarketplace } from '../../context/MarketplaceProvider';
+import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 const SolConnection = () => {
     const walletModal = useWalletModal(); // Wallet modal hook
@@ -10,7 +10,7 @@ const SolConnection = () => {
 
     const [selectedAddress, setSelectedAddress] = useState('');
 
-    const {setIsModalOpen, setModalType} = useMarketplace();
+    const {setIsModalOpen, setModalType} = useTransactionsController();
 
     // Update the selected address whenever the wallet connection changes
     useEffect(() => {

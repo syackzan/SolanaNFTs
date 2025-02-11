@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 
 // Create Context
-const MarketplaceContext = createContext();
+const TransactionsContext = createContext();
 
 // Provider Component
 export const MarketplaceProvider = ({ children }) => {
@@ -52,7 +52,7 @@ export const MarketplaceProvider = ({ children }) => {
     };
 
     return (
-        <MarketplaceContext.Provider
+        <TransactionsContext.Provider
             value={{
                 modalType,
                 setModalType,
@@ -92,11 +92,11 @@ export const MarketplaceProvider = ({ children }) => {
             }}
         >
             {children}
-        </MarketplaceContext.Provider>
+        </TransactionsContext.Provider>
     );
 };
 
 // Custom Hook for Consuming Context
-export const useMarketplace = () => {
-    return useContext(MarketplaceContext);
+export const useTransactionsController = () => {
+    return useContext(TransactionsContext);
 };

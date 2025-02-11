@@ -4,7 +4,7 @@ import Navbar from '../Navbar/Navbar';
 
 import { useWallet } from '@solana/wallet-adapter-react'
 
-import { createCoreCollection } from '../BlockchainInteractions/blockchainInteractions';
+import { createCoreCollection } from '../../services/blockchainServices';
 
 
 const Collection = () => {
