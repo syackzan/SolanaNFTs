@@ -1,5 +1,5 @@
 //React elements
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 //Components
@@ -29,7 +29,7 @@ import {
 } from '../../config/gameConfig';
 
 //CONTEXT AND PROVIDERS
-import { GlobalVars } from '../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../GlobalVariables/GlobalVariables';
 import { ScreenProvider } from '../../context/ScreenContext';
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
@@ -41,7 +41,7 @@ const Homepage = () => {
     const wallet = useWallet();
     const { connection } = useConnection();
 
-    const {refetchNftConcepts} = useContext(GlobalVars);
+    const {refetchNftConcepts} = useGlobalVariables;
 
     const {
         setTxState,

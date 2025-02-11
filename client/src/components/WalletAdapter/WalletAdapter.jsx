@@ -25,9 +25,7 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 import App from '../../App';
 
 import { IS_MAINNET } from '../../config/config';
-import { GlobalVariables } from '../GlobalVariables/GlobalVariables';
-
-import boohLogo from '../../assets/BoohLogo.svg';
+import { GlobalVariablesProvider } from '../GlobalVariables/GlobalVariables';
 
 const WalletAdapter = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -88,9 +86,9 @@ const WalletAdapter = () => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <GlobalVariables>
+                    <GlobalVariablesProvider>
                         <App />
-                    </GlobalVariables>
+                    </GlobalVariablesProvider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

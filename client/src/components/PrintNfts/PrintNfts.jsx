@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
 
 import { useMarketplace } from '../../context/MarketplaceProvider';
 
-import { GlobalVars } from '../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../GlobalVariables/GlobalVariables';
 
 const PrintNfts = ({
     nfts,
@@ -17,7 +17,7 @@ const PrintNfts = ({
     setEditData,
     setPaymentTracker }) => {
 
-    const { userNfts } = useContext(GlobalVars);
+    const { userNfts } = useGlobalVariables();
 
     const [reBuying, setReBuying] = useState({}); // Track NFTs that can be rebought
 

@@ -1,10 +1,10 @@
-import React, {useContext} from "react";
+import React  from "react";
 
 import TxModalHeader from "../components/TxModalHeader";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
-import { GlobalVars } from '../../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../../GlobalVariables/GlobalVariables';
 
 import { useMarketplace } from "../../../context/MarketplaceProvider";
 
@@ -13,7 +13,7 @@ const TxModalDisconnect = ({ }) => {
     const wallet = useWallet();
     const { disconnect } = useWallet(); // Wallet hook
 
-    const {inGameCurrency, boohToken, userNfts} = useContext(GlobalVars)
+    const {inGameCurrency, boohToken, userNfts} = useGlobalVariables();
 
     const {setIsModalOpen, setModalType} = useMarketplace();
 

@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { filterNFTs, sortNFTsByRarity } from '../../Utils/filterUtils'
 
-import { GlobalVars } from "../GlobalVariables/GlobalVariables";
+import { useGlobalVariables } from "../GlobalVariables/GlobalVariables";
 
 const useNFTs = ({ inStoreOnly = false } = {}) => {
 
-    const { nftConcepts } = useContext(GlobalVars); // Retrieve all Nft Concepts from database
+    const { nftConcepts } = useGlobalVariables(); // Retrieve all Nft Concepts from database
 
     const [nfts, setNfts] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(null); // Track the selected button

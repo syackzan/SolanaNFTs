@@ -1,66 +1,80 @@
-import React, { createContext, useState, useEffect } from 'react';
-
-// Create the context
-export const GlobalVars = createContext();
-
-import { useWallet } from '@solana/wallet-adapter-react';
-import { getCoreNftsClient } from '../BlockchainInteractions/blockchainInteractions';
-
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { getCoreNftsClient } from "../BlockchainInteractions/blockchainInteractions";
+import axios from "axios";
 import { URI_SERVER } from "../../config/config";
 
-import axios from 'axios';
+// ✅ Create Context (Renamed to `GlobalVariablesContext`)
+const GlobalVariablesContext = createContext();
 
-// Create the provider component
-export const GlobalVariables = ({ children }) => {
-    const [inGameCurrency, setInGameCurrency] = useState(0); // First state variable
-    const [boohToken, setBoohToken] = useState(0); // Second state variable
+// ✅ Provider Component (Renamed to `GlobalVariablesProvider`)
+export const GlobalVariablesProvider = ({ children }) => {
+    // Game Currency & Tokens
+    const [inGameCurrency, setInGameCurrency] = useState(0);
+    const [boohToken, setBoohToken] = useState(0);
+
+    // NFTs & Concepts
     const [userNfts, setUserNfts] = useState([]);
     const [nftConcepts, setNftConcepts] = useState([]);
 
+    // Solana Wallet
     const wallet = useWallet();
 
+    // ✅ Fetch User NFTs (Runs when wallet changes)
     useEffect(() => {
-
-        const runAsync = async () => {
-
+        const fetchUserNFTs = async () => {
             if (wallet.publicKey) {
                 const data = await getCoreNftsClient(wallet.publicKey.toString());
                 setUserNfts(data);
             }
+        };
 
-        }
+        fetchUserNFTs();
+    }, [wallet.publicKey]);
 
-        runAsync();
-
-    }, [wallet.publicKey])
-
+    // ✅ Fetch All NFT Concepts (Runs once on mount)
     useEffect(() => {
-        const fetchNftsAsync = async () => {
-            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-            const allNftConcepts = response.data || [];
-            setNftConcepts(allNftConcepts);
-        }
+        const fetchNftConcepts = async () => {
+            try {
+                const response = await axios.get(`${URI_SERVER}/api/nft/all`);
+                setNftConcepts(response.data || []);
+            } catch (error) {
+                console.error("Error fetching NFT Concepts:", error);
+            }
+        };
 
-        fetchNftsAsync();
+        fetchNftConcepts();
     }, []);
 
+    // ✅ Manual Refetch Function
     const refetchNftConcepts = async () => {
-        const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-        const allNftConcepts = response.data || [];
-        setNftConcepts(allNftConcepts);
-    }
+        try {
+            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
+            setNftConcepts(response.data || []);
+        } catch (error) {
+            console.error("Error refetching NFT Concepts:", error);
+        }
+    };
 
+    // ✅ Provider Wrapper
     return (
-        <GlobalVars.Provider value={{
-            inGameCurrency,
-            setInGameCurrency,
-            boohToken,
-            setBoohToken,
-            userNfts,
-            nftConcepts,
-            refetchNftConcepts
-        }}>
+        <GlobalVariablesContext.Provider
+            value={{
+                inGameCurrency,
+                setInGameCurrency,
+                boohToken,
+                setBoohToken,
+                userNfts,
+                nftConcepts,
+                refetchNftConcepts,
+            }}
+        >
             {children}
-        </GlobalVars.Provider>
+        </GlobalVariablesContext.Provider>
     );
+};
+
+// ✅ Custom Hook for Consuming Context (Renamed to `useGlobalVariables`)
+export const useGlobalVariables = () => {
+    return useContext(GlobalVariablesContext);
 };

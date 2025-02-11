@@ -1,7 +1,7 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-import { GlobalVars } from '../GlobalVariables/GlobalVariables';
+import { useGlobalVariables } from '../GlobalVariables/GlobalVariables';
 
 import SolConnection from '../Connection/SolConnection';
 
@@ -29,7 +29,7 @@ const Navbar = ({ resetMetadata, setIsDisabled }) => {
     const wallet = useWallet();
     const { connection } = useConnection();
 
-    const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useContext(GlobalVars);
+    const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useGlobalVariables();
     const {setPage} = useMarketplace();
 
     const [isMobileNavbar, setIsMobileNavbar] = useState(false);
