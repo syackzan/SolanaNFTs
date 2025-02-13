@@ -21,7 +21,7 @@ import '../../css/mobile-Navbar.css'
 
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
-const Navbar = ({ resetMetadata, setIsDisabled }) => {
+const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
 
     const location = useLocation();
     const navigate = useNavigate();

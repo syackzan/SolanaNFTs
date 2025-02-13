@@ -118,8 +118,6 @@ const PrintNfts = ({
                     const isSelected = selectedIndex === index;
                     const purchased = isPurchased(nft); // Check if the NFT is owned
 
-                    console.log(purchased, nft.name);
-
                     return (
                         <div key={index} style={{ display: 'inline-block' }}>
                             <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px' }}>

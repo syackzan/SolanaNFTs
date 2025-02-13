@@ -14,33 +14,31 @@ import { uploadMetadata } from '../../services/pinataServices';
 import { uploadIcon } from '../../services/cloudinaryServices';
 import { addNftConcept, checkIfAdmin, deleteNftConcept, saveMetadataUri, updateNftConcept } from '../../services/dbServices';
 import { createSendSolTx } from '../../services/blockchainServices';
+import { delay } from '../../Utils/generalUtils';
 
 //Imported packages
-import axios from 'axios';
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react';
 
-import {
-    infoData,
-    getAttributesData,
-    storeInfoData,
-    propertiesData,
-    creatorCosts
-} from '../../config/gameConfig';
+import { creatorCosts } from '../../config/gameConfig';
 
 //CONTEXT AND PROVIDERS
 import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
 import { ScreenProvider } from '../../providers/ScreenProvider';
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
+//HOOKS
+import { useWalletAdmin } from '../../hooks/useWalletAdmin';
+import { useNftConceptForm } from '../../hooks/useNftConceptForm';
+
 const API_KEY = import.meta.env.VITE_SERVE_KEY
 
 const Homepage = () => {
 
     //Wallet connection
-    const wallet = useWallet();
-    const { connection } = useConnection();
+    // const wallet = useWallet();
 
+    const {wallet, userRole} = useWalletAdmin();
+    const { connection } = useConnection();
     const {refetchNftConcepts} = useGlobalVariables();
 
     const {
@@ -52,24 +50,6 @@ const Homepage = () => {
         setPage,
     } = useTransactionsController();
 
-    const [userRole, setUserRole] = useState(null);
-
-    const attributesData = getAttributesData();
-
-    //TEST USE EFFECT - DELETE FOR PRODUCTION
-    useEffect(() => {
-
-        const runAsync = async () => {
-
-            if (wallet.publicKey) {
-                
-            }
-        }
-
-        runAsync();
-
-    }, [wallet.publicKey])
-
     const [searchParams] = useSearchParams();
     const action = searchParams.get('action'); // "create" or "update"
 
@@ -78,73 +58,27 @@ const Homepage = () => {
         setPage(action);;
     }, []);
 
-    //Store Image for display
-    const [image, setImage] = useState(null);
-
-    //Stores newly created metadata for?
-    const [newMetadata, setNewMetadata] = useState(null);
-
     //Handles disabling buttons
     const [isDisabled, setIsDisabled] = useState(false); //Button use for storing metadata in database
     const [lockStatus, setLockStatus] = useState(false); //Button used for creating offchain metadata
     const [createLockStatus, setCreateLockStatus] = useState(false); //Use case for if a Admin is create offchain metadata from create page
     const [disableDeleteButton, setDisabledDeleteButton] = useState(false);
 
-    //States that make up Meta data information
-    const [info, setInfo] = useState(infoData);
-
-    const [attributes, setAttributes] = useState(attributesData);
-    const [properties, setProperties] = useState(propertiesData);
-    //State that makes up Store Information
-    const [storeInfo, setStoreInfo] = useState(storeInfoData);
-
-    //Function that resets local metadata when needed
-    const resetMetadata = () => {
-        setInfo(infoData);
-        setAttributes(attributesData);
-        setProperties(propertiesData);
-        setStoreInfo(storeInfoData);
-        setImageName('');
-        setImage(null);
-        setNewMetadata(null);
-    }
-
-
-
-    //Handles Wallet connection & Admin Login
-    useEffect(() => {
-
-        const checkAdminStatus = async () => {
-
-            if (wallet.connected) {
-
-                // Call the checkIfAdmin function and await the response
-                const isAdmin = await checkIfAdmin(wallet.publicKey?.toBase58());
-                // console.log("Is Admin:", isAdmin);
-
-                // Perform role-specific actions
-                if (isAdmin) {
-                    setUserRole("admin");
-                } else {
-                    setUserRole("member");
-                }
-
-                // Update the creator field if the page is 'create'
-                if (page === 'create') {
-                    handleStoreChange('creator', wallet.publicKey?.toBase58());
-                }
-            } else {
-                console.log("Wallet disconnected");
-
-                // Reset user data when the wallet disconnects
-                handleStoreChange('creator', '');
-                setUserRole(null);
-            }
-        };
-
-        checkAdminStatus(); // Call the async function
-    }, [wallet.connected, wallet.publicKey]);
-
+    const {
+        info,
+        setInfo,
+        attributes,
+        setAttributes,
+        properties,
+        setProperties,
+        storeInfo,
+        setStoreInfo,
+        image,
+        setImage,
+        newMetadata,
+        setNewMetadata,
+        resetNftConceptForm
+    } = useNftConceptForm();
 
     useEffect(() => {
         if (page === 'create') {
@@ -233,9 +167,6 @@ const Homepage = () => {
             ],
             category: "image"
         });
-
-
-        // console.log(info);
 
         //Use immediate value
         const hardProperties = {
@@ -365,10 +296,6 @@ const Homepage = () => {
         }
     }
 
-    function delay(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
     const createOffchainMetadata = async () => {
 
         try {
@@ -400,7 +327,7 @@ const Homepage = () => {
                 console.log('Update Successful:', data);
                 setCreateState('complete');
                 setTransactionSig(metadataUri);
-                resetMetadata(); // Reset metadata
+                resetNftConceptForm(); // Reset metadata
                 refetchNftConcepts();
             } else {
                 setCreateState('failed');
@@ -430,7 +357,7 @@ const Homepage = () => {
         }
 
         refetchNftConcepts();
-        resetMetadata();
+        resetNftConceptForm();
         setDisabledDeleteButton(false);
     }
 
@@ -439,7 +366,7 @@ const Homepage = () => {
         <ScreenProvider>
             {/* THIS Handles bulk of Homepage Components */}
             <div style={{ overflow: 'hidden' }}>
-                <Navbar resetMetadata={resetMetadata} setIsDisabled={setIsDisabled} />
+                <Navbar resetNftConceptForm={resetNftConceptForm} setIsDisabled={setIsDisabled} />
                 <div className="layout-container">
                     <SideNav info={info}
                         attributes={attributes}
@@ -458,7 +385,7 @@ const Homepage = () => {
                         setIsDisabled={setIsDisabled}
                         userRole={userRole}
                         walletAddress={wallet.publicKey?.toBase58()}
-                        resetMetadata={resetMetadata}
+                        resetNftConceptForm={resetNftConceptForm}
                         lockedStatus={lockStatus}
                         createLockStatus={createLockStatus}
                         setCreateLockStatus={setCreateLockStatus}
@@ -487,3 +414,17 @@ const Homepage = () => {
 };
 
 export default Homepage;
+
+//TEST USE EFFECT - DELETE FOR PRODUCTION
+// useEffect(() => {
+
+//     const runAsync = async () => {
+
+//         if (wallet.publicKey) {
+            
+//         }
+//     }
+
+//     runAsync();
+
+// }, [wallet.publicKey])

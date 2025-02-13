@@ -41,7 +41,7 @@ const SideNav = ({
     setIsDisabled,
     userRole,
     walletAddress,
-    resetMetadata,
+    resetNftConceptForm,
     lockedStatus,
     createLockStatus,
     setCreateLockStatus,
@@ -143,7 +143,7 @@ const SideNav = ({
 
     // Reset all state and metadata
     const resetEverything = () => {
-        resetMetadata();
+        resetNftConceptForm();
         setIsDisabled(false);
         setCreateLockStatus(false);
         setIsCreated(false);
