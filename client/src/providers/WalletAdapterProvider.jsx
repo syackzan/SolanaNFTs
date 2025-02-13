@@ -26,6 +26,7 @@ import App from '../App';
 
 import { IS_MAINNET } from '../config/config';
 import { GlobalVariablesProvider } from './GlobalVariablesProvider';
+import { TransactionProvider } from './TransactionsProvider';
 
 const WalletAdapterProvider = () => {
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
@@ -86,7 +87,9 @@ const WalletAdapterProvider = () => {
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
                     <GlobalVariablesProvider>
-                        <App />
+                        <TransactionProvider>
+                            <App />
+                        </TransactionProvider>
                     </GlobalVariablesProvider>
                 </WalletModalProvider>
             </WalletProvider>

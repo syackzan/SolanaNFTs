@@ -6,7 +6,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import PrintNfts from '../PrintNfts/PrintNfts';
 
 import Filter from '../Filter/Filter';
-import useNFTs from '../../hooks/useNFTs';
+import { useNFTs } from '../../hooks/useNFTs';
 
 import { defaultMintCost } from '../../config/gameConfig';
 

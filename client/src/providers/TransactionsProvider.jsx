@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 const TransactionsContext = createContext();
 
 // Provider Component
-export const MarketplaceProvider = ({ children }) => {
+export const TransactionProvider = ({ children }) => {
 
     //Modal Type
     const [modalType, setModalType] = useState(''); //mint, create, lock, delete

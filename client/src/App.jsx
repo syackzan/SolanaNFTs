@@ -7,12 +7,10 @@ import LandingPage from './components/pages/LandingPage';
 import Collection from './components/pages/Collection';
 import Marketplace from './components/Marketplace/Marketplace';
 import CreatorHubDocs from './components/pages/CreatorHubDocs';
-import { MarketplaceProvider } from './providers/TransactionsProvider';
 
 function App() {
 
   return (
-      <MarketplaceProvider>
         <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
@@ -23,7 +21,6 @@ function App() {
             <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
           </Routes>
         </Router>
-      </MarketplaceProvider>
   )
 }
 

@@ -12,7 +12,7 @@ import Navbar from '../Navbar/Navbar';
 import { convertUsdToSol } from '../../Utils/pricingModifiers';
 import { uploadMetadata } from '../../services/pinataServices';
 import { uploadIcon } from '../../services/cloudinaryServices';
-import { checkIfAdmin } from '../../services/dbServices';
+import { addNftConcept, checkIfAdmin, deleteNftConcept, saveMetadataUri, updateNftConcept } from '../../services/dbServices';
 import { createSendSolTx } from '../../services/blockchainServices';
 
 //Imported packages
@@ -20,8 +20,6 @@ import axios from 'axios';
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react';
 
-//Configs
-import { URI_SERVER } from '../../config/config';
 import {
     infoData,
     getAttributesData,
@@ -336,13 +334,10 @@ const Homepage = () => {
 
                 const metadataForDB = await combineNewMetadataJSON();
 
-                const response = await axios.post(
-                    `${URI_SERVER}/api/nft/create`,
-                    metadataForDB,
-                    { headers: { 'x-api-key': API_KEY } });
+                const data = await addNftConcept(metadataForDB);
 
-                setNewMetadata(response.data);
-                console.log('NFT Metadata created successfully', response.data);
+                setNewMetadata(data);
+                console.log('NFT Metadata created successfully', data);
 
                 refetchNftConcepts();
 
@@ -356,8 +351,9 @@ const Homepage = () => {
                 console.log(updateDataForDB);
 
                 //Remove ID from metadata
-                const response = await axios.patch(`${URI_SERVER}/api/nft/update/${updateDataForDB._id}`, updateDataForDB, { headers: { 'x-api-key': API_KEY } });
-                console.log('Update Successfull,', response.data);
+               const data = await updateNftConcept(updateDataForDB);
+
+                console.log('Update Successfull,', data);
 
                 refetchNftConcepts();
 
@@ -397,23 +393,18 @@ const Homepage = () => {
 
             setCreateState('started')
 
-            // Make the PATCH request to lock the NFT
-            const response = await axios.patch(
-                `${URI_SERVER}/api/nft/locknft/${objectId}`,
-                { metadataUri: metadataUri }, // Send data as an object in the request body
-                { headers: { 'x-api-key': API_KEY } } // Include API key in headers
-            );
+            const data = await saveMetadataUri(objectId, metadataUri);
 
             // Handle response
-            if (response.status >= 200 && response.status < 300) {
-                console.log('Update Successful:', response.data);
+            if (data) {
+                console.log('Update Successful:', data);
                 setCreateState('complete');
                 setTransactionSig(metadataUri);
                 resetMetadata(); // Reset metadata
                 refetchNftConcepts();
             } else {
                 setCreateState('failed');
-                console.error('Failed to update metadata:', response);
+                console.error('Failed to update metadata:', data);
                 alert("Metadata failed to lock");
             }
         } catch (error) {
@@ -429,7 +420,9 @@ const Homepage = () => {
         await delay(2000);
 
         try {
-            await axios.delete(`${URI_SERVER}/api/nft/delete/${info._id}`);
+            const data = await deleteNftConcept(info._id);
+
+            console.log('Nft Concept deleted', data);
             setTxState('complete');
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);

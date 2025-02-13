@@ -30,7 +30,7 @@ const PrintNfts = ({
     } = useTransactionsController();
 
     // Check if NFT is purchased
-    const isPurchased = (nft) => userNfts.some((ownedNft) => ownedNft.name === nft.description);
+    const isPurchased = (nft) => userNfts.some((ownedNft) => ownedNft.name === nft.name);
 
     const buyAgain = (nft) => {
         setReBuying((prev) => ({ ...prev, [nft.description]: true }));
@@ -117,6 +117,8 @@ const PrintNfts = ({
 
                     const isSelected = selectedIndex === index;
                     const purchased = isPurchased(nft); // Check if the NFT is owned
+
+                    console.log(purchased, nft.name);
 
                     return (
                         <div key={index} style={{ display: 'inline-block' }}>

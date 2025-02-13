@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getCoreNftsClient } from "../services/blockchainServices";
-import axios from "axios";
-import { URI_SERVER } from "../config/config";
+import { fetchAllNftConcepts } from "../services/dbServices";
 
 // ✅ Create Context (Renamed to `GlobalVariablesContext`)
 const GlobalVariablesContext = createContext();
@@ -25,6 +24,7 @@ export const GlobalVariablesProvider = ({ children }) => {
         const fetchUserNFTs = async () => {
             if (wallet.publicKey) {
                 const data = await getCoreNftsClient(wallet.publicKey.toString());
+                console.log(data);
                 setUserNfts(data);
             }
         };
@@ -36,11 +36,11 @@ export const GlobalVariablesProvider = ({ children }) => {
     useEffect(() => {
         const fetchNftConcepts = async () => {
             try {
-                const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-                setNftConcepts(response.data || []);
+                const data = await fetchAllNftConcepts();
+                setNftConcepts(data || []);
             } catch (error) {
                 console.error("Error fetching NFT Concepts:", error);
-                alert('Issue loading Concept Nfts');
+                
             }
         };
 
@@ -50,8 +50,8 @@ export const GlobalVariablesProvider = ({ children }) => {
     // ✅ Manual Refetch Function
     const refetchNftConcepts = async () => {
         try {
-            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-            setNftConcepts(response.data || []);
+            const data = await fetchAllNftConcepts();
+            setNftConcepts(data || []);
         } catch (error) {
             console.error("Error refetching NFT Concepts:", error);
         }

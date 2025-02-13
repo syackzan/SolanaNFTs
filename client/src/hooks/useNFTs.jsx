@@ -4,7 +4,7 @@ import { filterNfts, sortNftsByRarity } from '../Utils/filterByNfts'
 
 import { useGlobalVariables } from "../providers/GlobalVariablesProvider";
 
-const useNFTs = ({ inStoreOnly = false } = {}) => {
+export const useNFTs = ({ inStoreOnly = false } = {}) => {
 
     const { nftConcepts } = useGlobalVariables(); // Retrieve all Nft Concepts from database
 
@@ -70,4 +70,4 @@ const useNFTs = ({ inStoreOnly = false } = {}) => {
     };
 };
 
-export default useNFTs;
+// export default useNFTs;

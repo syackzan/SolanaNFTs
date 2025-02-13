@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export const uploadIcon = async (image) => {
 
     if (!image) return; // Return early if no file is selected

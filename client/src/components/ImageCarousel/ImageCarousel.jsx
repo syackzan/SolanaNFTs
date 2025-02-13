@@ -1,48 +1,30 @@
 import React, { useState, useEffect } from "react";
 
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-
 import { motion, AnimatePresence } from "framer-motion";
 
-import axios from 'axios';
-
-import { URI_SERVER } from "../../config/config";
+import { useGlobalVariables } from "../../providers/GlobalVariablesProvider";
 
 const ImageCarousel = () => {
-    const [nfts, setNfts] = useState([]);
+
+    const { nftConcepts } = useGlobalVariables();
+
     const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Fetch NFT metadata
-    const fetchNFTs = async () => {
-        try {
-            const response = await axios.get(`${URI_SERVER}/api/nft/all`);
-            console.log(URI_SERVER);
-            console.log(response.data);
-            setNfts(response.data || []);
-        } catch (e) {
-            console.error("Error when accessing data", e.response?.data || e.message);
-        }
-    };
-
-    useEffect(() => {
-        fetchNFTs();
-    }, []);
 
     // Auto-slide logic
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentIndex((prevIndex) =>
-                prevIndex === nfts.length - 1 ? 0 : prevIndex + 1
+                prevIndex === nftConcepts.length - 1 ? 0 : prevIndex + 1
             );
         }, 3000); // Slides every 3 seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
-    }, [nfts.length]);
+    }, [nftConcepts.length]);
 
     return (
         <div className="carousel-wrapper">
             <AnimatePresence mode="wait">
-                {nfts.length > 0 && (
+                {nftConcepts.length > 0 && (
                     <motion.div
                         key={currentIndex} // Key ensures AnimatePresence recognizes slide changes
                         initial={{ x: 300, opacity: 0 }} // Start off-screen to the right
@@ -52,7 +34,7 @@ const ImageCarousel = () => {
                         className="carousel-slide"
                     >
                         {(() => {
-                            const nft = nfts[currentIndex];
+                            const nft = nftConcepts[currentIndex];
 
                             if (!nft) {
                                 return <div className="loader-advanced"></div>; // Show loading if NFT is undefined

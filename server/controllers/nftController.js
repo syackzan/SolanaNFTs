@@ -36,7 +36,7 @@ exports.testData = async (req, res) => {
   }
 }
 
-exports.getAllMetadata = async (req, res) => {
+exports.getAllNftConcepts = async (req, res) => {
   try {
     const metadataList = await NftMetadata.find(); // Retrieve all documents from the collection
     res.status(200).json(metadataList); // Send the data as JSON
@@ -46,7 +46,7 @@ exports.getAllMetadata = async (req, res) => {
   }
 };
 
-exports.getMetadataById = async (req, res) => {
+exports.getNftConceptById = async (req, res) => {
   try {
     const { id } = req.params; // Extract the id from the request parameters
 
@@ -66,7 +66,7 @@ exports.getMetadataById = async (req, res) => {
   }
 };
 
-exports.createNftMetadata = async (req, res) => {
+exports.addNftConcept = async (req, res) => {
   try {
     console.log("Insert new NFT");
 
@@ -89,7 +89,7 @@ exports.createNftMetadata = async (req, res) => {
   }
 };
 
-exports.updateNftMetadata = async (req, res) => {
+exports.updateNftConcept = async (req, res) => {
   try {
     const { id } = req.params; // Extract id from request parameters
     const updates = req.body; // Extract updates from request body
@@ -127,7 +127,7 @@ exports.updateNftMetadata = async (req, res) => {
   }
 };
 
-exports.updateMetadataUri = async (req, res) => {
+exports.saveMetadataUri = async (req, res) => {
   try {
     const { id } = req.params; // Extract the NFT ID from request parameters
     const { metadataUri } = req.body; // Extract metadataUri from request body
@@ -159,7 +159,7 @@ exports.updateMetadataUri = async (req, res) => {
   }
 };
 
-exports.deleteNftMetadata = async (req, res) => {
+exports.deleteNftConcept = async (req, res) => {
   try {
     const deletedMetadata = await NftMetadata.findByIdAndDelete(req.params.id);
     if (!deletedMetadata) {
@@ -172,7 +172,7 @@ exports.deleteNftMetadata = async (req, res) => {
   }
 };
 
-exports.voteForNFT = async (req, res) => {
+exports.voteForNftConcept = async (req, res) => {
   try {
     const { nftId, voterAddress } = req.body;
 
@@ -318,71 +318,3 @@ exports.getCoreNFTs = async (req, res) => {
     });
   }
 };
-
-
-
-//DEAD CODE - REPLACED BY createAndSendNFT
-// exports.signAndConfirmTransaction = async (req, res) => {
-
-//   try {
-
-//     console.log("Inside the send transaction");
-//     const { transaction: base64Transaction, assetSigner } = req.body;
-
-//     if (!base64Transaction || !assetSigner) {
-//       return res.status(400).json({ error: 'Transaction data is required.' });
-//     }
-
-//     console.log('Received Transaction');
-//     // console.log(assetSigner);
-
-//     // Convert the assetSigner back to a Keypair
-//     const reconstructedSigner = umi.eddsa.createKeypairFromSecretKey(Uint8Array.from(assetSigner.secretKey));
-//     const signer2 = createSignerFromKeypair(umi, reconstructedSigner);
-//     // console.log('Reconstructed Signer:', reconstructedSigner);
-
-//     const mySigners = [signer, signer2];
-
-//     // Convert Base64 string back to Uint8Array
-//     const transactionArray = Uint8Array.from(Buffer.from(base64Transaction, 'base64'));
-
-//     // console.log(transactionArray);
-
-//     // Deserialize the transaction using Umi
-//     let myTransaction = umi.transactions.deserialize(transactionArray);
-
-//     // console.log(myTransaction);
-
-//     console.log(myTransaction.message.accounts[0]);
-
-//     myTransaction.message.accounts[0] = signer.publicKey;
-
-//     console.log(myTransaction.message.accounts[0]);
-
-//     const signedTransaction = await signTransaction(myTransaction, mySigners);
-//     console.log(signedTransaction);
-
-//     // const signedTransactions = await signAllTransactions([
-//     //   {transaction: myFirstTransaction, signers: [mySigners]},
-//     //   {transaction: mySecondTransaction, signers: [mySigners.signer]}
-//     // ])
-
-//     const signature = await umi.rpc.sendTransaction(signedTransaction);
-//     console.log(signature);
-
-//     // Confirm the transaction
-//     // const confirmation = await umi.rpc.confirmTransaction(signature, 'confirmed');
-
-//     res.json({
-//       success: true,
-//       signature,
-//       // confirmation,
-//     });
-//   } catch (error) {
-//     console.error('Error signing and confirming transaction:', error);
-//     res.status(500).json({
-//       error: 'Failed to sign and confirm transaction',
-//       details: error.message,
-//     });
-//   }
-// };

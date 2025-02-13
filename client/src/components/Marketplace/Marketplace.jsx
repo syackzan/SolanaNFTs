@@ -6,7 +6,7 @@ import Navbar from '../Navbar/Navbar';
 import PrintNfts from '../PrintNfts/PrintNfts';
 
 import Filter from '../Filter/Filter';
-import useNFTs from '../../hooks/useNFTs';
+import { useNFTs } from '../../hooks/useNFTs';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
