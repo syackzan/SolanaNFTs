@@ -49,9 +49,25 @@ const NftMetadataSchema = new mongoose.Schema({
   },
   votes: {
     count: { type: Number, default: 0 }, // Total number of votes
-    voters: { type: [String], default: []}, // List of wallet addresses who voted
-},
-}, {timestaps: true});
+    voters: { type: [String], default: [] }, // List of wallet addresses who voted
+  },
+  purchases: {
+    totalCreates: { type: Number, default: 0 }, // Total number of NFTs created
+    totalBuys: { type: Number, default: 0 }, // Total number of purchases (subset of creates)
+    creators: { type: [String], default: [] }, // List of creators (one-time record per user)
+    buyers: { type: [String], default: [] }, // List of buyers (repeatable purchases allowed)
+    transactions: [
+        {
+            type: { type: String, enum: ['create', 'buy'], required: true }, // Type of transaction
+            user: { type: String, required: true }, // Wallet address or User ID
+            amount: { type: Number, required: true }, // Amount spent (SOL, USD, etc.)
+            currency: { type: String, required: true, enum: ['SOL', 'USD', 'BABYBOOH'] }, // Payment currency
+            txSignature: { type: String, required: true }, // ✅ Transaction Signature of Creating & Sending Nft
+            timestamp: { type: Date, default: Date.now } // Time of transaction
+        }
+    ]
+}
+}, { timestamps: true });
 
 module.exports = mongoose.model('NftMetadata', NftMetadataSchema);
 

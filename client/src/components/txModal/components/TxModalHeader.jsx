@@ -9,8 +9,7 @@ const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) =
     const {
         redirectSecret,
         resetTxModal,
-        setIsModalOpen,
-        setModalType
+        simpleModalClose
     } = useTransactionsController();
 
     // Function to handle closing and redirecting
@@ -19,12 +18,6 @@ const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) =
         resetTxModal();
         window.location.href = '/marketplace';
     };
-
-    const simpleModalClose = () => {
-        console.log('simple close');
-        setIsModalOpen(false);
-        setModalType('');
-    }
 
     return (
         <>

@@ -6,6 +6,8 @@ export const useWalletAdmin = () => {
     const wallet = useWallet();
     const [userRole, setUserRole] = useState(null);
 
+    const tryStart = true;
+
     useEffect(() => {
         const checkAdminStatus = async () => {
             if (!wallet.connected) {

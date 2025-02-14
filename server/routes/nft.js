@@ -10,7 +10,8 @@ const {
     testData, 
     createAndSendNFT,
     getCoreNFTs,
-    getNftConceptById } = require('../controllers/nftController');
+    getNftConceptById,
+    trackNftTransaction } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
@@ -35,6 +36,9 @@ router.patch('/concepts/:id/metadata', verifyApiKey, saveMetadataUri);
 router.delete('/concepts/:id', deleteNftConcept);
 
 router.patch('/concepts/:id/vote', verifyApiKey, voteForNftConcept);
+
+// 🔹 Record NFT Create/Buy Transactions
+router.patch('/concepts/:id/transaction', trackNftTransaction);
 
 router.post('/createnft', createAndSendNFT);
 

@@ -5,7 +5,7 @@ import TxModalHeader from "../components/TxModalHeader";
 
 import { renderTxStateIcon } from "../renderStatus";
 
-const TxModalDelete = ({ deleteMetadata }) => {
+const TxModalDelete = ({ handleDeleteNftConcept }) => {
     const {
         txState,
         nameTracker,
@@ -47,7 +47,7 @@ const TxModalDelete = ({ deleteMetadata }) => {
                         />
                         <button
                             className="button-style-regular"
-                            onClick={deleteMetadata}
+                            onClick={handleDeleteNftConcept}
                             disabled={deleteConfirmText !== "DELETE"}
                         >
                             Delete

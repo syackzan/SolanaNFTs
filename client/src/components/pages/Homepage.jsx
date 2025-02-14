@@ -45,24 +45,22 @@ const Homepage = () => {
         setTxState,
         setCreateState,
         setTransactionSig,
-        setImageName,
         page,
         setPage,
+        preCalcPayment
     } = useTransactionsController();
 
     const [searchParams] = useSearchParams();
     const action = searchParams.get('action'); // "create" or "update"
 
-    //Handles Page switching for UI
+    //Handles Page switching for UI on Initial load
     useEffect(() => {
         setPage(action);;
     }, []);
 
     //Handles disabling buttons
     const [isDisabled, setIsDisabled] = useState(false); //Button use for storing metadata in database
-    const [lockStatus, setLockStatus] = useState(false); //Button used for creating offchain metadata
     const [createLockStatus, setCreateLockStatus] = useState(false); //Use case for if a Admin is create offchain metadata from create page
-    const [disableDeleteButton, setDisabledDeleteButton] = useState(false);
 
     const {
         info,
@@ -77,7 +75,11 @@ const Homepage = () => {
         setImage,
         newMetadata,
         setNewMetadata,
-        resetNftConceptForm
+        resetNftConceptForm,
+        handleInfoChange,
+        handleStoreChange,
+        handleImageChange,
+        handleAttributeChange
     } = useNftConceptForm();
 
     useEffect(() => {
@@ -85,60 +87,6 @@ const Homepage = () => {
             handleStoreChange('creator', wallet.publicKey?.toBase58());
         }
     }, [page])
-
-    //Handles form input change for Info state
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setInfo({ ...info, [name]: value });
-    };
-
-    //Handles form input change for Store Info
-    const handleStoreChange = (key, value) => {
-        setStoreInfo((prev) => ({
-            ...prev,
-            [key]: value
-        }));
-    };
-
-    //Handle Image uploads
-    const handleImageChange = (e) => {
-        const file = e.target.files[0]; // Get the selected file
-
-        if (file) {
-            const img = new Image();
-            const fileURL = URL.createObjectURL(file); // Create a temporary URL for the image
-
-            img.onload = () => {
-                const { width, height } = img;
-
-                // Validate image dimensions
-                if (width > 512 || height > 512 || width !== height) {
-                    alert("Image dimensions must be 512x512 or smaller, and same width/height.");
-                    e.target.value = ""; // Reset the file input
-                } else {
-                    setImage(file); // Set the image as usual if valid
-                    setImageName(file.name);
-                }
-
-                URL.revokeObjectURL(fileURL); // Clean up the temporary URL
-            };
-
-            img.onerror = () => {
-                alert("Invalid image file.");
-                URL.revokeObjectURL(fileURL); // Clean up the temporary URL
-            };
-
-            img.src = fileURL; // Trigger the `onload` handler by setting the image source
-        }
-    };
-
-    // Handle input change
-    const handleAttributeChange = (index, field, newValue) => {
-        const updatedAttributes = attributes.map((attr, i) =>
-            i === index ? { ...attr, [field]: newValue } : attr
-        );
-        setAttributes(updatedAttributes);
-    };
 
     //This combines Store & Metadata for any NEW adds to the Database
     const combineNewMetadataJSON = async () => {
@@ -227,9 +175,9 @@ const Homepage = () => {
             if (paymentInUSD === 0)
                 return true;
 
-            const paymentInSol = await convertUsdToSol(paymentInUSD);
+            // const paymentInSol = await convertUsdToSol(paymentInUSD);
 
-            const transaction = await createSendSolTx(wallet.publicKey, paymentInSol);
+            const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment);
 
             if (!transaction)
                 return false;
@@ -259,7 +207,6 @@ const Homepage = () => {
 
                 const success = await creatorPayment(); //Higher level items have creator costs
 
-                console.log(success);
                 if (!success)
                     return false;
 
@@ -268,6 +215,7 @@ const Homepage = () => {
                 const data = await addNftConcept(metadataForDB);
 
                 setNewMetadata(data);
+
                 console.log('NFT Metadata created successfully', data);
 
                 refetchNftConcepts();
@@ -276,13 +224,12 @@ const Homepage = () => {
             }
 
             if (page === 'update') {
+                
                 //Combine Metadata
                 const updateDataForDB = await combineUpdateMetadataJSON();
 
-                console.log(updateDataForDB);
-
                 //Remove ID from metadata
-               const data = await updateNftConcept(updateDataForDB);
+                const data = await updateNftConcept(updateDataForDB);
 
                 console.log('Update Successfull,', data);
 
@@ -296,69 +243,140 @@ const Homepage = () => {
         }
     }
 
-    const createOffchainMetadata = async () => {
-
+    const handleAddNftConcept = async () => {
+        if (page !== 'create') return; // Ensure this function only runs for 'create' action
+    
+        setTxState('started');
+    
         try {
-
-            setTxState('started');
-
-            // Combine offchain metadata
-            const metadataForJSONUpload = await combineOffchainMetatdata();
-
-            // Upload metadata and get the URI
-            const metadataUri = await uploadMetadata(metadataForJSONUpload);
-
+            // 🔹 Step 1: Handle Creator Payment
+            const success = await creatorPayment();
+            if (!success) {
+                setTxState('failed');
+                return false;
+            }
+    
             setTxState('complete');
-
-            // Determine the object ID based on the page
-            let objectId;
-            if (page === 'create') {
-                objectId = newMetadata._id; // Newly created metadata
-            } else {
-                objectId = info._id; // Metadata existing in DB already
-            }
-
-            setCreateState('started')
-
-            const data = await saveMetadataUri(objectId, metadataUri);
-
-            // Handle response
-            if (data) {
-                console.log('Update Successful:', data);
-                setCreateState('complete');
-                setTransactionSig(metadataUri);
-                resetNftConceptForm(); // Reset metadata
-                refetchNftConcepts();
-            } else {
-                setCreateState('failed');
-                console.error('Failed to update metadata:', data);
-                alert("Metadata failed to lock");
-            }
+            
         } catch (error) {
-            // Log and handle any errors
-            console.error('Error in createOffchainMetadata:', error);
+            console.error("❌ Error in creator payment:", error.response?.data || error.message);
             setTxState('failed');
+            return false;
+        }
+    
+        try {
+            
+            setCreateState('started');
+
+            // 🔹 Step 2: Prepare Metadata
+            const metadataForDB = await combineNewMetadataJSON();
+
+            // 🔹 Step 3: Submit to Database
+            const data = await addNftConcept(metadataForDB);
+            if (!data) {
+                throw new Error("Failed to save NFT metadata to the database.");
+            }
+    
+            setNewMetadata(data);
+            console.log("✅ NFT Metadata created successfully:", data);
+    
+            // 🔹 Step 4: Refresh UI
+            refetchNftConcepts();
+            setCreateState('complete');
+            return true;
+            
+        } catch (error) {
+            console.error("❌ Error in adding NFT to database:", error.response?.data || error.message);
+            setCreateState('failed');
+            return false;
         }
     };
 
-    const deleteMetadata = async () => {
+    const handleUpdateNftConcept = async () => {
+        try {
+            if (page === 'update') {
+                
+                //Combine Metadata
+                const updateDataForDB = await combineUpdateMetadataJSON();
+
+                //Remove ID from metadata
+                const data = await updateNftConcept(updateDataForDB);
+
+                console.log('Update Successfull,', data);
+
+                refetchNftConcepts();
+
+                return true;
+            }
+        } catch(error){
+            console.error('Error updatingNft Data:', error.response?.data || error.message);
+        }
+    }
+
+    const createOffchainMetadata = async () => {
+        try {
+            setTxState('started');
+    
+            // 🔹 Step 1: Combine metadata for upload
+            const metadataForJSONUpload = await combineOffchainMetatdata();
+    
+            // 🔹 Step 2: Upload metadata and get the URI
+            const metadataUri = await uploadMetadata(metadataForJSONUpload);
+            if (!metadataUri) {
+                setTxState('failed')
+                throw new Error("Metadata upload failed: No URI returned.");
+            }
+    
+            setTxState('complete'); // ✅ Confirm upload success before marking complete
+    
+            // 🔹 Step 3: Determine Object ID
+            const objectId = page === 'create' ? newMetadata?._id : info?._id;
+            if (!objectId) {
+                setTxState('failed');
+                throw new Error("Missing Object ID: Cannot save metadata.");
+            }
+    
+            setCreateState('started');
+    
+            // 🔹 Step 4: Save metadata URI to the database
+            const data = await saveMetadataUri(objectId, metadataUri);
+            if (!data) {
+                throw new Error("Failed to update metadata URI.");
+            }
+    
+            // 🔹 Step 5: Handle success
+            console.log("Update Successful:", data);
+            setCreateState('complete');
+            setTransactionSig(metadataUri);
+            resetNftConceptForm(); // ✅ Reset metadata only if successful
+            refetchNftConcepts();
+    
+        } catch (error) {
+            console.error("Error in createOffchainMetadata:", error);
+            setTxState("failed");
+            setCreateState("failed");
+            alert(error.message);
+        }
+    };
+
+    const handleDeleteNftConcept = async () => {
 
         setTxState('started');
+
         await delay(2000);
 
         try {
-            const data = await deleteNftConcept(info._id);
+            await deleteNftConcept(info._id);
 
-            console.log('Nft Concept deleted', data);
             setTxState('complete');
+
+            refetchNftConcepts();
+            resetNftConceptForm();
+        
         } catch (error) {
             console.error('Error updating data', error.response?.data || error.message);
             setTxState('failed');
         }
-
-        refetchNftConcepts();
-        resetNftConceptForm();
-        setDisabledDeleteButton(false);
     }
 
     return (
@@ -372,7 +390,7 @@ const Homepage = () => {
                         attributes={attributes}
                         storeInfo={storeInfo}
                         setStoreInfo={setStoreInfo}
-                        handleInputChange={handleInputChange}
+                        handleInfoChange={handleInfoChange}
                         handleStoreChange={handleStoreChange}
                         handleAttributeChange={handleAttributeChange}
                         handleImageChange={handleImageChange}
@@ -380,23 +398,22 @@ const Homepage = () => {
                         page={page}
                         setPage={setPage}
                         createOffchainMetadata={createOffchainMetadata}
-                        deleteMetadata={deleteMetadata}
+                        handleDeleteNftConcept={handleDeleteNftConcept}
                         isDisabled={isDisabled}
                         setIsDisabled={setIsDisabled}
                         userRole={userRole}
                         walletAddress={wallet.publicKey?.toBase58()}
                         resetNftConceptForm={resetNftConceptForm}
-                        lockedStatus={lockStatus}
                         createLockStatus={createLockStatus}
-                        setCreateLockStatus={setCreateLockStatus}
-                        disableDeleteButton={disableDeleteButton} />
+                        setCreateLockStatus={setCreateLockStatus}  />
                     {page === "create" &&
                         <NFTPreview
                             info={info}
                             attributes={attributes}
                             storeInfo={storeInfo}
                             image={image}
-                            handleImageChange={handleImageChange} />}
+                            handleImageChange={handleImageChange}
+                            handleAddNftConcept={handleAddNftConcept} />}
                     {page === "update" &&
                         <NFTUpdate
                             setInfo={setInfo}
@@ -406,7 +423,7 @@ const Homepage = () => {
                             userRole={userRole}
                             wallet={wallet}
                             createOffchainMetadata={createOffchainMetadata}
-                            deleteMetadata={deleteMetadata} />}
+                            handleDeleteNftConcept={handleDeleteNftConcept} />}
                 </div>
             </div>
         </ScreenProvider>

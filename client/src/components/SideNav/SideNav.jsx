@@ -24,12 +24,14 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 import { useWallet } from '@solana/wallet-adapter-react';
 import SolConnection from '../Connection/SolConnection';
 
+import { convertUsdToSol } from '../../Utils/pricingModifiers';
+
 const SideNav = ({
     info,
     attributes,
     storeInfo,
     setStoreInfo,
-    handleInputChange,
+    handleInfoChange,
     handleStoreChange,
     handleAttributeChange,
     handleImageChange,
@@ -50,7 +52,12 @@ const SideNav = ({
     const {
         setIsModalOpen,
         setModalType,
-        imageName
+        imageName,
+        setNameTracker,
+        setPreCalcPayment,
+        setSolPriceLoaded,
+        setPaymentTracker,
+        loadTxModal
     } = useTransactionsController()
 
     const wallet = useWallet();
@@ -182,6 +189,19 @@ const SideNav = ({
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
+
+                if(page==='create'){
+                    const creatorPayment = await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value])
+                    // setIsModalOpen(true);
+                    // setModalType('create');
+                    // setNameTracker(info.name);
+                    // setPreCalcPayment(creatorPayment);
+                    // setSolPriceLoaded(true);
+                    // setPaymentTracker('SOL');
+                    loadTxModal('create', info.name, creatorPayment, 'SOL', true);
+                }
+
+                return;
 
 
 
@@ -323,7 +343,7 @@ const SideNav = ({
                         id="name"
                         name="name"
                         value={info.name}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={(e) => handleInfoChange(e)}
                         required
                         placeholder="EX: Axe"
                         disabled={!canEditFields} //disabled
@@ -345,7 +365,7 @@ const SideNav = ({
                         id="description"
                         name="description"
                         value={info.description}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={(e) => handleInfoChange(e)}
                         required
                         placeholder="Describe your NFT"
                         disabled={!canEditFields}

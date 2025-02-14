@@ -33,6 +33,7 @@ export const renderCostSign = (paymentTracker) => {
         case 'CARD':
             return 'usd';
         case 'SOL':
+            return 'sol'
         case 'BABYBOOH':
             return 'sol';
         default:

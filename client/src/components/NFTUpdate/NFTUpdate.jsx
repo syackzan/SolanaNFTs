@@ -15,7 +15,7 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 import TxModalManager from '../txModal/TxModalManager';
 
-const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRole, wallet, createOffchainMetadata, deleteMetadata }) => {
+const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRole, wallet, createOffchainMetadata, handleDeleteNftConcept }) => {
 
     const { publicKey, sendTransaction } = useWallet();
     const { connection } = useConnection();
@@ -157,7 +157,8 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
                 resetConfirmModal={resetConfirmModal}
                 createNft={createNft}
                 createOffchainMetadata={createOffchainMetadata}
-                deleteMetadata={deleteMetadata}
+                handleDeleteNftConcept={handleDeleteNftConcept}
+                
             />}
             <MobileDetailsButton />
         </div>

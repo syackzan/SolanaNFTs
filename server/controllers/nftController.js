@@ -174,32 +174,43 @@ exports.deleteNftConcept = async (req, res) => {
 
 exports.voteForNftConcept = async (req, res) => {
   try {
-    const { nftId, voterAddress } = req.body;
+      const { nftId, voterAddress, voteType } = req.body; // Accept voteType ("upvote" or "downvote")
 
-    // Fetch the NFT by ID
-    const nft = await NftMetadata.findById(nftId);
-    if (!nft) return res.status(404).json({ error: "NFT not found" });
+      // Fetch the NFT by ID
+      const nft = await NftMetadata.findById(nftId);
+      if (!nft) return res.status(404).json({ error: "NFT not found" });
 
-    // Prevent the creator from voting on their own NFT
-    if (nft.creator === voterAddress) {
-      return res.status(403).json({ error: "You cannot vote on your own NFT" });
-    }
+      // Prevent the creator from voting on their own NFT
+      if (nft.creator === voterAddress) {
+          return res.status(403).json({ error: "You cannot vote on your own NFT" });
+      }
 
-    // Check if the user has already voted
-    if (nft.votes.voters.includes(voterAddress)) {
-      return res.status(403).json({ error: "You have already voted for this NFT" });
-    }
+      const hasVoted = nft.votes.voters.includes(voterAddress);
 
-    // Update the NFT votes
-    nft.votes.count += 1;
-    nft.votes.voters.push(voterAddress);
-    await nft.save();
+      if (voteType === "upvote") {
+          if (!hasVoted) {
+              nft.votes.count += 1;
+              nft.votes.voters.push(voterAddress);
+          } else {
+              nft.votes.count = Math.max(0, nft.votes.count - 1);
+              nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
+          }
+      } else if (voteType === "downvote") {
+          if (hasVoted) {
+              nft.votes.count = Math.max(0, nft.votes.count - 1); // Prevents negative votes
+              nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
+          }
+      }
 
-    res.json({ success: true, votes: nft.votes.count });
+      await nft.save();
+
+      res.json({ success: true, votes: nft.votes.count });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+      res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 };
+
+
 
 
 exports.createAndSendNFT = async (req, res) => {
@@ -316,5 +327,47 @@ exports.getCoreNFTs = async (req, res) => {
       message: 'Failed to fetch assets',
       error: error.message || 'An unexpected error occurred',
     });
+  }
+};
+
+// 🔹 Universal Function to Track NFT Creates & Buys
+exports.trackNftTransaction = async (req, res) => {
+  try {
+      const { nftId, userId, type, amount, currency, txSignature } = req.body;
+
+      if (!nftId || !userId || !type || !amount || !currency || !txSignature) {
+          return res.status(400).json({ error: "Missing required fields (nftId, userId, type, amount, currency)" });
+      }
+
+      if (!['create', 'buy'].includes(type)) {
+          return res.status(400).json({ error: "Invalid transaction type. Must be 'create' or 'buy'." });
+      }
+
+      const nft = await NftMetadata.findById(nftId);
+      if (!nft) {
+          return res.status(404).json({ error: "NFT not found." });
+      }
+
+      const updateData = {
+          $inc: { "purchases.totalCreates": 1 },
+          $push: { "purchases.transactions": { type, user: userId, amount, currency, txSignature } }
+      };
+
+      if (type === 'buy') {
+          updateData.$inc["purchases.totalBuys"] = 1;
+          updateData.$push["purchases.buyers"] = userId; // Allows multiple buys per user
+      }
+
+      if (type === 'create') {
+          updateData.$addToSet = { "purchases.creators": userId }; // Ensures unique creator
+      }
+
+      const updatedNft = await NftMetadata.findByIdAndUpdate(nftId, updateData, { new: true });
+
+      res.status(200).json({ message: `NFT ${type} recorded successfully`, data: updatedNft });
+
+  } catch (error) {
+      console.error("Error tracking NFT transaction:", error);
+      res.status(500).json({ error: "Internal server error" });
   }
 };

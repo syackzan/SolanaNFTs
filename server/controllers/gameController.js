@@ -27,11 +27,11 @@ exports.getInGameCurrency = async (req, res) => {
         // Enhanced error logging
         if (error.response) {
             // Error response from the API
-            console.error("API Error Response:", {
-                status: error.response.status,
-                headers: error.response.headers,
-                data: error.response.data,
-            });
+            // console.error("API Error Response:", {
+            //     status: error.response.status,
+            //     headers: error.response.headers,
+            //     data: error.response.data,
+            // });
         } else if (error.request) {
             // No response received
             console.error("No Response Received:", error.request);

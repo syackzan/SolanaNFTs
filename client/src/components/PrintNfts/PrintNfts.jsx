@@ -7,6 +7,9 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 
 import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
 
+import { useWallet } from '@solana/wallet-adapter-react';
+import NftConceptVoting from '../NftConceptVoting/NftConceptVoting';
+
 const PrintNfts = ({
     nfts,
     selectedIndex,
@@ -17,6 +20,8 @@ const PrintNfts = ({
     setEditData,
     setPaymentTracker,
     nftConceptsLoadingState }) => {
+
+    const wallet = useWallet();
 
     const { userNfts } = useGlobalVariables();
 
@@ -35,6 +40,10 @@ const PrintNfts = ({
     const buyAgain = (nft) => {
         setReBuying((prev) => ({ ...prev, [nft.description]: true }));
     };
+
+    const handleVotes = () => {
+
+    }
 
     // ✅ **Handle Loading States**
     if (nftConceptsLoadingState === "loading") {
@@ -120,10 +129,10 @@ const PrintNfts = ({
 
                     return (
                         <div key={index} style={{ display: 'inline-block' }}>
-                            <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px' }}>
+                            <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px', fontWeight: '600' }}>
                                 <div>Price: ${nft.storeInfo.price}</div>
-                                {nft.storeInfo.available ? (<div>in-store✅</div>) : (<div>in-store❌</div>)}
-                                {nft.storeInfo.metadataUri ? (<div>Data <FaLock /></div>) : (<div>Data <FaLockOpen /></div>)}
+                                {nft.storeInfo.available ? (<div>In-store✅</div>) : (<div>In-store❌</div>)}
+                                {nft.storeInfo.metadataUri ? (<div>Metadata <FaLock /></div>) : (<div>Metadata <FaLockOpen /></div>)}
                             </div>
                             <button
                                 className={`${rarityClass} ${isSelected ? "selected" : ""}`}
@@ -231,10 +240,25 @@ const PrintNfts = ({
                                     </div>
                                 </>
                             ) : null}
+                            <div className='d-flex justify-content-between marykate' style={{ fontSize: '1.2rem' }}>
+                                <div className='d-flex gap-2'>
+                                    <p className='m-0'>Created: {nft.purchases.totalCreates}</p>
+                                    {wallet?.publicKey?.toString() === nft.storeInfo.creator &&
+                                        <>
+                                            <p className='m-0'>|</p>
+                                            <p className='m-0'>Buys: {nft.purchases.totalBuys}</p>
+                                        </>
+                                    }
+                                </div>
+                                {location === 'creator-hub' && (
+                                    <NftConceptVoting nft={nft} />
+                                )}
+                            </div>
                         </div>
                     );
                 })}
             </div>
+
         </div>
     )
 }

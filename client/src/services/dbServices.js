@@ -135,15 +135,53 @@ export const checkIfAdmin = async (walletAddress) => {
  * @returns {Promise<object>} Resolves with the updated vote count.
  * @throws {Error} Throws an error if the request fails.
  */
-export const voteForNFT = async (nftId, walletAddress) => {
+export const voteForNFT = async (nftId, voterAddress, voteType) => {
     try {
-        const response = await axios.post(`${URI_SERVER}/api/nft/concepts/${nftId}/vote`, { voterAddress: walletAddress }, {
-            headers: { "Content-Type": "application/json" }
-        });
+        const response = await axios.patch(
+            `${URI_SERVER}/api/nft/concepts/${nftId}/vote`,
+            {
+                voterAddress,
+                nftId,
+                voteType
+            },
+            { headers: { "x-api-key": API_KEY } }
+        );
 
         return response.data;
     } catch (error) {
         console.error("Error while voting:", error.response?.data || error.message);
         throw new Error(`Failed to vote for NFT: ${error.response?.data?.message || error.message}`);
+    }
+};
+
+
+/**
+ * Logs an NFT transaction (either 'create' or 'buy').
+ * @param {string} nftId - The ID of the NFT.
+ * @param {string} userId - The wallet address or user ID.
+ * @param {'create' | 'buy'} type - The type of transaction.
+ * @param {number} amount - The amount spent (0 for in-game currency).
+ * @param {'SOL' | 'USD' | 'BABYBOOH'} currency - The payment currency.
+ * @returns {Promise<object>} - The updated NFT data.
+ */
+export const trackNftTransaction = async (nftId, userId, type, amount, currency, txSignature) => {
+    try {
+        const response = await axios.patch(
+            `${URI_SERVER}/api/nft/concepts/${nftId}/transaction`,
+            {
+                nftId,
+                userId,
+                type,
+                amount,
+                currency,
+                txSignature
+            },
+            { headers: { "x-api-key": API_KEY } } // If you require authentication
+        );
+
+        return response.data; // Return updated NFT data
+    } catch (error) {
+        console.error("Error tracking NFT transaction:", error.response?.data || error.message);
+        throw new Error(`Failed to track NFT transaction: ${error.response?.data?.message || error.message}`);
     }
 };

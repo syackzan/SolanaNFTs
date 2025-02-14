@@ -10,25 +10,29 @@ import { IS_MAINNET } from "../../../config/config";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTransactionsController } from '../../../providers/TransactionsProvider';
 
-const TxCreatorModal = ({ createNft }) => {
+const TxModalCreator = ({ handleAddNftConcept }) => {
     const {
         txState,
         createState,
         preCalcPayment,
         paymentTracker,
         solPriceLoaded,
-        transactionSig,
-        redirectSecret,
         nameTracker,
         inGameSpend,
-        setRedirectSecret
+        setPage,
+        simpleCloseModal
     } = useTransactionsController();
 
     const wallet = useWallet();
 
+    const toEditPage = () => {
+        setPage('update');
+        simpleCloseModal();
+    }
+
     return (
         <>
-            <TxModalHeader />
+            <TxModalHeader title={'Nft Concept'} disableSimpleClose={true}/>
             {/* Modal Body */}
             <div className="modal-body">
                 <div className="tracker-container">
@@ -49,11 +53,11 @@ const TxCreatorModal = ({ createNft }) => {
                 <div className="loading-details">
                     <div className="d-flex gap-2 align-items-center">
                         {renderTxStateIcon(txState)}
-                        <h5 className="modal-title">Process Mint Cost</h5>
+                        <h5 className="modal-title">Processing Creator Cost</h5>
                     </div>
                     <div className="d-flex gap-2 align-items-center">
                         {renderCreateStateIcon(createState)}
-                        <h5 className="modal-title">Create & Send NFT</h5>
+                        <h5 className="modal-title">Creating Nft Concept</h5>
                     </div>
                 </div>
             </div>
@@ -62,26 +66,20 @@ const TxCreatorModal = ({ createNft }) => {
             <div className="d-flex justify-content-center">
                 {wallet.publicKey ? (
                     <>
-                        {!transactionSig ? (
+                        {createState !== 'complete' ? (
                             <div className="d-flex flex-column">
-                                {redirectSecret && <div className='center-text'>[DO NOT LEAVE PAGE! SENDING NFT!]</div>}
-                                {redirectSecret ?
-                                    (<div className="text-center">
-                                        Generating...</div>) :
-                                    (
-                                    <button className="button-style-regular" onClick={() => createNft()}>Confirm</button>
-                                    )}
+                                    <button className="button-style-regular" onClick={() => handleAddNftConcept()}>Confirm</button>
                             </div>
                         ) : (
                             <div className="d-flex flex-column gap-2">
                                 <div className='tracker-container marykate text-center d-flex flex-column' style={{ fontSize: '1.3rem' }}>
                                     <div>
-                                        <strong>"{nameTracker}"</strong> has been sent to your wallet! Please open your wallet to confirm.
+                                        <strong>"{nameTracker}"</strong> has been generated!
                                     </div>
-                                    <div>View the transaction on Solscan below.</div>
+                                    <div>View your Nft Concepts on the Edit page below.</div>
                                 </div>
                                 <div className='d-flex justify-content-center'>
-                                    <Link className="button-style-regular" to={solScanner} target="_blank">View Transaction</Link>
+                                    <button className="button-style-regular" onClick={toEditPage} target="_blank">View Concepts</button>
                                 </div>
                             </div>
 
@@ -95,4 +93,4 @@ const TxCreatorModal = ({ createNft }) => {
     );
 };
 
-export default TxCreatorModal;
+export default TxModalCreator;

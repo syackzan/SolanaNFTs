@@ -43,13 +43,32 @@ export const TransactionProvider = ({ children }) => {
 
     const resetTxModal = () => {
         setIsModalOpen(false);
-        setTxState('empty');
-        setCreateState('empty');
+        reloadStates();
         setTransactionSig(null);
         setSolPriceLoaded(false);
         setStripeSecret(null);
         setInGameSpend(null);
     };
+
+    const loadTxModal = (type, name = 'unknown', payment = 0, paymentType =  'none', isPriceLoaded = false ) => {
+        setIsModalOpen(true);
+        setModalType(type);
+        setNameTracker(name);
+        setPreCalcPayment(payment);
+        setSolPriceLoaded(isPriceLoaded);
+        setPaymentTracker(paymentType);
+    }
+
+    const reloadStates = () =>{
+        setTxState('empty');
+        setCreateState('empty');
+    }
+
+    const simpleCloseModal = () => {
+        reloadStates();
+        setIsModalOpen(false);
+        setModalType('');
+    }
 
     return (
         <TransactionsContext.Provider
@@ -88,7 +107,9 @@ export const TransactionProvider = ({ children }) => {
                 imageName,
                 setImageName,
                 page,
-                setPage
+                setPage,
+                loadTxModal,
+                simpleCloseModal
             }}
         >
             {children}

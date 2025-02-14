@@ -11,8 +11,14 @@ import TxModalLockData from './ModalTypes/TxModalLockData';
 import "../../Modal.css"; // Ensure this CSS file exists
 import TxModalUploadImage from './ModalTypes/TxModalUploadImage';
 import TxModalDisconnect from './ModalTypes/TxModalDisconnect';
+import TxModalCreator from './ModalTypes/TxModalCreator';
 
-const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, handleImageChange }) => {
+const ModalManager = ({  
+    createNft, 
+    createOffchainMetadata, 
+    handleDeleteNftConcept, 
+    handleImageChange,
+    handleAddNftConcept }) => {
     
     const {
         modalType
@@ -20,13 +26,13 @@ const ModalManager = ({  createNft, createOffchainMetadata, deleteMetadata, hand
 
     const renderModalContent = () => {
 
-        console.log(modalType);
-
         switch (modalType) {
+            case 'create':
+                return <TxModalCreator handleAddNftConcept={handleAddNftConcept} />
             case "mint":
                 return <TxModalMint createNft={createNft} />;
             case "delete":
-                return <TxModalDelete deleteMetadata={deleteMetadata} />;
+                return <TxModalDelete handleDeleteNftConcept={handleDeleteNftConcept} />;
             case "lock":
                 return <TxModalLockData createOffchainMetadata={createOffchainMetadata} />;
             case "image":

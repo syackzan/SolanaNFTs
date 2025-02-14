@@ -19,11 +19,12 @@ import { createPaymentIntent } from '../../services/stripeServices';
 import Stripe from '../Stripe/Stripe';
 
 import { useParams } from 'react-router-dom';
-import { fetchSingleNftMetadata } from '../../services/dbServices';
+import { fetchSingleNftMetadata, trackNftTransaction } from '../../services/dbServices';
 
 import { PublicKey } from '@solana/web3.js';
 
 import { useTransactionsController } from '../../providers/TransactionsProvider';
+
 
 const Marketplace = () => {
 
@@ -282,6 +283,7 @@ const Marketplace = () => {
     };
 
     const handleNFTCreation = async (nft, wallet) => {
+
         try {
             // Ensure NFT and wallet are provided
             if (!nft || !wallet) {
@@ -292,11 +294,22 @@ const Marketplace = () => {
             // Call the function to create the NFT on the blockchain
             const resp = await createCoreNft(nft, wallet);
 
+            const transactionSignature = resp.data.serializedSignature;
+
             // Log the serialized transaction signature (useful for debugging)
-            console.log("Serialized Transaction Signature:", resp.data.serializedSignature);
+            console.log("Serialized Transaction Signature:", transactionSignature);
 
             // Update state with the transaction signature
-            setTransactionSig(resp.data.serializedSignature);
+            setTransactionSig(transactionSignature);
+
+            //Track Transaction
+            if (paymentTracker === 'BABYBOOH') {
+                //Add as create
+                const resp = await trackNftTransaction(nft._id, wallet.publicKey.toString(), 'create', preCalcPayment, paymentTracker, transactionSignature);
+            } else {
+                //Add as purchase
+                const resp = await trackNftTransaction(nft._id, wallet.publicKey.toString(), 'buy', preCalcPayment, paymentTracker, transactionSignature);
+            }
 
             return resp.data.serializedSignature;
         } catch (error) {

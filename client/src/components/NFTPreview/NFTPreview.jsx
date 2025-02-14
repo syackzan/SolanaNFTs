@@ -15,7 +15,8 @@ const NFTPreview = ({
     attributes,
     storeInfo,
     image,
-    handleImageChange
+    handleImageChange,
+    handleAddNftConcept
 }) => {
 
     const {
@@ -110,7 +111,9 @@ const NFTPreview = ({
                     </div>
                 </button>
             </div>
-            {isModalOpen && <TxModalManager handleImageChange={handleImageChange} />}
+            {isModalOpen && <TxModalManager
+                handleImageChange={handleImageChange}
+                handleAddNftConcept={handleAddNftConcept} />}
             <MobileDetailsButton />
         </div>
     );
