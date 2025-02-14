@@ -405,7 +405,8 @@ const Homepage = () => {
                         walletAddress={wallet.publicKey?.toBase58()}
                         resetNftConceptForm={resetNftConceptForm}
                         createLockStatus={createLockStatus}
-                        setCreateLockStatus={setCreateLockStatus}  />
+                        setCreateLockStatus={setCreateLockStatus}
+                        handleUpdateNftConcept={handleUpdateNftConcept}  />
                     {page === "create" &&
                         <NFTPreview
                             info={info}

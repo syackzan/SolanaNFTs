@@ -21,7 +21,9 @@ import '../../css/mobile-Navbar.css'
 
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
-const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+
+const Navbar = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -30,10 +32,12 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
     const { connection } = useConnection();
 
     const { inGameCurrency, setInGameCurrency, boohToken, setBoohToken } = useGlobalVariables();
-    const {setPage} = useTransactionsController();
+    const { setPage } = useTransactionsController();
 
     const [isMobileNavbar, setIsMobileNavbar] = useState(false);
     const [isHubDropdownOpen, setIsHubDropdownOpen] = useState(false);
+
+    const [showCreatorLinksMobile, setShowCreatorLinksMobile] = useState(false);
 
     useEffect(() => {
 
@@ -42,7 +46,6 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
                 const babyBooh = await fetchBabyBooh(wallet.publicKey.toString());
 
                 if (babyBooh > -1) {
-                    console.log
                     setInGameCurrency(babyBooh);
                 }
 
@@ -61,11 +64,8 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
     const handlePageChange = (action) => {
         const isOnDashboard = location.pathname === "/dashboard";
 
-        console.log('Hello, ', isOnDashboard);
-
         if (isOnDashboard) {
             setPage(action);
-            console.log('Page is set')
         } else {
             navigate(`/dashboard?action=${action}`);
         }
@@ -136,7 +136,7 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
                         {isMobileNavbar ? (
                             <button
                                 className="close-nav-modal-button"
-                                onClick={() => { setIsMobileNavbar(!isMobileNavbar) }}>
+                                onClick={() => { setIsMobileNavbar(!isMobileNavbar), setShowCreatorLinksMobile(false) }}>
                                 &times;
                             </button>
                         ) : (
@@ -156,7 +156,13 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        onClick={() => setIsMobileNavbar(false)}
+                        onClick={(e) => {
+                            // Prevent closing if clicking inside the modal
+                            if (e.target.classList.contains("nav-modal-overlay")) {
+                                setIsMobileNavbar(false);
+                                setShowCreatorLinksMobile(false);
+                            }
+                        }}
                     >
                         <motion.div
                             className="nav-modal-tx"
@@ -169,7 +175,22 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
                                 <div className="d-flex flex-column marykate" style={{ padding: '20px' }}>
                                     <Link to="https://t.me/BoohBrawlBot/BoohBrawlers" target="_blank">Play Game</Link>
                                     <Link to="/marketplace">Marketplace</Link>
-                                    <Link to="/dashboard?action=update">Creator Hub</Link>
+                                    {/* 🔹 Creator Hub Link (Click to Toggle Sub-Links) */}
+                                    <button
+                                        className="creator-hub-toggle"
+                                        onClick={() => setShowCreatorLinksMobile(!showCreatorLinksMobile)}
+                                    >
+                                        Creator Hub
+                                    </button>
+
+                                    {/* 🔹 Conditionally Show Sub-Links */}
+                                    {showCreatorLinksMobile && (
+                                        <div className="creator-hub-sub-links">
+                                            <button onClick={() => {handlePageChange("create"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false)}}><MdOutlineKeyboardDoubleArrowRight/> Create Concept</button>
+                                            <button onClick={() => {handlePageChange("update"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false) }}><MdOutlineKeyboardDoubleArrowRight/> Edit Concept</button>
+                                            <Link to="/submission"><MdOutlineKeyboardDoubleArrowRight/> Subm. Character</Link>
+                                        </div>
+                                    )}
                                     <Link to="https://boohworld.io" target="_blank">Token</Link>
                                     <Link to="https://discord.gg/WkWcNFEA" target="_blank">Discord</Link>
                                     <Link to="/creatorHubDocs">Docs & Rules</Link>
@@ -189,7 +210,6 @@ const Navbar = ({ resetNftConceptForm, setIsDisabled }) => {
                         </motion.div>
                     </motion.div>
                 )}
-
             </div>
         </nav >
     )

@@ -47,6 +47,7 @@ const SideNav = ({
     lockedStatus,
     createLockStatus,
     setCreateLockStatus,
+    handleUpdateNftConcept
 }) => {
 
     const {
@@ -192,18 +193,15 @@ const SideNav = ({
 
                 if(page==='create'){
                     const creatorPayment = await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value])
-                    // setIsModalOpen(true);
-                    // setModalType('create');
-                    // setNameTracker(info.name);
-                    // setPreCalcPayment(creatorPayment);
-                    // setSolPriceLoaded(true);
-                    // setPaymentTracker('SOL');
+
                     loadTxModal('create', info.name, creatorPayment, 'SOL', true);
                 }
 
+                if(page === 'update'){
+                    handleUpdateNftConcept();
+                }
+
                 return;
-
-
 
                 if (page === "update" && !info.name) {
                     alert('Select and item');

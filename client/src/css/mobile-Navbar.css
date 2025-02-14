@@ -174,3 +174,51 @@
 .dropdown-menu a:hover {
     background-color: #3a3a5c;
 }
+
+/* 🔹 Creator Hub Toggle */
+.creator-hub-toggle {
+    background: none;
+    border: none;
+    padding: 0px;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.3s ease;
+}
+
+.creator-hub-toggle:hover {
+    color: orange;
+}
+
+/* 🔹 Sub-links for Creator Hub */
+.creator-hub-sub-links {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+    gap: 5px;
+    margin-top: 3px;
+}
+
+.creator-hub-sub-links button,
+.creator-hub-sub-links a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    text-align: start;
+    padding: 0px;
+    transition: background 0.3s ease;
+    background: none; /* Fix background issue */
+    border: none; /* Remove button border */
+    cursor: pointer; /* Ensure button has pointer cursor like links */
+    
+    font: inherit;
+    font-size: 2rem;
+    border-radius: 5px;
+}
+
+.creator-hub-sub-links button:hover,
+.creator-hub-sub-links a:hover {
+    color: orange;
+}
