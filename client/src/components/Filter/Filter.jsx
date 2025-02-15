@@ -17,12 +17,12 @@ import {
     weaponOptions,
     skinOptions,
     accessoriesOptions,
-    rarityOptions,
-    pricingValues,
-    talenPointSpread,
-    talents
+    rarityOptions
 } from '../../config/gameConfig';
-import { useLocation } from 'react-router-dom';
+
+import PopUpFilter from './PopUpFilter';
+import FilterBubbles from './FilterBubbles';
+
 
 const Filter = ({
     title,
@@ -38,22 +38,25 @@ const Filter = ({
 
     const wallet = useWallet();
 
-    const {refetchNftConcepts} = useGlobalVariables();
+    const { refetchNftConcepts } = useGlobalVariables();
 
     const [checked, setChecked] = useState(false);
-
-    const [isDropdownOpenType, setIsDropdownOpenType] = useState(false);
-    const [isDropdownOpenRarity, setIsDropdownOpenRarity] = useState(false);
-
-    const handleDropdownToggleOfType = () => {
-        setIsDropdownOpenType(!isDropdownOpenType);
-    };
-
-    const handleDropdownToggleOfRarity = () => {
-        setIsDropdownOpenRarity(!isDropdownOpenRarity);
-    };
+    const [selectedFiltersCount, setSelectedFiltersCount] = useState(0);
 
     const address = wallet.publicKey ? wallet.publicKey.toString() : 'all';
+
+    // Update filter count when any filter changes
+    useEffect(() => {
+        const filters = [selectedType, selectedSubType, selectedRarity];
+        const count = filters.filter(value => value !== 'all').length;
+        setSelectedFiltersCount(count);
+    }, [selectedType, selectedSubType, selectedRarity]);
+
+    const resetFilters = () => {
+        setSelectedType('all');
+        setSelectedSubType('all');
+        setSelectedRarity('all');
+    }
 
     const handleChange = () => {
 
@@ -66,23 +69,32 @@ const Filter = ({
         }
     }
 
-    // const location = useLocation();
-    // useEffect(() => {
-        
-    //     if(location.pathname === '/dashboard' && wallet.publicKey){
-    //         setChecked(true);
-    //         setSelectedCreator(wallet.publicKey.toString())
-    //     } else if (location.pathname === '/dashboard' && !wallet.publicKey){
-    //         setChecked(false);
-    //         setSelectedCreator('all');
-    //     }
-
-    // }, [wallet.publicKey])
-
     const filteredGeneralTypes = [...generalTypes, 'all'];; //Add all for search filters
     const filteredWeaponOptions = [...weaponOptions, 'all'];
     const filteredArmorOptions = [...armorOptions, 'all'];
+    const filteredSkinOptions = [...skinOptions, 'all'];
+    const filteredAccessoryOptions = [...accessoriesOptions, 'all'];
     const filteredRarityOptions = [...rarityOptions, 'all'];
+
+    const determineSubType = () => {
+
+        if(selectedType === 'all'){
+            setSelectedSubType('all');
+        }
+
+        switch(selectedType){
+            case 'weapon':
+                return filteredWeaponOptions;
+            case 'armor': 
+                return filteredArmorOptions;
+            case 'skin':
+                return filteredSkinOptions;
+            case 'accessory':
+                return filteredAccessoryOptions;
+            case 'all':
+                return ['all'];
+        }
+    }
 
     return (
         <div className="d-flex flex-column" style={{ color: 'white', padding: '0px 25px' }}>
@@ -103,32 +115,28 @@ const Filter = ({
                     ))}
                 </div>
 
-                {/* Mobile Dropdown */}
-                <div className="dropdown">
-                    <div className="d-flex gap-2">
-                        <div className="marykate" style={{ fontSize: '1.25rem' }}>Type</div>
-                        <button
-                            className="dropdown-toggle"
-                            onClick={handleDropdownToggleOfType}
-                        >
-                            {selectedType ? selectedType.toUpperCase() : "SELECT"}
-                        </button>
-                    </div>
-                    {isDropdownOpenType && (
-                        <ul className="dropdown-menu">
-                            {filteredGeneralTypes.map((item) => (
-                                <li key={item} className="dropdown-item">
-                                    <button
-                                        className="dropdown-item-button"
-                                        onClick={() => handleItemClick(item)}
-                                    >
-                                        {item.toUpperCase()}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                {/* MOBILE POP UP FILTER SYSTEM */}
+                <div className='enable-on-mobile'>
+                    <PopUpFilter buttonLabel='Filters' selectedFiltersCount={selectedFiltersCount} resetFilters={resetFilters}>
+                        <FilterBubbles
+                            label={'Type'}
+                            selectedValue={selectedType}
+                            options={filteredGeneralTypes}
+                            onSelect={setSelectedType} />
+                        <FilterBubbles
+                            label={'SubType'}
+                            selectedValue={selectedSubType}
+                            options={determineSubType()}
+                            onSelect={setSelectedSubType}
+                            />
+                        <FilterBubbles
+                            label={'Rarity'}
+                            selectedValue={selectedRarity}
+                            options={filteredRarityOptions}
+                            onSelect={setSelectedRarity} />
+                    </PopUpFilter>
                 </div>
+
 
                 <div className="d-flex align-items-center gap-2">
                     <Switch
@@ -150,7 +158,7 @@ const Filter = ({
                 </div>
             </div>
             <div style={{ width: '100%', borderTop: '1px solid white', margin: '5px 0px 10px 0px' }}></div>
-            <div>
+            <div className='disable-on-mobile'>
                 {selectedType === "weapon" && (
                     <div>
                         <div className="d-flex gap-2" style={{ marginBottom: '10px' }}>
@@ -199,7 +207,7 @@ const Filter = ({
                 </div>
 
                 {/* Mobile Filter */}
-                <div className="dropdown">
+                {/* <div className="dropdown">
                     <div className="d-flex gap-2">
                         <div className="marykate" style={{ fontSize: '1.25rem' }}>Rarity</div>
                         <button
@@ -223,7 +231,10 @@ const Filter = ({
                             ))}
                         </ul>
                     )}
-                </div>
+                </div> */}
+
+
+
             </div>
         </div>
     )

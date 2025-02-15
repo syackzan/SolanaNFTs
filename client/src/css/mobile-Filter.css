@@ -1,80 +1,130 @@
-/* Mobile Dropdown */
-.dropdown {
-    display: none;
-    /* Hide dropdown by default */
-    position: relative !important;
+.popup-filter-container {
+    position: relative;
+    display: inline-block;
 }
 
-.dropdown-toggle {
+/* Toggle Button */
+.popup-filter-toggle-button {
     background-color: #3a3a4f;
-    color: #ffffff;
-    border: 1px solid #555555;
-    border-radius: 5px;
-    padding: 0px 4px;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    text-align: left;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-    font-size: 14px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
 }
 
-/* Button hover style */
-.dropdown-toggle:hover {
+.popup-filter-toggle-button:hover {
     background-color: #57576c;
 }
 
-.dropdown-menu {
-    position: absolute !important;
-    /* top: 100%; */
+/* The actual sliding popup */
+.popup-filter-panel {
+    position: fixed;
+    bottom: 0;
     left: 0;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    z-index: 1003;
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    width: 100%;
+    background-color: #222232;
+    padding: 20px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1500;
 }
 
-.dropdown-item {
-    border-bottom: 1px solid #ccc;
+/* Content inside popup */
+.popup-filter-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: start;
 }
 
-.dropdown-item:last-child {
-    border-bottom: none;
-}
-
-.dropdown-item-button {
+/* Close Button */
+.popup-filter-close-button {
     background: none;
     border: none;
-    width: 100%;
-    padding: 10px 15px;
-    text-align: left;
+    font-size: 1.5rem;
+    color: white;
+    position: absolute;
+    top: 0px;
+    right: 15px;
     cursor: pointer;
 }
 
-.filter-title{
-    font-size: 3.0rem;
+/* Filter Circle Buttons */
+.filter-circle {
+    background-color: #33334f;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
 }
 
-/* Responsive Styling */
-/* Either 1100 or 768px */
+.filter-circle:hover {
+    background-color: #57576c;
+}
+
+/* Main container */
+.filter-bubbles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Label */
+.filter-label {
+    font-size: 2rem;
+    color: white;
+}
+
+/* Bubble group */
+.filter-bubble-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Individual bubble */
+.filter-bubble {
+    background-color: #3a3a4f;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+.filter-bubble:hover {
+    background-color: #57576c;
+    transform: scale(1.05);
+}
+
+/* Selected filter */
+.filter-bubble.selected {
+    background-color: orange;
+    font-weight: bold;
+    transform: scale(1.1);
+}
+
+
+/* 🔹 Responsive Adjustments */
 @media (max-width: 1100px) {
     .disable-on-mobile {
         display: none !important;
-        /* Hide button group on mobile */
     }
-
-    .dropdown {
-        display: block;
-        /* Show dropdown on mobile */
-    }
-
 }
 
-@media (max-width: 768px) {
+@media (max-width: 450px){
     .filter-title{
-        font-size: 2rem
+        font-size: 3rem;
     }
 }
+
+
