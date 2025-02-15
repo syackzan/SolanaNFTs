@@ -9,7 +9,7 @@ const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) =
     const {
         redirectSecret,
         resetTxModal,
-        simpleModalClose
+        simpleCloseModal
     } = useTransactionsController();
 
     // Function to handle closing and redirecting
@@ -32,7 +32,7 @@ const TxModalHeader = ({ title = 'Confirmation', disableSimpleClose = false }) =
                 </div> 
                 ) : (
                     <div className="d-flex justify-content-end">
-                        <button className="modal-close-top-right" onClick={simpleModalClose}>&times;</button>
+                        <button className="modal-close-top-right" onClick={simpleCloseModal}>&times;</button>
                     </div>
                 )
             }

@@ -9,8 +9,6 @@ const PopUpFilter = ({ buttonLabel, children, selectedFiltersCount, resetFilters
         setIsOpen(!isOpen);
     };
 
-    console.log(selectedFiltersCount);
-
     return (
         <div className="popup-filter-container">
 
@@ -18,7 +16,6 @@ const PopUpFilter = ({ buttonLabel, children, selectedFiltersCount, resetFilters
             <button className="popup-filter-toggle-button" onClick={togglePopup}>
                 {buttonLabel} {selectedFiltersCount > 0 && `(${selectedFiltersCount})`}
             </button>
-
 
             {/* Sliding Popup */}
             {isOpen && (

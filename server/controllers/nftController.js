@@ -14,9 +14,11 @@ const {
   addPlugin
 } = require('@metaplex-foundation/mpl-core');
 
+const {setComputeUnitLimit, setComputeUnitPrice} = require('@metaplex-foundation/mpl-toolbox')
+
 const { PublicKey } = require('@solana/web3.js'); 
 
-const { initializeUmi, softInitUmi } = require('../config/umiInstance');
+const { initializeUmi } = require('../config/umiInstance');
 const { validateNFT } = require('../utils/validateNFT');
 const { getPriorityFee } = require('../utils/transactionHelpers');
 
@@ -210,9 +212,6 @@ exports.voteForNftConcept = async (req, res) => {
   }
 };
 
-
-
-
 exports.createAndSendNFT = async (req, res) => {
 
   const { nft, receiverPubKey } = req.body;
@@ -246,8 +245,8 @@ exports.createAndSendNFT = async (req, res) => {
 
       // Build the transaction
       let builder = transactionBuilder()
-        // .add(setComputeUnitLimit(umi, { units: 600_000 }))
-        // .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
+        .add(setComputeUnitLimit(umi, { units: 600_000 }))
+        .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
         .add(create(umi, {
           asset: assetSigner,
           collection: collection,

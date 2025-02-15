@@ -4,13 +4,19 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
+import { isSolanaWalletApp } from '../../Utils/generalUtils';
+
 const SolConnection = () => {
+
     const walletModal = useWalletModal(); // Wallet modal hook
     const { publicKey, connected, disconnect } = useWallet(); // Wallet hook
 
     const [selectedAddress, setSelectedAddress] = useState('');
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 500);
 
     const {setIsModalOpen, setModalType} = useTransactionsController();
+
+    const isWalletApp = isSolanaWalletApp();
 
     // Update the selected address whenever the wallet connection changes
     useEffect(() => {
@@ -29,7 +35,7 @@ const SolConnection = () => {
                     console.log('Trying to connect...');
                     
                     // On desktop, just open the modal normally
-                     walletModal.setVisible(true);
+                    walletModal.setVisible(true);
                     
                 } catch (e) {
                     console.error('Failed to open wallet modal:', e);
@@ -56,7 +62,13 @@ const SolConnection = () => {
             setIsModalOpen(true);
             setModalType('disconnect');
         } else {
-            connectWallet('sol'); // Attempt to connect
+
+            if(isMobile && !isWalletApp){
+                setIsModalOpen(true);
+                setModalType('appRedirect');
+            } else {
+                connectWallet('sol'); // Attempt to connect
+            }
         }
     };
 

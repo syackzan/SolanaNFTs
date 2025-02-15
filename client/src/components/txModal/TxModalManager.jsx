@@ -12,6 +12,7 @@ import "../../Modal.css"; // Ensure this CSS file exists
 import TxModalUploadImage from './ModalTypes/TxModalUploadImage';
 import TxModalDisconnect from './ModalTypes/TxModalDisconnect';
 import TxModalCreator from './ModalTypes/TxModalCreator';
+import TxModalAppRedirect from './ModalTypes/TxModalAppRedirect';
 
 const ModalManager = ({  
     createNft, 
@@ -39,6 +40,8 @@ const ModalManager = ({
                 return <TxModalUploadImage handleImageChange={handleImageChange} />
             case "disconnect":
                 return <TxModalDisconnect />
+            case 'appRedirect':
+                return <TxModalAppRedirect />
             default:
                 return <TxModalMint createNft={createNft} />; //Default for Stripe Redirect
         }
