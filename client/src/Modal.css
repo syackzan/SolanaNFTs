@@ -1,29 +1,20 @@
-/* Modal overlay */
+/* 🔹 Modal Overlay */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* Start invisible */
-    transform: scale(0.95); /* Slightly shrink */
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade and scale */
     z-index: 1000;
 }
 
-.modal-overlay.open {
-    opacity: 1; /* Fully visible */
-    transform: scale(1); /* Return to normal size */
-}
-
-/* Modal container */
+/* 🔹 Modal Container */
 .modal-tx {
     background: #1e1e1e;
-    /* Dark gray background */
     border-radius: 8px;
     padding: 20px;
     width: 350px;
@@ -31,7 +22,8 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
     position: relative;
     color: #ffffff;
-    /* Light text color */
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
 }
 
 /* Close button (top right) */
@@ -153,7 +145,7 @@
     /* Slightly darker border */
 }
 
-/* Mobile: Slide up from the bottom */
+/* 🔹 Mobile-Specific Styles */
 @media (max-width: 650px) {
     .modal-overlay {
         align-items: flex-end;
@@ -163,10 +155,5 @@
         width: 100%;
         max-width: none;
         border-radius: 12px 12px 0 0;
-        transform: translateY(100%);
-    }
-
-    .modal-overlay.open .modal-tx {
-        transform: translateY(0);
     }
 }
