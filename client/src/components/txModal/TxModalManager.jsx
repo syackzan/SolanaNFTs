@@ -14,7 +14,7 @@ import TxModalDisconnect from './ModalTypes/TxModalDisconnect';
 import TxModalCreator from './ModalTypes/TxModalCreator';
 import TxModalAppRedirect from './ModalTypes/TxModalAppRedirect';
 
-const ModalManager = ({  
+const TxModalManager = ({  
     createNft, 
     createOffchainMetadata, 
     handleDeleteNftConcept, 
@@ -50,4 +50,4 @@ const ModalManager = ({
     return <TxModalWrapper>{renderModalContent()}</TxModalWrapper>;
 };
 
-export default ModalManager;
+export default TxModalManager;
