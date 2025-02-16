@@ -26,7 +26,7 @@ const TxModalAppRedirect = () => {
             <div className="modal-body">
                 <div className="tracker-container">
                     <div className='d-flex justify-content-center text-center'>
-                        Hello! We noticed you are on a mobile device. Click next to be redirected to an app of your choice!
+                        You're on a mobile device! Click Next to open a wallet app or connect if already in one.
                     </div>
                 </div>
             </div>

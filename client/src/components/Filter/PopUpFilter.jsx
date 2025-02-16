@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import "../../css/popup-filter.css"; // Import styles (create this file)
 
 const PopUpFilter = ({ buttonLabel, children, selectedFiltersCount, resetFilters }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +12,11 @@ const PopUpFilter = ({ buttonLabel, children, selectedFiltersCount, resetFilters
         <div className="popup-filter-container">
 
             {/* Toggle Button */}
-            <button className="popup-filter-toggle-button" onClick={togglePopup}>
+            <button
+                className="popup-filter-toggle-button"
+                onClick={togglePopup}
+                style={{ fontSize: selectedFiltersCount > 0 ? "0.75rem" : "1rem" }}
+            >
                 {buttonLabel} {selectedFiltersCount > 0 && `(${selectedFiltersCount})`}
             </button>
 

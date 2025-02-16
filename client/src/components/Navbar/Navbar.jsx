@@ -108,7 +108,7 @@ const Navbar = () => {
                             <div className={`dropdown-menu ${isHubDropdownOpen ? "open" : ""}`}>
                                 <button onClick={() => handlePageChange("create")}>Create Concept</button>
                                 <button onClick={() => handlePageChange("update")}>Edit Concept</button>
-                                <Link to="/submission">Subm. Character</Link>
+                                <Link to="/character-submit">Subm. Character</Link>
                             </div>
                         </div>
                         {/* <div style={{ borderRight: '2px solid #fff', margin: '10px 0px' }}></div> */}
@@ -186,9 +186,9 @@ const Navbar = () => {
                                     {/* 🔹 Conditionally Show Sub-Links */}
                                     {showCreatorLinksMobile && (
                                         <div className="creator-hub-sub-links">
-                                            <button onClick={() => {handlePageChange("create"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false)}}><MdOutlineKeyboardDoubleArrowRight/> Create Concept</button>
-                                            <button onClick={() => {handlePageChange("update"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false) }}><MdOutlineKeyboardDoubleArrowRight/> Edit Concept</button>
-                                            <Link to="/submission"><MdOutlineKeyboardDoubleArrowRight/> Subm. Character</Link>
+                                            <button onClick={() => { handlePageChange("create"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false) }}><MdOutlineKeyboardDoubleArrowRight /> Create Concept</button>
+                                            <button onClick={() => { handlePageChange("update"), setIsMobileNavbar(false), setShowCreatorLinksMobile(false) }}><MdOutlineKeyboardDoubleArrowRight /> Edit Concept</button>
+                                            <Link to="/character-submit"><MdOutlineKeyboardDoubleArrowRight /> Subm. Character</Link>
                                         </div>
                                     )}
                                     <Link to="https://boohworld.io" target="_blank">Token</Link>
@@ -217,25 +217,3 @@ const Navbar = () => {
 
 export default Navbar;
 
-{/* Searchbox */ }
-{/* <div className="searchbox">
-<svg
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '25px' }}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
->
-    <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M10 17a7 7 0 100-14 7 7 0 000 14zM21 21l-4.35-4.35"
-    />
-</svg>
-<input
-    type="text"
-    placeholder="Skins, Weapons, Equipment..."
-    className="search-input"
-/>
-</div> */}

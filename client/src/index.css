@@ -300,6 +300,12 @@ textarea:disabled{
   /* Optional: Limit the width */
 }
 
+@media (max-width: 650px){
+  .searchbox{
+    margin-left: 5px;
+  }
+}
+
 .search-icon {
   color: #888;
   /* Light gray for the icon */
@@ -314,7 +320,7 @@ textarea:disabled{
   /* Transparent input to blend with black background */
   color: #fff;
   /* White text for contrast */
-  padding: 5px 10px;
+  padding: 0px 0px;
   flex: 1;
   font-size: 1rem;
 }
@@ -755,7 +761,7 @@ textarea:focus::placeholder {
 } */
 
 .sidenav-styling {
-  max-width: 40%;
+  max-width: 30%;
   background-color: #1E1E1E;
   color: #FFFFFF;
   padding: 10px 20px 20px 20px;

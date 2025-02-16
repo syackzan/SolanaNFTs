@@ -15,7 +15,7 @@ import {
 
 import { useScreen } from "../../providers/ScreenProvider";
 
-import { RxDoubleArrowLeft } from "react-icons/rx";
+import { RxDoubleArrowRight } from "react-icons/rx";
 
 import { creatorCosts } from '../../config/gameConfig';
 
@@ -26,6 +26,8 @@ import SolConnection from '../Connection/SolConnection';
 
 import { convertUsdToSol } from '../../Utils/pricingModifiers';
 
+import { delay, capitalizeFirstLetter } from '../../Utils/generalUtils';
+
 const SideNav = ({
     info,
     attributes,
@@ -34,8 +36,6 @@ const SideNav = ({
     handleInfoChange,
     handleStoreChange,
     handleAttributeChange,
-    handleImageChange,
-    addOrUpdateToDB,
     page,
     setPage,
     createOffchainMetadata,
@@ -54,10 +54,6 @@ const SideNav = ({
         setIsModalOpen,
         setModalType,
         imageName,
-        setNameTracker,
-        setPreCalcPayment,
-        setSolPriceLoaded,
-        setPaymentTracker,
         loadTxModal
     } = useTransactionsController()
 
@@ -94,11 +90,6 @@ const SideNav = ({
             setMaxTalentPoints(talenPointSpread[rarity]); // Set max talent points based on rarity
         }
     }, [rarity]); // Trigger this effect whenever rarity changes
-
-    // Utility function to delay execution for a specified time
-    function delay(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
 
     // Determine the page title dynamically
     const title = page === 'create' ? 'Concept Creator' : 'Concept Editor';
@@ -157,12 +148,6 @@ const SideNav = ({
         setIsCreated(false);
     };
 
-    // Utility function to capitalize the first letter of a string
-    const capitalizeFirstLetter = (string) => {
-        if (!string) return ""; // Handle empty or undefined strings
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    };
-
     return (
         <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
             <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
@@ -182,7 +167,7 @@ const SideNav = ({
                     </button>
 
                 </div>
-                {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}><RxDoubleArrowLeft /></button>}
+                {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}>preview<RxDoubleArrowRight /></button>}
             </div>
             <h2 className="sidenav-title marykate m-0" >{title}</h2>
             {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[select an item to update]</h5>}
@@ -198,57 +183,15 @@ const SideNav = ({
                 }
 
                 if(page === 'update'){
+
+                    if(!info.name)
+                    {
+                        alert('Select and item');
+                    }
+
                     handleUpdateNftConcept();
                 }
 
-                return;
-
-                if (page === "update" && !info.name) {
-                    alert('Select and item');
-                    return;
-                }
-
-                // Example validation for the select field
-                if (storeInfo.available === "") {
-                    alert("Please answer the 'Available' question.");
-                    return;
-                }
-
-                //Disables user from creating multiple new DB entries
-                setIsDisabled(true);
-
-                // Check if the form is valid
-                if (form.checkValidity()) {
-
-                    try {
-
-                        if (page === 'create') {
-                            setIsCreating(true);
-                        }
-
-                        const success = await addOrUpdateToDB(); // Call the addOrUpdateToDB function if the form is valid
-
-                        if (page === 'update') {
-                            await delay(1000);
-                            setIsDisabled(false);
-                        }
-
-                        if (page === 'create' && success) {
-                            setIsCreating(false);
-                            setIsCreated(true);
-                        } else if (page === 'create' && !success) {
-                            setIsCreating(false);
-                            setIsDisabled(false);
-                        }
-
-                    } catch (e) {
-                        alert('Failed creating NFT Data', e);
-                        setIsDisabled(false);
-                    }
-
-                } else {
-                    form.reportValidity(); // Show validation errors for required fields
-                }
             }}
                 style={{
                     display: 'flex', flexDirection: 'column', gap: '20px'

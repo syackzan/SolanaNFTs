@@ -6,7 +6,7 @@ const ScreenContext = createContext();
 // Provide Context
 export const ScreenProvider = ({ children }) => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [isSideNavOpen, setIsSideNavOpen] = useState(true);
+    const [isSideNavOpen, setIsSideNavOpen] = useState(false);
 
     // Track window resizing dynamically
     useEffect(() => {

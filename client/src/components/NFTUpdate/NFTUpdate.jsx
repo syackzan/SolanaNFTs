@@ -32,7 +32,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
-        nftConceptsLoadingState
+        nftConceptsLoadingState,
     } = useNFTs({ inStoreOnly: false });
 
     const {

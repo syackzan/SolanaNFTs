@@ -2,7 +2,7 @@ import React from "react";
 import { useScreen } from "../../providers/ScreenProvider";
 import { motion } from "framer-motion";
 
-import { RxDoubleArrowRight } from "react-icons/rx";
+import { RxDoubleArrowLeft } from "react-icons/rx";
 
 import '../../css/mobile-DetailsButton.css'
 
@@ -21,7 +21,7 @@ const MobileDetailsButton = () => {
             onClick={toggleSideNav} // Toggle the side nav when clicked
         >
             <button className="open-details-button">
-                <RxDoubleArrowRight />
+                <RxDoubleArrowLeft />
             </button>
             <span className="vertical-text">Details</span>
         </motion.div>

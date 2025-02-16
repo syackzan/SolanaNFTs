@@ -16,6 +16,9 @@ export const GlobalVariablesProvider = ({ children }) => {
     const [userNfts, setUserNfts] = useState([]);
     const [nftConcepts, setNftConcepts] = useState([]);
 
+    // Control Search Bar
+    const [searchItem, setSearchItem] = useState('');
+
     // Solana Wallet
     const wallet = useWallet();
 
@@ -68,6 +71,8 @@ export const GlobalVariablesProvider = ({ children }) => {
                 userNfts,
                 nftConcepts,
                 refetchNftConcepts,
+                searchItem,
+                setSearchItem
             }}
         >
             {children}

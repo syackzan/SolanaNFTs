@@ -5,12 +5,14 @@ import SolConnection from '../../Connection/SolConnection';
 import TxModalHeader from "../components/TxModalHeader";
 
 import { renderTxStateIcon, renderCreateStateIcon, renderCostSign } from "../renderStatus";
-import { IS_MAINNET } from "../../../config/config";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTransactionsController } from '../../../providers/TransactionsProvider';
+import { useGlobalVariables } from "../../../providers/GlobalVariablesProvider";
 
 const TxModalCreator = ({ handleAddNftConcept }) => {
+
+    const {setSearchItem} = useGlobalVariables();
     const {
         txState,
         createState,
@@ -26,6 +28,7 @@ const TxModalCreator = ({ handleAddNftConcept }) => {
     const wallet = useWallet();
 
     const toEditPage = () => {
+        setSearchItem(nameTracker);
         setPage('update');
         simpleCloseModal();
     }

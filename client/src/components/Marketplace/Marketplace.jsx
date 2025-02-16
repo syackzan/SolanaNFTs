@@ -43,7 +43,7 @@ const Marketplace = () => {
         setSelectedRarity,
         selectedCreator,
         setSelectedCreator,
-        nftConceptsLoadingState
+        nftConceptsLoadingState,
     } = useNFTs({ inStoreOnly: true });
 
     const {

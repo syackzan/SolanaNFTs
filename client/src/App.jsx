@@ -7,6 +7,7 @@ import LandingPage from './components/pages/LandingPage';
 import Collection from './components/pages/Collection';
 import Marketplace from './components/Marketplace/Marketplace';
 import CreatorHubDocs from './components/pages/CreatorHubDocs';
+import CharacterSubmission from './components/pages/CharacterSubmission';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route path='/marketplace' element={<Marketplace />}/>
             <Route path='/marketplace/:id/:redirectAddress' element={<Marketplace />} />
             <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
+            <Route path='/character-submit' element={<CharacterSubmission />} />
           </Routes>
         </Router>
   )

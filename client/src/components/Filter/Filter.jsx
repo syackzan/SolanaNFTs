@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { LuRefreshCcw } from "react-icons/lu";
-
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import Switch from 'react-switch';
@@ -22,6 +20,7 @@ import {
 
 import PopUpFilter from './PopUpFilter';
 import FilterBubbles from './FilterBubbles';
+import SearchBar from './SearchBar';
 
 
 const Filter = ({
@@ -47,15 +46,17 @@ const Filter = ({
 
     // Update filter count when any filter changes
     useEffect(() => {
-        const filters = [selectedType, selectedSubType, selectedRarity];
+        const filters = [selectedType, selectedSubType, selectedRarity, selectedCreator];
         const count = filters.filter(value => value !== 'all').length;
         setSelectedFiltersCount(count);
-    }, [selectedType, selectedSubType, selectedRarity]);
+    }, [selectedType, selectedSubType, selectedRarity, selectedCreator]);
 
     const resetFilters = () => {
         setSelectedType('all');
         setSelectedSubType('all');
         setSelectedRarity('all');
+        setSelectedCreator('all');
+        setChecked(false);
     }
 
     const handleChange = () => {
@@ -78,14 +79,14 @@ const Filter = ({
 
     const determineSubType = () => {
 
-        if(selectedType === 'all'){
+        if (selectedType === 'all') {
             setSelectedSubType('all');
         }
 
-        switch(selectedType){
+        switch (selectedType) {
             case 'weapon':
                 return filteredWeaponOptions;
-            case 'armor': 
+            case 'armor':
                 return filteredArmorOptions;
             case 'skin':
                 return filteredSkinOptions;
@@ -118,6 +119,19 @@ const Filter = ({
                 {/* MOBILE POP UP FILTER SYSTEM */}
                 <div className='enable-on-mobile'>
                     <PopUpFilter buttonLabel='Filters' selectedFiltersCount={selectedFiltersCount} resetFilters={resetFilters}>
+                        <div className="d-flex align-items-center gap-2">
+                            <Switch
+                                onChange={handleChange}
+                                checked={checked}
+                                offColor="#888"
+                                onColor="#6a0dad"
+                                offHandleColor="#444"
+                                onHandleColor="#fff"
+                                uncheckedIcon={false}
+                                checkedIcon={false}
+                            />
+                            <p className="m-0 marykate" style={{ fontSize: '1.3rem' }}>By Me</p>
+                        </div>
                         <FilterBubbles
                             label={'Type'}
                             selectedValue={selectedType}
@@ -128,7 +142,7 @@ const Filter = ({
                             selectedValue={selectedSubType}
                             options={determineSubType()}
                             onSelect={setSelectedSubType}
-                            />
+                        />
                         <FilterBubbles
                             label={'Rarity'}
                             selectedValue={selectedRarity}
@@ -137,8 +151,7 @@ const Filter = ({
                     </PopUpFilter>
                 </div>
 
-
-                <div className="d-flex align-items-center gap-2">
+                <div className="d-flex align-items-center gap-2 disable-on-mobile">
                     <Switch
                         onChange={handleChange}
                         checked={checked}
@@ -151,10 +164,9 @@ const Filter = ({
                     />
                     <p className="m-0 marykate" style={{ fontSize: '1.3rem' }}>By Me</p>
                 </div>
-                <div>
-                    <button className="strip-button" onClick={refetchNftConcepts}>
-                        <LuRefreshCcw />
-                    </button>
+                <div className='d-flex gap-2'>
+                    {/* Searchbox */}
+                    <SearchBar />
                 </div>
             </div>
             <div style={{ width: '100%', borderTop: '1px solid white', margin: '5px 0px 10px 0px' }}></div>
