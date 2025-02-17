@@ -79,7 +79,8 @@ const Homepage = () => {
         handleInfoChange,
         handleStoreChange,
         handleImageChange,
-        handleAttributeChange
+        handleAttributeChange,
+        isNameTaken
     } = useNftConceptForm();
 
     useEffect(() => {
@@ -349,7 +350,6 @@ const Homepage = () => {
                         handleStoreChange={handleStoreChange}
                         handleAttributeChange={handleAttributeChange}
                         handleImageChange={handleImageChange}
-                        
                         page={page}
                         setPage={setPage}
                         createOffchainMetadata={createOffchainMetadata}
@@ -361,7 +361,8 @@ const Homepage = () => {
                         resetNftConceptForm={resetNftConceptForm}
                         createLockStatus={createLockStatus}
                         setCreateLockStatus={setCreateLockStatus}
-                        handleUpdateNftConcept={handleUpdateNftConcept}  />
+                        handleUpdateNftConcept={handleUpdateNftConcept}
+                        isNameTaken={isNameTaken}  />
                     {page === "create" &&
                         <NFTPreview
                             info={info}

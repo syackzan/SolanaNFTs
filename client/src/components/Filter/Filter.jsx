@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -40,15 +40,14 @@ const Filter = ({
     const { refetchNftConcepts } = useGlobalVariables();
 
     const [checked, setChecked] = useState(false);
-    const [selectedFiltersCount, setSelectedFiltersCount] = useState(0);
+    // const [selectedFiltersCount, setSelectedFiltersCount] = useState(0);
 
     const address = wallet.publicKey ? wallet.publicKey.toString() : 'all';
 
     // Update filter count when any filter changes
-    useEffect(() => {
-        const filters = [selectedType, selectedSubType, selectedRarity, selectedCreator];
-        const count = filters.filter(value => value !== 'all').length;
-        setSelectedFiltersCount(count);
+    const selectedFiltersCount = useMemo(() => {
+        return [selectedType, selectedSubType, selectedRarity, selectedCreator]
+            .filter(value => value !== 'all').length;
     }, [selectedType, selectedSubType, selectedRarity, selectedCreator]);
 
     const resetFilters = () => {

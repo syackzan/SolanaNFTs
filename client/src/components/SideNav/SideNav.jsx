@@ -47,7 +47,8 @@ const SideNav = ({
     lockedStatus,
     createLockStatus,
     setCreateLockStatus,
-    handleUpdateNftConcept
+    handleUpdateNftConcept,
+    isNameTaken
 }) => {
 
     const {
@@ -176,16 +177,20 @@ const SideNav = ({
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
 
-                if(page==='create'){
-                    const creatorPayment = await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value])
+                if (page === 'create') {
 
+                    if (isNameTaken) {
+                        alert('Name taken. Please select a new name');
+                        throw new error('Name is already taken');
+                    }
+
+                    const creatorPayment = await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value]);
                     loadTxModal('create', info.name, creatorPayment, 'SOL', true);
                 }
 
-                if(page === 'update'){
+                if (page === 'update') {
 
-                    if(!info.name)
-                    {
+                    if (!info.name) {
                         alert('Select and item');
                     }
 
@@ -298,6 +303,12 @@ const SideNav = ({
                             color: '#FFF',
                         }}
                     />
+                    {/* Display Name Availability Message */}
+                    {(page === 'create' && info.name) && (
+                        <p className={`name-status ${isNameTaken ? "taken" : "available"}`}>
+                            {isNameTaken ? "❌ Name already taken!" : "✅ Name is available!"}
+                        </p>
+                    )}
                 </div>
                 {/* Description */}
                 <div>

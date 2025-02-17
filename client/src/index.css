@@ -590,6 +590,45 @@ textarea:focus::placeholder {
   margin: 0px;
 }
 
+/* NFT Name Input */
+.nft-name-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #2E2E2E;
+  color: #FFF;
+  transition: border 0.3s ease-in-out;
+}
+
+/* If Name is Taken */
+.nft-name-input.taken {
+  border: 1px solid #FF4D4D; /* Red border */
+}
+
+/* If Name is Available */
+.nft-name-input.available {
+  border: 1px solid #4CAF50; /* Green border */
+}
+
+/* Name Status Message */
+.name-status {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: bold;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Red Text for Taken Names */
+.name-status.taken {
+  color: #FF4D4D;
+}
+
+/* Green Text for Available Names */
+.name-status.available {
+  color: #4CAF50;
+}
+
 .nft-stats p {
   margin: 0px 0px;
   font-size: 1rem;

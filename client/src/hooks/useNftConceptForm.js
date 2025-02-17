@@ -8,9 +8,11 @@ import {
 } from '../config/gameConfig';
 
 import { useTransactionsController } from '../providers/TransactionsProvider';
+import { useGlobalVariables } from '../providers/GlobalVariablesProvider';
 
 export const useNftConceptForm = () => {
 
+    const { nftConcepts } = useGlobalVariables();
     const { setImageName } = useTransactionsController();
 
     //States that make up Meta data information
@@ -29,6 +31,8 @@ export const useNftConceptForm = () => {
     //Stores newly created metadata for?
     const [newMetadata, setNewMetadata] = useState(null);
 
+    const [isNameTaken, setIsNameTaken] = useState(null);
+
     //Function that resets local metadata when needed
     const resetNftConceptForm = () => {
         setInfo(infoData);
@@ -44,6 +48,8 @@ export const useNftConceptForm = () => {
     const handleInfoChange = (e) => {
         const { name, value } = e.target;
         setInfo({ ...info, [name]: value });
+
+        handleCheckName(value);
     };
 
     //Handles form input change for Store Info
@@ -94,6 +100,12 @@ export const useNftConceptForm = () => {
         setAttributes(updatedAttributes);
     };
 
+    const handleCheckName = (value) => {
+        const foundNft = nftConcepts.find(nft => nft.name === value);
+    
+        setIsNameTaken(!!foundNft); // Convert to boolean
+    };
+
     return {
         info,
         setInfo,
@@ -111,6 +123,7 @@ export const useNftConceptForm = () => {
         handleInfoChange,
         handleStoreChange,
         handleImageChange,
-        handleAttributeChange
+        handleAttributeChange,
+        isNameTaken
     }
 }
