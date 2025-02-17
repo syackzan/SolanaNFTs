@@ -26,5 +26,6 @@ export const uploadIcon = async (image) => {
         return response.data;
     } catch (error) {
         console.error('Error uploading image:', error);
+        throw new Error(`Failed up upload to Cloudinary: ${error.response?.data?.message || error.message}`);
     }
 }

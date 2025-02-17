@@ -92,7 +92,7 @@ const Homepage = () => {
     const combineNewMetadataJSON = async () => {
         // Upload the image
         const iconResp = await uploadIcon(image);
-        const imageURL = iconResp.url;
+        const imageURL = iconResp.secure_url;
 
         console.log("Upload complete: ", imageURL);
 
@@ -175,9 +175,9 @@ const Homepage = () => {
             if (paymentInUSD === 0)
                 return true;
 
-            // const paymentInSol = await convertUsdToSol(paymentInUSD);
+            const paymentInSol = await convertUsdToSol(paymentInUSD);
 
-            const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment);
+            const transaction = await createSendSolTx(wallet.publicKey, paymentInSol);
 
             if (!transaction)
                 return false;
@@ -195,51 +195,6 @@ const Homepage = () => {
         } catch (e) {
             console.log("Creator payment failed", e)
             return false;
-        }
-    }
-
-    //Add new entry or update entry to Database
-    const addOrUpdateToDB = async () => {
-
-        try {
-
-            if (page === 'create') {
-
-                const success = await creatorPayment(); //Higher level items have creator costs
-
-                if (!success)
-                    return false;
-
-                const metadataForDB = await combineNewMetadataJSON();
-
-                const data = await addNftConcept(metadataForDB);
-
-                setNewMetadata(data);
-
-                console.log('NFT Metadata created successfully', data);
-
-                refetchNftConcepts();
-
-                return true;
-            }
-
-            if (page === 'update') {
-                
-                //Combine Metadata
-                const updateDataForDB = await combineUpdateMetadataJSON();
-
-                //Remove ID from metadata
-                const data = await updateNftConcept(updateDataForDB);
-
-                console.log('Update Successfull,', data);
-
-                refetchNftConcepts();
-
-                return true;
-            }
-
-        } catch (error) {
-            console.error('Error creating NFT metadata:', error.response?.data || error.message);
         }
     }
 
@@ -394,7 +349,7 @@ const Homepage = () => {
                         handleStoreChange={handleStoreChange}
                         handleAttributeChange={handleAttributeChange}
                         handleImageChange={handleImageChange}
-                        addOrUpdateToDB={addOrUpdateToDB}
+                        
                         page={page}
                         setPage={setPage}
                         createOffchainMetadata={createOffchainMetadata}

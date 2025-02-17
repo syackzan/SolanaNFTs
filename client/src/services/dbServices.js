@@ -185,3 +185,39 @@ export const trackNftTransaction = async (nftId, userId, type, amount, currency,
         throw new Error(`Failed to track NFT transaction: ${error.response?.data?.message || error.message}`);
     }
 };
+
+export const submitCharacter = async (name, description, imageUrl, walletAddress, paymentTx) => {
+    
+    try {
+        const response = await axios.post(
+            `${URI_SERVER}/api/character-submission/submit`,
+            {
+                name,
+                description,
+                imageUrl,
+                walletAddress,
+                paymentTx
+            },
+            { headers: { "x-api-key": API_KEY } } // If you require authentication
+        )
+
+        return response.data; // Return updated NFT data
+    } catch (error) {
+        console.error("Error tracking NFT transaction:", error.response?.data || error.message);
+        throw new Error(`Failed to track NFT transaction: ${error.response?.data?.message || error.message}`);
+    }
+}
+
+export const fetchUserSubmissions = async (walletAddress) => {
+    
+    try {
+        const response = await axios.get(
+            `${URI_SERVER}/api/character-submission/${walletAddress}`,
+            { headers: { "x-api-key": API_KEY } } // If you require authentication
+        )
+
+        return response.data; // Return updated NFT data
+    } catch (error) {
+        throw new Error(`Failed to access user Submissions: ${error.response?.data?.message || error.message}`);
+    }
+}

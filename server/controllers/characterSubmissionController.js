@@ -5,10 +5,6 @@ exports.submitCharacter = async (req, res) => {
   try {
     const { name, description, imageUrl, walletAddress, paymentTx } = req.body;
 
-    console.log(name, description, imageUrl, walletAddress, paymentTx);
-    
-    return;
-
     // Ensure all fields are provided
     if (!name || !description || !imageUrl || !walletAddress) {
       return res.status(400).json({ error: "All fields are required." });
@@ -19,6 +15,7 @@ exports.submitCharacter = async (req, res) => {
       description,
       imageUrl,
       walletAddress,
+      paymentTx
     });
 
     await submission.save();

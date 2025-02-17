@@ -24,3 +24,22 @@ export const capitalizeFirstLetter = (string) => {
     if (!string) return ""; // Handle empty or undefined strings
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const duplicateData = (data, index, times) => {
+
+    console.log('Duplicate Data');
+    if (!data || data.length <= index) {
+        console.error("Invalid data array or index out of bounds");
+        return [];
+    }
+
+    // Get the item at the specified index
+    const itemToDuplicate = data[index];
+
+    console.log(itemToDuplicate)
+
+    // Duplicate it `times` number of times
+    const newArray = Array(times).fill({ ...itemToDuplicate });
+
+    return newArray;
+};

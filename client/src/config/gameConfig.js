@@ -141,3 +141,5 @@ export const rarityOptions = [
 ];
 
 export const defaultMintCost = .004;
+
+export const submissionCost = 24.99;
