@@ -812,7 +812,7 @@ textarea:focus::placeholder {
 .sidenav-title {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 3.5rem;
+  font-size: 3rem;
 }
 
 @media (max-width: 850px){
@@ -840,9 +840,9 @@ textarea:focus::placeholder {
   align-items: center;
   height: calc(100vh - 60px); /* Ensure it fits below the navbar */
   background-color: rgb(30, 30, 30);
-  overflow-y: auto; /* Allow internal scrolling */
-  margin-top: 60px;
   color: #FFFFFF;
+  margin-top: 90px;
+  width: 100%;
 }
 
 /* .print-nfts-styling {

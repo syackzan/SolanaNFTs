@@ -170,8 +170,8 @@ const SideNav = ({
                 {IS_MOBILE_SIDENAV_OPEN && <button className={`button-style-sidenav-close ${MOBILE_SIDENAV_STYLING}`} onClick={toggleSideNav}>preview<RxDoubleArrowRight /></button>}
             </div>
             <h2 className="sidenav-title marykate m-0" >{title}</h2>
-            {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[select an item to update]</h5>}
-            {page === 'create' && <h5 className='text-center marykate' style={{ fontSize: '1.5rem' }}>[Connect Wallet - Fill out form below]</h5>}
+            {(page === 'update' && !info.name) && <h5 className='text-center marykate' style={{ fontSize: '1.25rem' }}>[select an item to update]</h5>}
+            {page === 'create' && <h5 className='text-center marykate' style={{ fontSize: '1.25rem' }}>[Connect Wallet - Fill out form below]</h5>}
             <form onSubmit={async (e) => {
                 e.preventDefault(); // Prevent default form submission
                 const form = e.target;
