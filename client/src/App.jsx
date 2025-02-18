@@ -8,6 +8,7 @@ import Collection from './components/pages/Collection';
 import Marketplace from './components/Marketplace/Marketplace';
 import CreatorHubDocs from './components/pages/CreatorHubDocs';
 import CharacterSubmission from './components/pages/CharacterSubmission';
+import Admin from './components/pages/Admin';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route path='/marketplace/:id/:redirectAddress' element={<Marketplace />} />
             <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
             <Route path='/character-submit' element={<CharacterSubmission />} />
+            <Route path='/admin' element={<Admin />} />
           </Routes>
         </Router>
   )

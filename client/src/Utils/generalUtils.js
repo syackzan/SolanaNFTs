@@ -43,3 +43,9 @@ export const duplicateData = (data, index, times) => {
 
     return newArray;
 };
+
+//Function to shorten long address strings
+export const shortenAddress = (address, chars = 4) => {
+    if (!address) return '';
+    return `${address.slice(0, chars)}...${address.slice(-chars)}`;
+};

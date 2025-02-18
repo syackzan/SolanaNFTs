@@ -1,0 +1,113 @@
+/* Admin Transactions Panel */
+.admin-panel-container{
+    width: 100vw;
+    margin-top: 60px;
+}
+
+.admin-transactions-container {
+    width: 100%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #2e2e48;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+
+    /* Limit height & enable scrolling */
+    max-height: 90vh;  /* Limits table height to 75% of the viewport */
+    overflow-y: auto;  /* Enables vertical scrolling inside */
+}
+
+/* Title */
+.admin-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+/* Table Structure */
+.transactions-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Table Header */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    background: #3a3a4f;
+    padding: 12px;
+    font-weight: bold;
+    border-bottom: 2px solid #444;
+}
+
+/* Table Row */
+.table-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #444;
+    transition: background 0.2s ease-in-out;
+}
+
+.table-row:hover {
+    background: #44445a;
+}
+
+/* Column Sizing */
+.table-header span,
+.table-row span {
+    flex: 1;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* NFT ID */
+.nft-id {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Transaction Type Styling */
+.tx-type.create {
+    color: #00cc66; /* Green for creates */
+    font-weight: bold;
+}
+
+.tx-type.buy {
+    color: #ffcc00; /* Yellow for buys */
+    font-weight: bold;
+}
+
+/* View Transaction Link */
+.tx-signature a {
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.tx-signature a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive: Stack on Small Screens */
+@media (max-width: 900px) {
+    .table-header {
+        font-size: 0.8rem;
+    }
+    .table-row {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .table-row {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 2px solid #444;
+    }
+    .table-header {
+        display: none;
+    }
+}

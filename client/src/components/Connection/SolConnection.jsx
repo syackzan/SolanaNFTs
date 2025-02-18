@@ -6,6 +6,8 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 
 import { isSolanaWalletApp } from '../../Utils/generalUtils';
 
+import { shortenAddress } from '../../Utils/generalUtils';
+
 const SolConnection = () => {
 
     const walletModal = useWalletModal(); // Wallet modal hook
@@ -48,12 +50,6 @@ const SolConnection = () => {
                 }
             }
         }
-    };
-
-    // Function to shorten long wallet addresses
-    const shortenAddress = (address, chars = 4) => {
-        if (!address) return '';
-        return `${address.slice(0, chars)}...${address.slice(-chars)}`;
     };
 
     const connectOrDisconnect = () => {
