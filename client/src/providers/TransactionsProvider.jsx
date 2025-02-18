@@ -43,6 +43,7 @@ export const TransactionProvider = ({ children }) => {
 
     const resetTxModal = () => {
         setIsModalOpen(false);
+        setModalType('');
         reloadStates();
         setTransactionSig(null);
         setSolPriceLoaded(false);

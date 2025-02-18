@@ -38,7 +38,6 @@ const SideNav = ({
     handleAttributeChange,
     page,
     setPage,
-    createOffchainMetadata,
     isDisabled,
     setIsDisabled,
     userRole,
@@ -184,7 +183,10 @@ const SideNav = ({
                         throw new error('Name is already taken');
                     }
 
-                    const creatorPayment = await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity").value]);
+                    const creatorPayment = isAdmin
+                        ? 0
+                        : await convertUsdToSol(creatorCosts[attributes.find(attr => attr.trait_type === "rarity")?.value]);
+
                     loadTxModal('create', info.name, creatorPayment, 'SOL', true);
                 }
 
@@ -603,12 +605,6 @@ const SideNav = ({
                             </div>
                         ) : (
                             <>
-                                {!createLockStatus && <div className="button-container">
-                                    <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                    <div className="d-flex gap-2">
-                                        <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
-                                    </div>
-                                </div>}
                             </>
                         )}
                     </>)}
@@ -623,26 +619,7 @@ const SideNav = ({
                             </a>
                         </>
                     ) : (
-                        <div className="d-flex flex-column w-100 gap-2">
-                            {isAdmin && (<>
-                                {lockedStatus ? (
-                                    <div className="button-container">
-                                        <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                        <div className="d-flex gap-2">
-                                            <strong>LOCKING...</strong>
-                                            <div className='loader'></div>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="button-container">
-                                        <div style={{ fontSize: "1rem", fontWeight: "500" }}>[ADMIN ONLY]:</div>
-                                        <div className="d-flex gap-2">
-                                            <button onClick={() => { createOffchainMetadata() }} style={{ width: '150px' }} className='button-style-regular'>Lock off chain data</button>
-                                        </div>
-                                    </div>
-                                )}
-                            </>)}
-                        </div>
+                        <></>
                     )}
                 </div>
             )}
