@@ -165,6 +165,9 @@ export const voteForNFT = async (nftId, voterAddress, voteType) => {
  * @returns {Promise<object>} - The updated NFT data.
  */
 export const trackNftTransaction = async (nftId, userId, type, amount, currency, txSignature) => {
+
+    console.log(nftId, userId, type, amount, currency, txSignature);
+    
     try {
         const response = await axios.patch(
             `${URI_SERVER}/api/nft/concepts/${nftId}/transaction`,

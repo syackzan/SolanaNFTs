@@ -24,6 +24,15 @@ const AdminTransactionsPanel = () => {
         return <div className="admin-loading">Loading transactions...</div>;
     }
 
+    const modifiedAmount = (currency, amount) => {
+        switch(currency){
+            case 'CARD':
+                return `$${amount}`;
+            default:
+                return amount;
+        } 
+    }
+
     return (
         <div className="admin-transactions-container">
             <h2 className="admin-title">NFT Transactions</h2>
@@ -44,7 +53,7 @@ const AdminTransactionsPanel = () => {
                             <span className="nft-id">{nft.name}</span>
                             <span className={`tx-type ${tx.type}`}>{tx.type.toUpperCase()}</span>
                             <span className="tx-user">{shortenAddress(tx.user)}</span>
-                            <span className="tx-amount">{tx.amount}</span>
+                            <span className="tx-amount">{modifiedAmount(tx.currency, tx.amount)}</span>
                             <span className="tx-currency">{tx.currency}</span>
                             <span className="tx-signature">
                                 <a href={`https://solscan.io/tx/${tx.txSignature}`} target="_blank" rel="noopener noreferrer">

@@ -191,24 +191,24 @@ const Marketplace = () => {
 
         setTxState('started');
 
-        let signature;
+        let paymentTx;
         console.log('createNft');
         try {
 
             if (paymentTracker === 'SOL') {
-                signature = await payWithSol(); //Pay with sol
+                paymentTx = await payWithSol(); //Pay with sol
                 setTxState('complete');
             }
 
             if (paymentTracker === 'BABYBOOH') {
 
-                signature = await payWithSol(); //First send Sol Transaction
+                paymentTx = await payWithSol(); //First send Sol Transaction
 
-                if (signature) {
-                    signature = await payWithBabyBooh(); //Then pay Booh Amount
+                if (paymentTx) {
+                    paymentTx = await payWithBabyBooh(); //Then pay Booh Amount
                 }
 
-                if (signature) {
+                if (paymentTx) {
                     setTxState('complete');
                 }
             }
@@ -219,15 +219,25 @@ const Marketplace = () => {
                 return //Different work flow with Card payments
             }
 
-            if (signature) { //If Sig is true, create and send NFT
+            if (paymentTx) { //If Sig is true, create and send NFT
                 try {
 
                     setCreateState('started');
 
                     //TODO: HANDLE UI TRACKING OF PAYING WITH AND MINTING NFT
-                    await handleNFTCreation(nfts[selectedIndex], wallet);
+                    const txSig = await handleNFTCreation(nfts[selectedIndex], wallet);
+
+                    //Track Transaction
+                    if (paymentTracker === 'BABYBOOH') {
+                        //Add as create
+                        await trackNftTransaction(nfts[selectedIndex]._id, wallet.publicKey.toString(), 'create', preCalcPayment, paymentTracker, txSig);
+                    } else {
+                        //Add as purchase
+                        await trackNftTransaction(nfts[selectedIndex]._id, wallet.publicKey.toString(), 'buy', preCalcPayment, paymentTracker, txSig);
+                    }
 
                     setCreateState('complete');
+
                 } catch (e) {
                     alert('Failed to send Sol');
                     console.log('Failure to create NFT: ', e)
@@ -267,16 +277,26 @@ const Marketplace = () => {
             };
 
             // Handle the NFT creation process
-            const success = await handleNFTCreation(nftToCreate, walletConstruct);
+            const txSig = await handleNFTCreation(nftToCreate, walletConstruct);
 
-            if (!success) {
+            if (!txSig) {
                 setCreateState('failed');
                 return;
             }
 
+            //Add as purchase
+            await trackNftTransaction(
+                nftToCreate._id,
+                redirectAddress,
+                'buy',
+                nftToCreate.storeInfo.price,
+                'CARD',
+                txSig);
+
             // Mark the creation process as complete
             setCreateState('complete');
         } catch (error) {
+            setCreateState('failed');
             console.error("Error in handleSuccessfulStripePayment:", error);
             // Optionally add error handling here (e.g., show an error message to the user)
         }
@@ -302,16 +322,7 @@ const Marketplace = () => {
             // Update state with the transaction signature
             setTransactionSig(transactionSignature);
 
-            //Track Transaction
-            if (paymentTracker === 'BABYBOOH') {
-                //Add as create
-                const resp = await trackNftTransaction(nft._id, wallet.publicKey.toString(), 'create', preCalcPayment, paymentTracker, transactionSignature);
-            } else {
-                //Add as purchase
-                const resp = await trackNftTransaction(nft._id, wallet.publicKey.toString(), 'buy', preCalcPayment, paymentTracker, transactionSignature);
-            }
-
-            return resp.data.serializedSignature;
+            return transactionSignature;
         } catch (error) {
             // Handle and log errors during the NFT creation process
             console.error("Error during NFT creation:", error);
