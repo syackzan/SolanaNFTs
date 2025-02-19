@@ -57,7 +57,7 @@ const LandingPage = () => {
                                 <FaBook className="dashboard-icon" />
                                 Docs & Rules
                             </Link>
-                            <Link className="darkmode-button" to="/#">
+                            <Link className="darkmode-button" to="/character-submit">
                                 <FaGhost className="dashboard-icon" />
                                 Submit Ghost
                             </Link>
