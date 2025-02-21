@@ -12,12 +12,13 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
     color: white;
     transition: margin-left 0.3s ease-in-out;
+    width: auto;
 }
 
 /* Desktop Layout - Align next to sidenav */
 @media (min-width: 768px) {
     .docs-container {
-        margin-left: 260px; /* Account for sidenav width */
+        margin-left: 250px; /* Account for sidenav width */
     }
 }
 
@@ -156,6 +157,7 @@
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .docs-container {
+        margin-top: 100px;
         padding: 15px;
     }
 
@@ -196,6 +198,11 @@
     z-index: 500;
 }
 
+.sidenav-docs-container{
+    height: 100%;
+    margin-top: 60px;
+}
+
 /* Navigation Title */
 .sidenav-docs-title {
     color: #fff;
@@ -230,14 +237,17 @@
 .sidenav-docs-toggle {
     position: fixed;
     left: 10px;
-    top: 15px;
-    background-color: transparent;
+    top: 65px;
+    background-color: grey;
+    border-radius: 8px;
     border: none;
-    font-size: 24px;
+    font-size: 14px;
     color: white;
     cursor: pointer;
     z-index: 1100;
     transition: color 0.2s;
+    padding: 5px 10px;
+    opacity: 0.75;
 }
 
 .sidenav-docs-toggle:hover {
@@ -248,8 +258,12 @@
 @media (max-width: 768px) {
     .sidenav-docs {
         position: fixed;
-        left: -250px;
+        left: 0px;
         transition: transform 0.3s ease-in-out;
+    }
+
+    .sidenav-docs-container{
+        margin-top: 80px;
     }
 }
 

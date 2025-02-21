@@ -5,7 +5,8 @@ import {
     rarityOptions, 
     talenPointSpread, 
     pricingValues, 
-    creatorCosts } from "../../config/gameConfig";
+    creatorCosts,
+    sellingThreshold } from "../../config/gameConfig";
 
 const NftCostTable = () => {
     return (
@@ -21,6 +22,8 @@ const NftCostTable = () => {
                             <th>Store Price</th>
                             <th>Creator Cost</th>
                             <th>Talent Points</th>
+                            <th>Threshold</th>
+                            <th>Royalties</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +33,8 @@ const NftCostTable = () => {
                                 <td>${pricingValues[rarity].toFixed(2)}</td>
                                 <td>${creatorCosts[rarity].toFixed(2)}</td>
                                 <td>{talenPointSpread[rarity]}</td>
+                                <td>{sellingThreshold[rarity]}</td>
+                                <td>10%</td>
                             </tr>
                         ))}
                     </tbody>

@@ -34,7 +34,7 @@ const DocsSidenav = () => {
             {/* Toggle Button (Only Visible on Mobile) */}
             {isMobile && (
                 <button className="sidenav-docs-toggle" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <FaTimes /> : <FaBars />}
+                    {isOpen ? <FaTimes /> : (<div className='d-flex align-items-center gap-1'><FaBars />Docs Menu</div>)}
                 </button>
             )}
 
@@ -45,14 +45,17 @@ const DocsSidenav = () => {
                 animate={controls}
                 transition={{ type: "tween", duration: 0.3 }}
             >
-                <div style={{height: '100%', marginTop: '60px'}}>
+                <div className='sidenav-docs-container'>
                     <h2 className="sidenav-docs-title">📖 Docs Navigation</h2>
                     <ul>
                         <li><Link to="/docs?page=intro" onClick={() => isMobile && setIsOpen(false)}>Introduction</Link></li>
                         <li><Link to="/docs?page=marketplace" onClick={() => isMobile && setIsOpen(false)}>Marketplace Rules</Link></li>
                         <li><Link to="/docs?page=create" onClick={() => isMobile && setIsOpen(false)}>Creator Guidelines</Link></li>
-                        <li><Link to="/docs?page=earnings-payouts" onClick={() => isMobile && setIsOpen(false)}>Earnings & Payouts</Link></li>
-                        <li><Link to="/docs?page=site-rules" onClick={() => isMobile && setIsOpen(false)}>Site Rules</Link></li>
+                        <li><Link to="/docs?page=blueprint-to-marketplace" onClick={() => isMobile && setIsOpen(false)}>Blueprint To Marketplace</Link></li>
+                        <li><Link to="/docs?page=costs-rewards" onClick={() => isMobile && setIsOpen(false)}>Earnings & Payouts</Link></li>
+                        <li><Link to="/docs?page=submission" onClick={() => isMobile && setIsOpen(false)}>Character Submission</Link></li>
+                        <li><Link to="/docs?page=metaplex-core" onClick={() => isMobile && setIsOpen(false)}>NFT Mint Protocol</Link></li>
+                        <li><Link to="/docs?page=site-rules" onClick={() => isMobile && setIsOpen(false)}>General Site Rules</Link></li>
                     </ul>
                 </div>
             </motion.div>

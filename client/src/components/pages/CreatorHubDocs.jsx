@@ -10,6 +10,10 @@ import Intro from '../../docs/intro.mdx';
 import MarketplaceRules from '../../docs/marketplace-rules.mdx';
 import SubmissionGuidelines from '../../docs/submission-guidelines.mdx';
 import CreateGuidelines from '../../docs/create-nft-blueprint.mdx'
+import NftMintProtocol from '../../docs/metaplex-core.mdx';
+import BlueprintToList from '../../docs/blueprint-to-marketplace.mdx';
+import GeneralSiteRules from '../../docs/site-rules.mdx'
+import CostsAndRewards from '../../docs/earnings-payouts.mdx';
 
 import boohLogo from '../../assets/BoohLogo.svg'
 
@@ -24,18 +28,24 @@ const CreatorHubDocs = () => {
         "intro": <Intro />,
         "marketplace": <MarketplaceRules />,
         "submission": <SubmissionGuidelines />,
-        "create": <CreateGuidelines />
+        "create": <CreateGuidelines />,
+        "metaplex-core": <NftMintProtocol />,
+        "blueprint-to-marketplace": <BlueprintToList />,
+        "site-rules": <GeneralSiteRules />,
+        "costs-rewards": <CostsAndRewards />
     };
 
     return (
         <MDXProvider>
-            <div className='d-flex justify-content-center' style={{ backgroundColor: 'rgb(30, 30, 30)', width: '100vw' }}>
+            <div className='d-flex justify-content-center' style={{ backgroundColor: 'rgb(30, 30, 30)' }}>
                 <Navbar />
                 <DocsSidenav />
 
-                <div className='docs-container markdown-content'>
+                <div className='docs-body'>
+                <div className='docs-container'>
                     {/* Render the correct MDX file based on the current route */}
                     {docPages[docType] || <Intro />} {/* Default to Intro if no match */}
+                </div>
                 </div>
             </div>
         </MDXProvider>

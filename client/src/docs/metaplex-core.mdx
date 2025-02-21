@@ -1,0 +1,110 @@
+import NftCostTable from '../components/DocsComponents/NftCostTable.jsx';
+
+# **Understanding Metaplex Core**
+
+## 📌 **Overview**
+
+Metaplex Core is an advanced NFT standard within the Metaplex Protocol, designed to enhance efficiency, reduce costs, and provide greater flexibility for developers and creators on the Solana blockchain. It introduces a streamlined approach to NFT creation and management, moving beyond traditional standards to offer a more robust digital asset protocol.
+
+---
+
+## 🔹 **Key Features of Metaplex Core**
+
+- **Cost Efficiency**: Metaplex Core significantly reduces minting costs. For instance, an NFT that would cost 0.022 SOL with the Token Metadata standard can be minted for approximately 0.0029 SOL using Metaplex Core. ([developers.metaplex.com](https://developers.metaplex.com/core?utm_source=chatgpt.com))
+
+- **Single Account Design**: Unlike previous standards that required multiple accounts (e.g., token account, metadata account), Metaplex Core utilizes a single-account structure. This design simplifies asset management and enhances network performance. ([developers.metaplex.com](https://developers.metaplex.com/core?utm_source=chatgpt.com))
+
+- **Enforced Royalties**: Royalties are enforced by default, ensuring creators receive their due compensation on secondary sales. ([developers.metaplex.com](https://developers.metaplex.com/core?utm_source=chatgpt.com))
+
+- **Plugin Architecture**: Developers can extend asset functionalities through plugins, enabling features like built-in staking and asset-based point systems. This modular approach fosters innovation and customization. ([solanacompass.com](https://solanacompass.com/learn/Validated/how-metaplex-core-moves-beyond-nft-standards-w-stephen-hess-metaplex-studios?utm_source=chatgpt.com))
+
+---
+
+## 🔢 **Minting Costs**
+
+Minting NFTs with Metaplex Core is more cost-effective compared to previous standards. 
+
+A flat mint fee of .004 is charged with each mint. This covers the mint 0.0029 sol, transfer costs, and priority fees depending on Mainnet's current transaction load.
+
+When purchasing an NFT with card or SOL, this fee is wrapped in the payment - but if minting with In-Game Currency a user will be required to pay this fee via a Solana Wallet.
+
+> ⚠ **Note:** If you choose to Burn the NFT, you will receive a ~.002 sol rebate once NFT has been burned.
+
+---
+
+## 🌐 **Metadata Storage**
+
+In Metaplex Core, NFT metadata is stored off-chain using the InterPlanetary File System (IPFS). This approach ensures that metadata remains immutable and decentralized. The URI pointing to the IPFS-hosted metadata is utilized during the minting process, guaranteeing the integrity and permanence of the NFT's associated data. ([developers.metaplex.com](https://developers.metaplex.com/core/what-is-an-asset?utm_source=chatgpt.com))
+
+---
+
+## 🛠️ **Creating and Minting NFTs with Metaplex Core**
+
+We create and mint NFTs using Metaplex Core, by following these steps:
+
+1. **Set Up Your Development Environment**:
+   - Install Node.js (version 16.15 or higher).
+   - Install the Solana CLI.
+   - Install necessary dependencies:
+
+     ```bash
+     npm install @metaplex-foundation/umi @metaplex-foundation/umi-bundle-defaults @metaplex-foundation/mpl-core @solana/web3.js
+     ```
+
+2. **Initialize the Umi Instance**:
+
+   ```javascript
+   import { createUmi } from '@metaplex-foundation/umi';
+   import { createCollectionV1 } from '@metaplex-foundation/mpl-core';
+   import { keypairIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+   import { generateSigner } from '@metaplex-foundation/umi';
+
+   const umi = createUmi('https://api.mainnet-beta.solana.com')
+     .use(keypairIdentity(/* your keypair */))
+     .use(mplCore());
+
+   const collectionSigner = generateSigner(umi);
+
+   await createCollectionV1(umi, {
+     collection: collectionSigner,
+     name: 'My Collection',
+     uri: 'https://example.com/my-collection.json',
+   }).sendAndConfirm(umi);
+   ```
+
+3. **Mint an NFT**:
+
+   ```javascript
+   import { create } from '@metaplex-foundation/mpl-core';
+
+   const nftSigner = generateSigner(umi);
+
+   await create(umi, {
+     asset: nftSigner,
+     name: 'My First NFT',
+     uri: 'https://example.com/my-first-nft.json',
+     collection: collectionSigner.publicKey,
+   }).sendAndConfirm(umi);
+   ```
+
+For a comprehensive guide on minting NFTs with Metaplex Core, refer to the [Metaplex Developer Hub](https://developers.metaplex.com/core).
+
+---
+
+## 🔒 **Metadata Locking**
+
+Once an NFT is approved, certain metadata fields become immutable to preserve the integrity of the asset. This immutability is achieved by storing metadata off-chain in IPFS, ensuring that the data remains tamper-proof and permanent. The URI pointing to the IPFS-hosted metadata is utilized during the minting process, guaranteeing the integrity and permanence of the NFT's associated data. ([developers.metaplex.com](https://developers.metaplex.com/core/what-is-an-asset?utm_source=chatgpt.com))
+
+---
+
+## 📈 **Advantages Over Previous Standards**
+
+- **Efficiency**: The single-account design reduces the computational load, allowing more transactions to fit into a single block. ([developers.metaplex.com](https://developers.metaplex.com/core?utm_source=chatgpt.com))
+
+- **Flexibility**: The plugin system enables developers to introduce custom behaviors and features, enhancing the NFT's utility and interactivity. ([solanacompass.com](https://solanacompass.com/learn/Validated/how-metaplex-core-moves-beyond-nft-standards-w-stephen-hess-metaplex-studios?utm_source=chatgpt.com))
+
+- **Scalability**: Lower minting costs and compute requirements make it feasible to deploy large-scale NFT projects without compromising performance. ([developers.metaplex.com](https://developers.metaplex.com/core?utm_source=chatgpt.com))
+
+---
+
+By adopting Metaplex Core, creators and developers can leverage a more efficient, cost-effective, and flexible framework for NFT creation and management on the Solana blockchain.

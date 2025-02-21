@@ -87,6 +87,14 @@ export const storeInfoData = {
     creator: '', // Default creator
 };
 
+export const sellingThreshold = {
+    common: 100,
+    uncommon: 100,
+    rare: 75,
+    epic: 50,
+    legendary: 50
+}
+
 // Option Types for Select Inputs
 
 export const generalTypes = [
