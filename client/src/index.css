@@ -151,8 +151,10 @@ textarea:disabled{
   color: white;
   font-size: 4rem; /* Adjust as needed */
   font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Adds a glowing effect */
-  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(170, 153, 167, 0.5); /* Adds a glowing effect */
+  margin-bottom: 5px;
+  border-bottom: 5px solid whitesmoke;
+  padding-bottom: 2px;
 }
 
 .landing-page-subtitle {
@@ -198,7 +200,7 @@ textarea:disabled{
   background-color: none;
   color: #ffffff;
   text-decoration: none;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: bold;
   transition: background 0.3s ease, transform 0.2s ease;
   width: 150px;

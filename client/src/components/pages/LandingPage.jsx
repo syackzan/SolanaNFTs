@@ -30,9 +30,9 @@ const LandingPage = () => {
                 <h1 className='lazy-dog landing-page-title'>
                     Booh Brawlers
                 </h1>
-                <h3 className='marykate landing-page-subtitle'>
+                {/* <h3 className='marykate landing-page-subtitle'>
                     NFT Creation Hub
-                </h3>
+                </h3> */}
 
                 {/* AnimatePresence for smooth enter/exit animation */}
                 <AnimatePresence mode="wait">
@@ -51,7 +51,7 @@ const LandingPage = () => {
                             </Link>
                             <Link className="darkmode-button" to="#" onClick={() => setLandingPage('creator')}>
                                 <FaEdit className="dashboard-icon" />
-                                Create/Edit
+                                Creator Hub
                             </Link>
                             <Link className="darkmode-button" to="/docs">
                                 <FaBook className="dashboard-icon" />

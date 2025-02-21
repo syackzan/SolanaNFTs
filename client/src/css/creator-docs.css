@@ -26,7 +26,7 @@
 @media (max-width: 767px) {
     .docs-container {
         margin-left: 0;
-        max-width: 95%;
+        max-width: 100%;
         padding: 15px;
     }
 }
@@ -86,17 +86,14 @@
     color: #e1e1e1;
 }
 
-/* Ensure the table fits its content */
+/* Ensure the table stays contained and does not overflow */
 .docs-table {
-    width: auto; /* Adjust width based on content */
-    max-width: 100%; /* Prevent overflow */
-    margin-top: 5px;
-    margin-bottom: 20px;
+    width: 100%;
     border-collapse: collapse;
-    background-color: rgb(40, 40, 40); /* Matches container background */
+    background-color: rgb(40, 40, 40);
     border-radius: 8px;
-    overflow: hidden; /* Ensures rounded corners apply to all rows */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Slight shadow for depth */
+    overflow: hidden !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
     border: 1px solid white;
 }
 
@@ -129,7 +126,6 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle row separator */
     
 }
-
 
 /* Colored text for rarity */
 .docs-table td:first-child {
@@ -180,8 +176,8 @@
 
     .docs-table th,
     .docs-table td {
-        font-size: 0.85rem; /* Smaller font size for smaller screens */
-        padding: 8px; /* Reduce padding */
+        font-size: 0.75rem; /* Smaller font size for smaller screens */
+        padding: 6px; /* Reduce padding */
     }
 }
 
