@@ -53,7 +53,7 @@ const LandingPage = () => {
                                 <FaEdit className="dashboard-icon" />
                                 Create/Edit
                             </Link>
-                            <Link className="darkmode-button" to="/creatorHubDocs">
+                            <Link className="darkmode-button" to="/docs">
                                 <FaBook className="dashboard-icon" />
                                 Docs & Rules
                             </Link>

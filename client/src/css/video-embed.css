@@ -1,0 +1,36 @@
+/* Video Embed Container */
+.video-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+/* Note Above Video */
+.video-note {
+    font-size: 1rem;
+    color: #ffcc00; /* Warning color */
+    margin-bottom: 10px;
+}
+
+/* Responsive Video Wrapper */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Adjust width as needed */
+    margin: 0 auto;
+    aspect-ratio: 16 / 9; /* Ensures the video perfectly fits */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px black solid;
+    border-radius:8px;
+}
+
+/* Embedded Video */
+.video-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures video takes up full space without black bars */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Optional: shadow effect */
+}

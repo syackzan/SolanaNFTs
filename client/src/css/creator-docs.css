@@ -5,13 +5,31 @@
 
 /* Custom styles for Creator Hub Docs page */
 .docs-container {
-    margin: 60px;
+    margin-top: 60px;
     padding: 20px;
     background-color: rgb(40, 40, 40);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    max-width: 800px;
+    color: white;
+    transition: margin-left 0.3s ease-in-out;
 }
+
+/* Desktop Layout - Align next to sidenav */
+@media (min-width: 768px) {
+    .docs-container {
+        margin-left: 260px; /* Account for sidenav width */
+    }
+}
+
+/* Mobile Layout - Centered */
+@media (max-width: 767px) {
+    .docs-container {
+        margin-left: 0;
+        max-width: 95%;
+        padding: 15px;
+    }
+}
+
 
 .docs-header {
     text-align: center;
@@ -67,15 +85,26 @@
     color: #e1e1e1;
 }
 
-/* Table container */
+/* Ensure the table fits its content */
 .docs-table {
-    width: 100%;
-    margin-top: 20px;
+    width: auto; /* Adjust width based on content */
+    max-width: 100%; /* Prevent overflow */
+    margin-top: 5px;
+    margin-bottom: 20px;
     border-collapse: collapse;
     background-color: rgb(40, 40, 40); /* Matches container background */
     border-radius: 8px;
     overflow: hidden; /* Ensures rounded corners apply to all rows */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Slight shadow for depth */
+    border: 1px solid white;
+}
+
+.docs-table-headers h2 {
+    margin: 0px;
+}
+
+.docs-table-headers h3{
+    margin: 0px 5px 0px 0px !important;
 }
 
 /* Table header styles */
@@ -95,20 +124,34 @@
 .docs-table td {
     padding: 12px;
     font-size: 0.95rem;
-    color: #e1e1e1; /* Matches text color for consistency */
+    color: white; /* Black text for readability */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle row separator */
+    
 }
 
-/* Alternating row colors */
-.docs-table tbody tr:nth-child(even) {
-    background-color: rgb(45, 45, 45); /* Slightly darker for alternating rows */
+
+/* Colored text for rarity */
+.docs-table td:first-child {
+    font-weight: bold;
 }
 
-/* Hover effect on rows */
-.docs-table tbody tr:hover {
-    background-color: rgb(55, 55, 55); /* Highlight on hover */
-    cursor: pointer; /* Optional for interactive feel */
+/* Custom colors for rarity text */
+.docs-table td:first-child[data-rarity="Common"] {
+    color: white;
 }
+.docs-table td:first-child[data-rarity="Uncommon"] {
+    color: green;
+}
+.docs-table td:first-child[data-rarity="Rare"] {
+    color: blue;
+}
+.docs-table td:first-child[data-rarity="Epic"] {
+    color: purple;
+}
+.docs-table td:first-child[data-rarity="Legendary"] {
+    color: red;
+}
+
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
@@ -139,3 +182,75 @@
         padding: 8px; /* Reduce padding */
     }
 }
+
+/* Sidenav (Desktop Default) */
+.sidenav-docs {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #222;
+    padding-top: 20px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
+    z-index: 500;
+}
+
+/* Navigation Title */
+.sidenav-docs-title {
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Navigation Links */
+.sidenav-docs ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidenav-docs ul li {
+    padding: 10px 20px;
+}
+
+.sidenav-docs ul li a {
+    color: #ccc;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.sidenav-docs ul li a:hover {
+    color: #ff9800;
+}
+
+/* Mobile Toggle Button */
+.sidenav-docs-toggle {
+    position: fixed;
+    left: 10px;
+    top: 15px;
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    z-index: 1100;
+    transition: color 0.2s;
+}
+
+.sidenav-docs-toggle:hover {
+    color: #ff9800;
+}
+
+/* Mobile View (Hidden by Default) */
+@media (max-width: 768px) {
+    .sidenav-docs {
+        position: fixed;
+        left: -250px;
+        transition: transform 0.3s ease-in-out;
+    }
+}
+
+

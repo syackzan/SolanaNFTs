@@ -20,7 +20,7 @@ function App() {
             <Route path='/collection' element={<Collection />} />
             <Route path='/marketplace' element={<Marketplace />}/>
             <Route path='/marketplace/:id/:redirectAddress' element={<Marketplace />} />
-            <Route path='/creatorHubDocs' element={<CreatorHubDocs />} />
+            <Route path='/docs' element={<CreatorHubDocs />} />
             <Route path='/character-submit' element={<CharacterSubmission />} />
             <Route path='/admin' element={<Admin />} />
           </Routes>
