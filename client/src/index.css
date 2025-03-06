@@ -802,6 +802,7 @@ textarea:focus::placeholder {
 
 .sidenav-styling {
   max-width: 30%;
+  min-width: 22%;
   background-color: #1E1E1E;
   color: #FFFFFF;
   padding: 10px 20px 20px 20px;

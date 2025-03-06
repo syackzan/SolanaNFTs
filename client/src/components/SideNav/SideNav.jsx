@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { IoIosInfinite } from "react-icons/io";
 
 import {
     generalTypes,
@@ -252,6 +253,30 @@ const SideNav = ({
                                                 color: '#FFF',
                                             }}
                                         />
+                                    ) : key === 'mintLimit' ? (
+                                        <select
+                                            value={value}
+                                            onChange={(e) => handleStoreChange(key, Number(e.target.value))} // Convert to number
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #555',
+                                                backgroundColor: '#2E2E2E',
+                                                color: '#FFF',
+                                            }}
+                                            disabled={!isAdmin}
+                                        >
+                                            <option value="-1">∞ (Unlimited)</option>
+                                            <option value="1">1</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="500">500</option>
+                                            <option value="1000">1000</option>
+                                        </select>
                                     ) : (
                                         <input
                                             type="text" // Use "text" to handle input flexibility and control formatting

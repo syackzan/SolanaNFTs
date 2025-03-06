@@ -85,6 +85,7 @@ export const storeInfoData = {
     season: currentSeason, // Season the item belongs to
     metadataUri: '', // URI for metadata
     creator: '', // Default creator
+    mintLimit: -1 // -1 is default, and sets the mint limit to infinite
 };
 
 export const sellingThreshold = {

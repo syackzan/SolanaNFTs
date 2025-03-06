@@ -15,6 +15,8 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 import TxModalManager from '../txModal/TxModalManager';
 
+import { trackNftTransaction } from '../../services/dbServices';
+
 const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRole, wallet, createOffchainMetadata, handleDeleteNftConcept }) => {
 
     const { publicKey, sendTransaction } = useWallet();
@@ -112,7 +114,11 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
                     console.log(resp.data.serializedSignature);
                     setTransactionSig(resp.data.serializedSignature);
 
-                    setCreateState('complete')
+                    const adminCreator = wallet.publicKey.toString() + ' [ADMIN CREATE]'
+
+                    await trackNftTransaction(nfts[selectedIndex]._id, adminCreator, 'create', 0.004, 'SOL', resp.data.serializedSignature);
+
+                    setCreateState('complete');
                 } catch (e) {
                     console.log('Failure to create NFT: ', e)
                     setCreateState('failed')

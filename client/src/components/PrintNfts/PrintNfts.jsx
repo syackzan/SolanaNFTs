@@ -41,9 +41,30 @@ const PrintNfts = ({
         setReBuying((prev) => ({ ...prev, [nft.description]: true }));
     };
 
-    const handleVotes = () => {
+    const calculateRemainingMints = (nft) => {
+
+        const mintLimit = nft.storeInfo.mintLimit;
+
+        if(mintLimit < 0 || !mintLimit){
+            return <div>Remaining: Infinite</div>
+        }
+
+        const nftsRemainingToMint = nft.storeInfo.mintLimit - nft.purchases.totalCreates;
+
+        if(nftsRemainingToMint <= 0){
+            return <div style={{color: '#C04000'}}>Sold Out!</div>
+        } else {
+            return <div>Remaining: {nftsRemainingToMint}</div>
+        }
 
     }
+
+    const isBuyDisabled = (nft) => {
+
+
+        const { mintLimit } = nft.storeInfo;
+        return mintLimit !== -1 && mintLimit && mintLimit - nft.purchases.totalCreates <= 0 && location !== 'creator-hub';
+    };
 
     // ✅ **Handle Loading States**
     if (nftConceptsLoadingState === "loading") {
@@ -142,6 +163,7 @@ const PrintNfts = ({
                                     filter: purchased ? "grayscale(50%)" : "none", // 🔹 Subtle desaturation effect
                                 }}
                                 onClick={() => { setEditData(nft), setSelectedIndex(index) }}
+                                disabled={isBuyDisabled(nft)}
                             >
                                 <div className="d-flex" style={{ marginBottom: '10px' }}>
                                     <div className="d-flex justify-content-center align-items-center">
@@ -252,6 +274,12 @@ const PrintNfts = ({
                                 </div>
                                 {location === 'creator-hub' && (
                                     <NftConceptVoting nft={nft} />
+                                )}
+                                {location === 'marketplace' &&
+                                (
+                                    <div>
+                                        {calculateRemainingMints(nft)}
+                                    </div>
                                 )}
                             </div>
                         </div>

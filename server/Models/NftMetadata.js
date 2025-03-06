@@ -45,7 +45,8 @@ const NftMetadataSchema = new mongoose.Schema({
     created: {
       type: Number,
       required: false
-    }
+    },
+    mintLimit: {type: Number, default: -1}
   },
   votes: {
     count: { type: Number, default: 0 }, // Total number of votes
@@ -65,7 +66,7 @@ const NftMetadataSchema = new mongoose.Schema({
             txSignature: { type: String, required: true }, // ✅ Transaction Signature of Creating & Sending Nft
             timestamp: { type: Date, default: Date.now } // Time of transaction
         }
-    ]
+    ],
 }
 }, { timestamps: true });
 
