@@ -60,8 +60,6 @@ const PrintNfts = ({
     }
 
     const isBuyDisabled = (nft) => {
-
-
         const { mintLimit } = nft.storeInfo;
         return mintLimit !== -1 && mintLimit && mintLimit - nft.purchases.totalCreates <= 0 && location !== 'creator-hub';
     };

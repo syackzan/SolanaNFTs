@@ -19,7 +19,7 @@ const Collection = () => {
     const handleCreateCollection = async () => {
         try {
             
-            const newCollectionAddress = await createCoreCollection();
+            const newCollectionAddress = await createCoreCollection(wallet);
             console.log(newCollectionAddress);
 
             setCollectionAddress(newCollectionAddress);

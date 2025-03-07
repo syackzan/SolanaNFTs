@@ -26,7 +26,7 @@ const { base58 } =  require("@metaplex-foundation/umi/serializers");
 
 const umi = initializeUmi();
 
-const CORE_COLLECTION_ADDRESS = process.env.IS_MAINNET === "true" ? "CnRTKtN1piFJcrchQPgPN1AH7hagLbAMtkXuhabcruNz" : 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
+const CORE_COLLECTION_ADDRESS = process.env.IS_MAINNET === "true" ? "Esr1cTMpbNRNVHvMrGWMMpCEosH2L1dJU3pXyWmLNZoW" : 'AQWGjfgwj8fuQsQFrfN58JzVxWG6dAosU33e35amUcPo';
 
 exports.testData = async (req, res) => {
   try {

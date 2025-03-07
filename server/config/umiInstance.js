@@ -14,7 +14,7 @@ function initializeUmi() {
     const umi = createUmi(solanaNode);
 
     // Load the private key securely
-    const privateKey = bs58.default.decode(process.env.TEST_WALLET_KEY);
+    const privateKey = bs58.default.decode(process.env.NFT_WALLET_KEY);
     const keypair = umi.eddsa.createKeypairFromSecretKey(privateKey);
 
     const signer = createSignerFromKeypair(umi, keypair);

@@ -72,23 +72,29 @@ export const createSendSolTx = async (fromPubkeyString, payment = 0) => {
     }
 };
 
-export const createCoreCollection = async () => {
+export const createCoreCollection = async (wallet) => {
+    try {
+        // Register Wallet Adapter to Umi
+        umi.use(walletAdapterIdentity(wallet));
+        console.log("Wallet updated:", wallet.publicKey);
 
-    // Register Wallet Adapter to Umi
-    umi.use(walletAdapterIdentity(wallet));
-    console.log("Wallet updated:", wallet.publicKey);
+        const collectionSigner = generateSigner(umi);
 
-    const collectionSigner = generateSigner(umi);
+        // Create collection
+        const transaction = await createCollection(umi, {
+            collection: collectionSigner,
+            name: 'Booh Brawlers Collection v1.0',
+            uri: 'https://nft.boohworld.io',
+        }).sendAndConfirm(umi);
 
-    // create collection
-    await createCollection(umi, {
-        collection: collectionSigner,
-        name: 'Booh Brawlers Core Test',
-        uri: 'https://nft.boohworld.io',
-    }).sendAndConfirm(umi)
+        console.log("Collection created successfully:", collectionSigner.publicKey);
+        return collectionSigner.publicKey;
+    } catch (error) {
+        console.error("Error creating collection:", error);
+        throw error; // Re-throw if you want the caller function to handle it
+    }
+};
 
-    return collectionSigner.publicKey;
-}
 
 export const airdropTestSol = async () => {
     console.log("Airdropping 1 SOL to identity");
