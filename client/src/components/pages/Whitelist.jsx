@@ -8,6 +8,7 @@ import { shortenAddress } from '../../Utils/generalUtils';
 
 import '../../css/whitelist.css';
 import { submitWhitelistAddress } from '../../services/dbServices';
+import TxModal from '../txModal/TxModal';
 
 const Whitelist = () => {
 
@@ -64,6 +65,7 @@ const Whitelist = () => {
                     </div>
                 </div>
             </div>
+            <TxModal />
         </>
     )
 }
