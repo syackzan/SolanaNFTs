@@ -224,3 +224,34 @@ export const fetchUserSubmissions = async (walletAddress) => {
         throw new Error(`Failed to access user Submissions: ${error.response?.data?.message || error.message}`);
     }
 }
+
+/**
+ * Fetch all whitelist addresses from the backend.
+ * @returns {Promise<Object>} { message, count, whitelistAddresses }
+ */
+export const getWhitelistAddresses = async () => {
+    try {
+      const response = await axios.get(`${URI_SERVER}/api/whitelist/get`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching whitelist addresses:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+  
+  /**
+   * Submit a new address to the whitelist.
+   * @param {string} address - The wallet address to submit.
+   * @returns {Promise<Object>} { message, submission }
+   */
+  export const submitWhitelistAddress = async (address) => {
+    try {
+      const response = await axios.post(`${URI_SERVER}/api/whitelist/add`, { address });
+      return { success: true, message: response.data.message }; // Success response
+    } catch (error) {
+      console.error("Error submitting whitelist address:", error.response?.data || error.message);
+      
+      // Return error instead of throwing
+      return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+  };

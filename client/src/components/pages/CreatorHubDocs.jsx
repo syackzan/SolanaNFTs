@@ -4,6 +4,7 @@ import { MDXProvider } from "@mdx-js/react";
 import '../../css/creator-docs.css';
 import Navbar from "../Navbar/Navbar";
 import DocsSidenav from "../DocsSidenav/DocsSidenav"; // Import Sidenav component
+import TxModal from "../txModal/TxModal";
 
 // Import MDX files
 import Intro from '../../docs/intro.mdx';
@@ -15,7 +16,6 @@ import BlueprintToList from '../../docs/blueprint-to-marketplace.mdx';
 import GeneralSiteRules from '../../docs/site-rules.mdx'
 import CostsAndRewards from '../../docs/earnings-payouts.mdx';
 
-import boohLogo from '../../assets/BoohLogo.svg'
 
 const CreatorHubDocs = () => {
 
@@ -48,6 +48,7 @@ const CreatorHubDocs = () => {
                 </div>
                 </div>
             </div>
+            <TxModal />
         </MDXProvider>
     );
 };

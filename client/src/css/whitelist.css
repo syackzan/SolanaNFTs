@@ -1,0 +1,9 @@
+.address-box-whitelist{
+    display: flex;
+    justify-content: center;
+    border: 2px black solid;
+    background-color: rgb(26, 26, 26);
+    padding: 5px;
+    border-radius: 8px;
+    color: rgba(173, 173, 173, 0.822);
+}

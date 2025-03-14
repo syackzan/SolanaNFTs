@@ -5,7 +5,8 @@ const nftRoutes = require('./nft');
 const userRoutes = require('./users');
 const gameRoutes = require('./game');
 const stripeRoutes = require('./stripe');
-const characterRoutes = require('./character')
+const characterRoutes = require('./character');
+const whitelistRoutes = require('./whitelist');
 
 // Combine all route files
 router.use('/upload', uploadRoutes);
@@ -14,5 +15,6 @@ router.use('/user', userRoutes );
 router.use('/boohbrawlers', gameRoutes);
 router.use('/stripe', stripeRoutes);
 router.use('/character-submission', characterRoutes);
+router.use('/whitelist', whitelistRoutes);
 
 module.exports = router;

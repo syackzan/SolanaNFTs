@@ -6,13 +6,10 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { FaEdit, FaBook, FaGhost, FaStore } from 'react-icons/fa';
 import { motion, AnimatePresence } from "framer-motion"; // Import AnimatePresence
 
-import { useTransactionsController } from '../../providers/TransactionsProvider';
-import TxModalManager  from '../txModal/TxModalManager';
+import TxModal from '../txModal/TxModal';
   
 const LandingPage = () => {
     const [landingPage, setLandingPage] = useState('main');
-
-    const { isModalOpen } = useTransactionsController();
 
     const fadeIn = {
         hidden: { opacity: 0 },
@@ -91,8 +88,8 @@ const LandingPage = () => {
                 </AnimatePresence>
                 <ImageCarousel />
 
-                {/* TX MODAL MANAGER FOR CONNECTING WALLET */}
-                {isModalOpen && <TxModalManager />}
+                {/* TX MODAL MANAGER FOR CONNECTING WALLET & HANDLING TRANSACTIONS */}
+                <TxModal />
             </div>
         </div>
     );
