@@ -11,7 +11,8 @@ const {
     createAndSendNFT,
     getCoreNFTs,
     getNftConceptById,
-    trackNftTransaction } = require('../controllers/nftController');
+    trackNftTransaction,
+    getCoreNFTsDevNet } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
@@ -43,5 +44,7 @@ router.patch('/concepts/:id/transaction', trackNftTransaction);
 router.post('/createnft', createAndSendNFT);
 
 router.post('/getCoreNfts', getCoreNFTs);
+
+router.post('/getCoreNfts/Devnet', getCoreNFTsDevNet);
 
 module.exports = router;

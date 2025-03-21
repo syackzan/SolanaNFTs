@@ -18,7 +18,7 @@ const {setComputeUnitLimit, setComputeUnitPrice} = require('@metaplex-foundation
 
 const { PublicKey } = require('@solana/web3.js'); 
 
-const { initializeUmi } = require('../config/umiInstance');
+const { initializeUmi, initializeDevUmi } = require('../config/umiInstance');
 const { validateNFT } = require('../utils/validateNFT');
 const { getPriorityFee } = require('../utils/transactionHelpers');
 
@@ -294,6 +294,53 @@ exports.getCoreNFTs = async (req, res) => {
 
     // Fetch assets owned by the specified wallet
     const fetchedAssets = await fetchAssetsByOwner(umi, ownerType, {
+      skipDerivePlugins: false,
+    });
+
+    // console.log('Fetched assets:', assetsByOwner);
+
+    // Remove unnecessary fields (rentEpoch, lamports, pluginHeader, immutableMetadata)
+    const sanitizedAssets = fetchedAssets.map(({ header, pluginHeader, immutableMetadata, ...asset }) => {
+      const { rentEpoch, lamports, ...sanitizedHeader } = header; // Remove rentEpoch and lamports
+      return {
+        ...asset,
+        header: sanitizedHeader, // Include sanitized header without rentEpoch and lamports
+      };
+    });
+
+    console.log(sanitizedAssets);
+
+    // Return the assets as a response
+    res.status(200).json({
+      success: true,
+      message: 'Assets fetched successfully',
+      address: ownerType.toString(), // Return the address as a string
+      data: sanitizedAssets,
+    });
+  } catch (error) {
+    console.error('Error fetching assets:', error);
+
+    // Return an error response
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch assets',
+      error: error.message || 'An unexpected error occurred',
+    });
+  }
+};
+
+//GET DEVNET NFTS
+exports.getCoreNFTsDevNet = async (req, res) => {
+  const devNetUmi = initializeDevUmi();
+
+  console.log(req.body.walletPublicKey);
+
+  try {
+    // Extract wallet public key from the request
+    const ownerType = new PublicKey(req.body.walletPublicKey); // Ensure `walletPublicKey` is sent in the request body
+
+    // Fetch assets owned by the specified wallet
+    const fetchedAssets = await fetchAssetsByOwner(devNetUmi, ownerType, {
       skipDerivePlugins: false,
     });
 

@@ -30,7 +30,7 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 import { useWalletAdmin } from '../../hooks/useWalletAdmin';
 import { useNftConceptForm } from '../../hooks/useNftConceptForm';
 
-const API_KEY = import.meta.env.VITE_SERVE_KEY
+import axios from 'axios';
 
 const Homepage = () => {
 
