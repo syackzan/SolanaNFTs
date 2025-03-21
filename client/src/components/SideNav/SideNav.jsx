@@ -11,7 +11,8 @@ import {
     rarityOptions,
     pricingValues,
     talenPointSpread,
-    talents
+    talents,
+    divisionOptions
 } from '../../config/gameConfig';
 
 import { useScreen } from "../../providers/ScreenProvider";
@@ -48,7 +49,8 @@ const SideNav = ({
     createLockStatus,
     setCreateLockStatus,
     handleUpdateNftConcept,
-    isNameTaken
+    isNameTaken,
+    resetDivisionOnTypeChange
 }) => {
 
     const {
@@ -391,7 +393,7 @@ const SideNav = ({
                                 </div>
                             }
                             <label style={{ display: "block", marginBottom: "5px" }}>
-                                {attribute.trait_type}
+                                {attribute.trait_type.toUpperCase()}
                             </label>
                             {attribute.trait_type === "blockchain" ? (
                                 <select
@@ -414,7 +416,7 @@ const SideNav = ({
                             ) : attribute.trait_type === "type" ? (
                                 <select
                                     value={attribute.value}
-                                    onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                    onChange={(e) => {handleAttributeChange(index, "value", e.target.value), resetDivisionOnTypeChange()}}
                                     disabled={!canEditFields}
                                     style={{
                                         width: "100%",
@@ -478,6 +480,51 @@ const SideNav = ({
                                         }
                                     })()}
                                 </select>
+                            ) : attribute.trait_type === 'division' ? (
+                                <>
+                                    {attributes.find((attr) => attr.trait_type === "type")?.value === 'skin' ? (
+                                        <>
+                                            <select
+                                                value={attribute.value}
+                                                onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                                disabled={!canEditFields || (page === 'update' && !isAdmin)}
+                                                style={{
+                                                    width: "100%",
+                                                    padding: "10px",
+                                                    borderRadius: "4px",
+                                                    border: "1px solid #555",
+                                                    backgroundColor: "#2E2E2E",
+                                                    color: "#FFF",
+                                                }}
+                                            >
+                                                <option value="">Select...</option>
+                                                {divisionOptions.map((division, i) => (
+                                                    <option key={i} value={division}>
+                                                        {division.charAt(0).toUpperCase() + division.slice(1)}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <select
+                                                value={attribute.value}
+                                                onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                                disabled={true}
+                                                style={{
+                                                    width: "100%",
+                                                    padding: "10px",
+                                                    borderRadius: "4px",
+                                                    border: "1px solid #555",
+                                                    backgroundColor: "#2E2E2E",
+                                                    color: "#FFF",
+                                                }}
+                                            >
+                                                <option value="none">None [Skins Only]</option>
+                                            </select>
+                                        </>
+                                    )}
+                                </>
                             ) : attribute.trait_type === "rarity" ? (
                                 <>
                                     <select

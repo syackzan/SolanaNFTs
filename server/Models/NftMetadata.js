@@ -10,6 +10,7 @@ const NftMetadataSchema = new mongoose.Schema({
     {
       trait_type: { type: String, required: true },
       value: { type: String, required: true },
+      _id: false
     },
   ],
   properties: {

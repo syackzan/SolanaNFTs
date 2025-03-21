@@ -4,7 +4,7 @@ export const infoData = {
     symbol: 'BOOH', // Default symbol
     description: '', // Placeholder for description
     image: '', // Placeholder for the image URL
-    external_link: 'https://boohworld.io/boohbrawlers/marketplace', // External link for more details
+    external_link: 'https://nft.boohworld.io/marketplace', // External link for more details
 };
 
 // Talents List
@@ -17,6 +17,7 @@ export const attributesData = [
     { trait_type: "subType", value: "" }, // Item sub-type
     { trait_type: "rarity", value: "common" }, // Default rarity
     { trait_type: "affinity", value: "" }, // Default affinity
+    { trait_type: "division", value: "none"}
 ];
 
 // Function to dynamically add missing talents to attributesData
@@ -72,7 +73,7 @@ export const talenPointSpread = {
     uncommon: 6 + basePercIncrease,
     rare: 10 + basePercIncrease,
     epic: 15 + basePercIncrease,
-    legendary: 25 + basePercIncrease,
+    legendary: 20 + basePercIncrease,
 };
 
 // Store Information Defaults
@@ -148,6 +149,12 @@ export const rarityOptions = [
     'epic',
     'legendary',
 ];
+
+export const divisionOptions = [
+    'none',
+    'uprising',
+    'elites'
+]
 
 export const defaultMintCost = .004;
 

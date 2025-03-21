@@ -106,6 +106,16 @@ export const useNftConceptForm = () => {
         setIsNameTaken(!!foundNft); // Convert to boolean
     };
 
+    const resetDivisionOnTypeChange = () => {
+        setAttributes(prevAttributes =>
+            prevAttributes.map(attr =>
+                attr.trait_type === 'division'
+                    ? { ...attr, value: 'none' }
+                    : attr
+            )
+        );
+    };
+
     return {
         info,
         setInfo,
@@ -124,6 +134,7 @@ export const useNftConceptForm = () => {
         handleStoreChange,
         handleImageChange,
         handleAttributeChange,
-        isNameTaken
+        isNameTaken,
+        resetDivisionOnTypeChange
     }
 }
