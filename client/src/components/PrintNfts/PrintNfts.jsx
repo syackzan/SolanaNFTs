@@ -10,6 +10,8 @@ import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
 import { useWallet } from '@solana/wallet-adapter-react';
 import NftConceptVoting from '../NftConceptVoting/NftConceptVoting';
 
+import { prelaunch } from '../../config/config';
+
 const PrintNfts = ({
     nfts,
     selectedIndex,
@@ -45,14 +47,14 @@ const PrintNfts = ({
 
         const mintLimit = nft.storeInfo.mintLimit;
 
-        if(mintLimit < 0 || !mintLimit){
+        if (mintLimit < 0 || !mintLimit) {
             return <div>Remaining: Infinite</div>
         }
 
         const nftsRemainingToMint = nft.storeInfo.mintLimit - nft.purchases.totalCreates;
 
-        if(nftsRemainingToMint <= 0){
-            return <div style={{color: '#C04000'}}>Sold Out!</div>
+        if (nftsRemainingToMint <= 0) {
+            return <div style={{ color: '#C04000' }}>Sold Out!</div>
         } else {
             return <div>Remaining: {nftsRemainingToMint}</div>
         }
@@ -95,7 +97,15 @@ const PrintNfts = ({
                     textAlign: "center",
                 }}
             >
-                <h2>No NFTs Available</h2>
+                {prelaunch ? (
+                    <div>
+                    <h2 className="marykate" style={{fontSize: '45px'}}>Pre-Alpha Launch April 7th!</h2>
+                    <h3 className="marykate" style={{fontSize: '35px'}}>Preview NFTs in Creator Hub</h3>
+                </div>
+                ) : (
+                    <h2 className="marykate" style={{fontSize: '45px'}}>No NFTs Found!</h2>
+                )}
+                
             </div>
         );
     }
@@ -274,11 +284,11 @@ const PrintNfts = ({
                                     <NftConceptVoting nft={nft} />
                                 )}
                                 {location === 'marketplace' &&
-                                (
-                                    <div>
-                                        {calculateRemainingMints(nft)}
-                                    </div>
-                                )}
+                                    (
+                                        <div>
+                                            {calculateRemainingMints(nft)}
+                                        </div>
+                                    )}
                             </div>
                         </div>
                     );
