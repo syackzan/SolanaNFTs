@@ -132,6 +132,11 @@ const PrintNfts = ({
                     const subType = nft.attributes.find(
                         (attr) => attr.trait_type === "subType"
                     )?.value || "unknown";
+                    const division = nft.attributes.find(
+                        (attr) => attr.trait_type === "division"
+                    )?.value || null;
+
+                    const divisionClassName = `division-${division}`;
 
                     const rarityClass = `nft-box shadow-${rarity.toLowerCase()}`;
                     const bannerClass = `banner-standards banner-${rarity.toLowerCase()}`;
@@ -224,10 +229,14 @@ const PrintNfts = ({
                                     </div>
                                 </div>
                                 <div style={{ borderTop: '1px solid white', padding: '5px 0px' }}></div>
-                                <div className="d-flex gap-3">
-                                    <div className={nftBlockchainClass}>{nftBlockchain}</div>
-                                    <div className={bannerClass}>{type}</div>
-                                    <div className={bannerClass}>{subType}</div>
+                                <div className="d-flex justify-content-between">
+                                    <div className="d-flex gap-3">
+                                        <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                                        <div className={bannerClass}>{type}</div>
+                                        <div className={bannerClass}>{subType}</div>
+                                    </div>
+                                    {division && <div className={divisionClassName}>{division}</div>}
+                                    
                                 </div>
                             </button>
                             {location === 'creator-hub' && isAdmin && isSelected ? (

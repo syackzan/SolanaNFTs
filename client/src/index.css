@@ -760,6 +760,24 @@ textarea:focus::placeholder {
   background-color: rgba(255, 0, 0, 0.5);
 }
 
+.division-elites {
+  font-size: 14px;
+  padding: 0px 2px;
+  border-radius: 5px;
+  font-weight: 500;
+  color: black;
+  background: linear-gradient(135deg, #ffffff, #bcbcbc, #636363);
+}
+
+.division-uprising{
+  font-size: 14px;
+  padding: 0px 2px;
+  border-radius: 5px;
+  font-weight: 500;
+  color: white;
+  background: linear-gradient(135deg, #000000, #434343, #cfcfcf);
+}
+
 .blockchain-solana {
   font-size: 14px;
   padding: 0px 2px;
