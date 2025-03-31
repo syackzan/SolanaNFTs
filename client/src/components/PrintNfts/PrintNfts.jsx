@@ -99,13 +99,13 @@ const PrintNfts = ({
             >
                 {prelaunch ? (
                     <div>
-                    <h2 className="marykate" style={{fontSize: '45px'}}>Pre-Alpha Launch April 7th!</h2>
-                    <h3 className="marykate" style={{fontSize: '35px'}}>Preview NFTs in Creator Hub</h3>
-                </div>
+                        <h2 className="marykate" style={{ fontSize: '45px' }}>Pre-Alpha Launch April 7th!</h2>
+                        <h3 className="marykate" style={{ fontSize: '35px' }}>Preview NFTs in Creator Hub</h3>
+                    </div>
                 ) : (
-                    <h2 className="marykate" style={{fontSize: '45px'}}>No NFTs Found!</h2>
+                    <h2 className="marykate" style={{ fontSize: '45px' }}>No NFTs Found!</h2>
                 )}
-                
+
             </div>
         );
     }
@@ -235,8 +235,11 @@ const PrintNfts = ({
                                         <div className={bannerClass}>{type}</div>
                                         <div className={bannerClass}>{subType}</div>
                                     </div>
-                                    {division && <div className={divisionClassName}>{division}</div>}
-                                    
+                                    {(division === "uprising" || division === "elites") &&
+                                        <div className={divisionClassName}>
+                                            {division}
+                                        </div>
+                                    }
                                 </div>
                             </button>
                             {location === 'creator-hub' && isAdmin && isSelected ? (
