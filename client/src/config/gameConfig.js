@@ -76,6 +76,15 @@ export const talenPointSpread = {
     legendary: 20 + basePercIncrease,
 };
 
+const baseInGameIncrease = 0
+export const inGameCurrencyCost = {
+    common: 10000 + baseInGameIncrease,
+    uncommon: 50000 + baseInGameIncrease,
+    rare: 150000 + baseInGameIncrease,
+    epic: 300000 + baseInGameIncrease,
+    legendary: 1000000 +baseInGameIncrease
+}
+
 // Store Information Defaults
 const startingPrice = 0.99; // Default starting price
 const currentSeason = 1; // Current season number

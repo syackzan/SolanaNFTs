@@ -25,6 +25,8 @@ import { PublicKey } from '@solana/web3.js';
 
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
+import { inGameCurrencyCost } from '../../config/gameConfig';
+
 
 const Marketplace = () => {
 
@@ -110,7 +112,12 @@ const Marketplace = () => {
                         // TODO: Implement conversion rate for BABY BOOH
                         setPreCalcPayment(mintCosts);
                         setSolPriceLoaded(true);
-                        setInGameSpend(5);
+
+                        const rarityAttribute = nfts[selectedIndex].attributes.find(attr => attr.trait_type === "rarity");
+                        const nftRarity = rarityAttribute ? rarityAttribute.value : "common"; // default rarity if not found
+
+                        setInGameSpend(inGameCurrencyCost[nftRarity]);
+
                         console.warn("Conversion rate for BABY BOOH is not implemented yet.");
                         break;
 

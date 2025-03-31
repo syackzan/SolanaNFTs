@@ -48,7 +48,7 @@ export const TransactionProvider = ({ children }) => {
         setTransactionSig(null);
         setSolPriceLoaded(false);
         setStripeSecret(null);
-        setInGameSpend(null);
+        setInGameSpend(0);
     };
 
     const loadTxModal = (type, name = 'unknown', payment = 0, paymentType =  'none', isPriceLoaded = false ) => {

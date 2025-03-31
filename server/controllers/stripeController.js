@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SK);
+const stripeKey = process.env.NODE_ENV === "development" ? process.env.STRIPE_RK_T : process.env.STRIPTE_RK_L
+const stripe = require('stripe')(stripeKey);
 
 exports.getPaymentIntent = async (req, res) => {
 

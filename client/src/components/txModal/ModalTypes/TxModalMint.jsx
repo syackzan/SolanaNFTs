@@ -48,7 +48,7 @@ const TxModalMint = ({ createNft }) => {
                     {(inGameSpend >= 0 && paymentTracker === 'BABYBOOH') &&
                         <div className="tracker-row">
                             <span className="tracker-label">In Game Currency:</span>
-                            <span className="tracker-value">-{inGameSpend}</span>
+                            <span className="tracker-value">-{inGameSpend.toLocaleString()}</span>
                         </div>}
                 </div>
 
