@@ -10,9 +10,12 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useTransactionsController } from '../../../providers/TransactionsProvider';
 import { useGlobalVariables } from "../../../providers/GlobalVariablesProvider";
 
+import { useNftConceptForm } from "../../../hooks/useNftConceptForm";
+
 const TxModalCreator = ({ handleAddNftConcept }) => {
 
     const {setSearchItem} = useGlobalVariables();
+    
     const {
         txState,
         createState,

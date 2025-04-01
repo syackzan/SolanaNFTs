@@ -27,11 +27,15 @@ import { useTransactionsController } from '../../providers/TransactionsProvider'
 
 import { inGameCurrencyCost } from '../../config/gameConfig';
 
+import { useGlobalVariables } from '../../providers/GlobalVariablesProvider';
+
 
 const Marketplace = () => {
 
     const wallet = useWallet();
     const { connection } = useConnection();
+
+    const {checkUserDiscount} = useGlobalVariables();
 
     const {
         nfts,
@@ -99,8 +103,17 @@ const Marketplace = () => {
                 switch (paymentTracker) {
                     case 'SOL':
                         if (nfts[selectedIndex]?.storeInfo?.price) {
+                            
+                            //Define Payment amount in current SOL
                             const priceInSol = await convertUsdToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
-                            setPreCalcPayment(priceInSol.toFixed(4)); // Set SOL price in USD per NFT price
+
+                            //Apply discount if any
+                            const discountedPrice = await checkUserDiscount(wallet.publicKey.toString(), priceInSol.toFixed(4), 'sol');
+
+                            //Set Pre Calc Payment
+                            setPreCalcPayment(discountedPrice); // Set SOL price in USD per NFT price
+
+                            //Loading the Sol price is complete
                             setSolPriceLoaded(true);
                         } else {
                             console.error("Invalid NFT data or selectedIndex for SOL payment.");
@@ -129,9 +142,20 @@ const Marketplace = () => {
 
                             // Create a PaymentIntent
                             const data = await createPaymentIntent(toNumber, nfts[selectedIndex]._id, wallet.publicKey.toString());
+
+                            //If client secret exists, continue
                             if (data?.client_secret) {
+
+                                //Set client secret
                                 setStripeSecret(data.client_secret);
-                                setPreCalcPayment(toNumber);
+
+                                //Determine any discounts
+                                const discountedPrice = await checkUserDiscount(wallet.publicKey.toString(), toNumber, 'usd');
+
+                                //Set precalc payment to track
+                                setPreCalcPayment(discountedPrice);
+
+                                //Loading the USD price is complete (TODO: UPDATE FUNCTION NAME TO ENCOMPASS SOL AND USD)
                                 setSolPriceLoaded(true); // Hard value already stored
                             } else {
                                 console.error("Failed to retrieve client_secret from PaymentIntent.");

@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { getCoreNftsClient } from "../services/blockchainServices";
-import { fetchAllNftConcepts } from "../services/dbServices";
+import { fetchAllNftConcepts, getWhitelistAddresses } from "../services/dbServices";
+import { discountPrice } from "../config/config";
 
 // ✅ Create Context (Renamed to `GlobalVariablesContext`)
 const GlobalVariablesContext = createContext();
@@ -43,7 +44,7 @@ export const GlobalVariablesProvider = ({ children }) => {
                 setNftConcepts(data || []);
             } catch (error) {
                 console.error("Error fetching NFT Concepts:", error);
-                
+
             }
         };
 
@@ -60,6 +61,35 @@ export const GlobalVariablesProvider = ({ children }) => {
         }
     };
 
+    const checkUserDiscount = async (address, price, type) => {
+        try {
+            const data = await getWhitelistAddresses();
+
+            console.log(data.whitelistAddresses);
+
+            const isWhitelisted = data.whitelistAddresses.some(item => item.address === address);
+
+            if (isWhitelisted) {
+
+                switch (type){
+                    case 'sol':
+                        return (price * discountPrice).toFixed(4);
+                    case 'usd':
+                        return (price * discountPrice).toFixed(2);
+                    default:
+                        return price;
+                }
+            } else {
+                return price;
+            }
+
+        } catch (e) {
+            console.error("Failed to check discount status:", e);
+            throw new Error(e.message || "Unknown error");
+        }
+    };
+
+
     // ✅ Provider Wrapper
     return (
         <GlobalVariablesContext.Provider
@@ -72,7 +102,8 @@ export const GlobalVariablesProvider = ({ children }) => {
                 nftConcepts,
                 refetchNftConcepts,
                 searchItem,
-                setSearchItem
+                setSearchItem,
+                checkUserDiscount
             }}
         >
             {children}

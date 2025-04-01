@@ -11,4 +11,7 @@ export const URI_FRONTEND = IS_PRODUCTION ? 'https://nft.boohworld.io' : 'http:/
 
 export const prelaunch = true;
 
+//20% discount for whitelist members
+export const discountPrice = 0.8;
+
 

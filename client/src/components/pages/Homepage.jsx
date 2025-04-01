@@ -238,8 +238,12 @@ const Homepage = () => {
             console.log("✅ NFT Metadata created successfully:", data);
     
             // 🔹 Step 4: Refresh UI
-            refetchNftConcepts();
-            setCreateState('complete');
+            refetchNftConcepts(); //Get New NFT Concepts from Database
+
+            setCreateState('complete'); //Track UI State
+
+            resetNftConceptForm(); //Reset the Sidenav form
+
             return true;
             
         } catch (error) {
