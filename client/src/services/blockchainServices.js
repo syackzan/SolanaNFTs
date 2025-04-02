@@ -18,6 +18,8 @@ import { URI_SERVER, COLLECTION_ADDRESS } from '../config/config'
 
 import axios from 'axios';
 
+const API_KEY = import.meta.env.VITE_SERVE_KEY;
+
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
 
 const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz" //Update to Wallet that will receive money in production
@@ -33,7 +35,10 @@ export const createCoreNft = async (nft, wallet) => {
         const apiUrl = `${URI_SERVER}/api/nft/createnft`;
 
         // Make the POST request to the backend
-        const signature = await axios.post(apiUrl, requestBody);
+        const signature = await axios.post(
+            apiUrl, 
+            requestBody,
+            {headers: { "x-api-key": API_KEY }});
 
         return signature;
 

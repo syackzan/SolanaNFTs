@@ -19,10 +19,10 @@ const router = express.Router();
 router.get('/hello', testData);
 
 //GET /api/nft/concepts (get all nft concepts)
-router.get('/concepts', getAllNftConcepts);
+router.get('/concepts', verifyApiKey, getAllNftConcepts);
 
 //GET /api/nft/concepts (get ONE nft concept)
-router.get('/concepts/:id', getNftConceptById);
+router.get('/concepts/:id', verifyApiKey, getNftConceptById);
 
 //POST /api/nft/concepts (add new entry)
 router.post('/concepts', verifyApiKey, addNftConcept);
@@ -34,14 +34,14 @@ router.patch('/concepts/:id', verifyApiKey, updateNftConcept);
 router.patch('/concepts/:id/metadata', verifyApiKey, saveMetadataUri);
 
 // DELETE /api/nft/delete/:id
-router.delete('/concepts/:id', deleteNftConcept);
+router.delete('/concepts/:id', verifyApiKey, deleteNftConcept);
 
 router.patch('/concepts/:id/vote', verifyApiKey, voteForNftConcept);
 
 // 🔹 Record NFT Create/Buy Transactions
-router.patch('/concepts/:id/transaction', trackNftTransaction);
+router.patch('/concepts/:id/transaction', verifyApiKey, trackNftTransaction);
 
-router.post('/createnft', createAndSendNFT);
+router.post('/createnft', verifyApiKey, createAndSendNFT);
 
 router.post('/getCoreNfts', getCoreNFTs);
 

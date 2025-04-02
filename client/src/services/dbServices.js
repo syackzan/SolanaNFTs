@@ -10,7 +10,9 @@ const API_KEY = import.meta.env.VITE_SERVE_KEY;
  */
 export const fetchAllNftConcepts = async () => {
     try {
-        const response = await axios.get(`${URI_SERVER}/api/nft/concepts`);
+        const response = await axios.get(
+            `${URI_SERVER}/api/nft/concepts`,
+            { headers: { "x-api-key": API_KEY } });
         return response.data;
     } catch (error) {
         console.error("Failed to fetch all NFT concepts:", error.response?.data || error.message);
@@ -26,7 +28,9 @@ export const fetchAllNftConcepts = async () => {
  */
 export const fetchSingleNftMetadata = async (nftId) => {
     try {
-        const response = await axios.get(`${URI_SERVER}/api/nft/concepts/${nftId}`);
+        const response = await axios.get(
+            `${URI_SERVER}/api/nft/concepts/${nftId}`,
+            { headers: { "x-api-key": API_KEY } });
         return response.data;
     } catch (error) {
         console.error("Error fetching NFT metadata:", error.response?.data || error.message);
@@ -42,9 +46,10 @@ export const fetchSingleNftMetadata = async (nftId) => {
  */
 export const addNftConcept = async (metadataForDB) => {
     try {
-        const response = await axios.post(`${URI_SERVER}/api/nft/concepts`, metadataForDB, {
-            headers: { "x-api-key": API_KEY }
-        });
+        const response = await axios.post(`${URI_SERVER}/api/nft/concepts`, 
+            metadataForDB, 
+            {headers: { "x-api-key": API_KEY }}
+    );
         return response.data;
     } catch (error) {
         console.error("Failed to add NFT concept:", error.response?.data || error.message);
@@ -102,7 +107,9 @@ export const saveMetadataUri = async (nftId, metadataUri) => {
  */
 export const deleteNftConcept = async (id) => {
     try {
-        const response = await axios.delete(`${URI_SERVER}/api/nft/concepts/${id}`);
+        const response = await axios.delete(
+            `${URI_SERVER}/api/nft/concepts/${id}`,
+            { headers: { "x-api-key": API_KEY } });
         return response.data;
     } catch (error) {
         console.error("Error deleting NFT concept:", error.response?.data || error.message);
@@ -167,7 +174,7 @@ export const voteForNFT = async (nftId, voterAddress, voteType) => {
 export const trackNftTransaction = async (nftId, userId, type, amount, currency, txSignature) => {
 
     console.log(nftId, userId, type, amount, currency, txSignature);
-    
+
     try {
         const response = await axios.patch(
             `${URI_SERVER}/api/nft/concepts/${nftId}/transaction`,
@@ -190,7 +197,7 @@ export const trackNftTransaction = async (nftId, userId, type, amount, currency,
 };
 
 export const submitCharacter = async (name, description, imageUrl, walletAddress, paymentTx) => {
-    
+
     try {
         const response = await axios.post(
             `${URI_SERVER}/api/character-submission/submit`,
@@ -212,7 +219,7 @@ export const submitCharacter = async (name, description, imageUrl, walletAddress
 }
 
 export const fetchUserSubmissions = async (walletAddress) => {
-    
+
     try {
         const response = await axios.get(
             `${URI_SERVER}/api/character-submission/${walletAddress}`,
@@ -231,27 +238,36 @@ export const fetchUserSubmissions = async (walletAddress) => {
  */
 export const getWhitelistAddresses = async () => {
     try {
-      const response = await axios.get(`${URI_SERVER}/api/whitelist/get`);
-      return response.data;
+        const response = await axios.get(
+            `${URI_SERVER}/api/whitelist/get`,
+            { headers: { "x-api-key": API_KEY } }
+        );
+        return response.data;
     } catch (error) {
-      console.error("Error fetching whitelist addresses:", error.response?.data || error.message);
-      throw error;
+        console.error("Error fetching whitelist addresses:", error.response?.data || error.message);
+        throw error;
     }
-  };
-  
-  /**
-   * Submit a new address to the whitelist.
-   * @param {string} address - The wallet address to submit.
-   * @returns {Promise<Object>} { message, submission }
-   */
-  export const submitWhitelistAddress = async (address) => {
+};
+
+/**
+ * Submit a new address to the whitelist.
+ * @param {string} address - The wallet address to submit.
+ * @returns {Promise<Object>} { message, submission }
+ */
+export const submitWhitelistAddress = async (address) => {
     try {
-      const response = await axios.post(`${URI_SERVER}/api/whitelist/add`, { address });
-      return { success: true, message: response.data.message }; // Success response
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/whitelist/add`,
+            { address },
+            { headers: { "x-api-key": API_KEY } });
+
+        return { success: true, message: response.data.message }; // Success response
+
     } catch (error) {
-      console.error("Error submitting whitelist address:", error.response?.data || error.message);
-      
-      // Return error instead of throwing
-      return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+        console.error("Error submitting whitelist address:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
     }
-  };
+};
