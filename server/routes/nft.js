@@ -1,5 +1,6 @@
 const express = require('express');
-const {verifyApiKey} = require('../Middleware/authMiddleware')
+const {verifyApiKey} = require('../Middleware/authMiddleware');
+const botBlocker = require('../Middleware/botBlocker');
 const { 
     getAllNftConcepts, 
     addNftConcept, 
@@ -19,7 +20,7 @@ const router = express.Router();
 router.get('/hello', testData);
 
 //GET /api/nft/concepts (get all nft concepts)
-router.get('/concepts', verifyApiKey, getAllNftConcepts);
+router.get('/concepts', botBlocker, verifyApiKey, getAllNftConcepts);
 
 //GET /api/nft/concepts (get ONE nft concept)
 router.get('/concepts/:id', verifyApiKey, getNftConceptById);
