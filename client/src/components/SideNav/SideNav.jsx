@@ -145,6 +145,7 @@ const SideNav = ({
 
     // Reset all state and metadata
     const resetEverything = () => {
+        resetNftConceptForm();
         setIsDisabled(false);
         setCreateLockStatus(false);
         setIsCreated(false);
