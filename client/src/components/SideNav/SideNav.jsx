@@ -470,7 +470,7 @@ const SideNav = ({
                                                     {armor.charAt(0).toUpperCase() + armor.slice(1)}
                                                 </option>
                                             ));
-                                        } else if (type === "accessories") {
+                                        } else if (type === "accessory") {
                                             return accessoriesOptions.map((accessory, i) => (
                                                 <option key={i} value={accessory}>
                                                     {accessory.charAt(0).toUpperCase() + accessory.slice(1)}

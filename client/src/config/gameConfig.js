@@ -149,6 +149,10 @@ export const skinOptions = [
 
 export const accessoriesOptions = [
     'pendant',
+    'tome',
+    'necklace',
+    'ring',
+    'amulet'
 ];
 
 export const rarityOptions = [
