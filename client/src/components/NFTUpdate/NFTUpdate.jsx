@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { createCoreNft, createSendSolTx } from '../../services/blockchainServices';
+import { checkTransactionStatus, createCoreNft, createSendSolTx } from '../../services/blockchainServices';
 
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import PrintNfts from '../PrintNfts/PrintNfts';
@@ -108,20 +108,24 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
             if (signature) {
                 try {
 
-                    setCreateState('started')
+                    setCreateState('started') //Tell UI to track start changes
 
-                    const resp = await createCoreNft(nfts[selectedIndex], wallet);
-                    console.log(resp.data.serializedSignature);
-                    setTransactionSig(resp.data.serializedSignature);
+                    const resp = await createCoreNft(nfts[selectedIndex], wallet); //Create Core NFT
 
-                    const adminCreator = wallet.publicKey.toString() + ' [ADMIN CREATE]'
+                    if(resp.data.confirmed !== true) //Check if server side confirmation failed
+                        await checkTransactionStatus(resp.data.serializedSignature); //Double check blockchain on frontend
+                        
+                    setTransactionSig(resp.data.serializedSignature); //Set transaction signature
 
-                    await trackNftTransaction(nfts[selectedIndex]._id, adminCreator, 'create', 0.004, 'SOL', resp.data.serializedSignature);
+                    const adminCreator = wallet.publicKey.toString() + ' [ADMIN CREATE]' //Created by Admin (this is the Admin page creator)
 
-                    setCreateState('complete');
+                    await trackNftTransaction(nfts[selectedIndex]._id, adminCreator, 'create', 0.004, 'SOL', resp.data.serializedSignature); //Store results
+
+                    setCreateState('complete'); //Tell UI of create state completion
+
                 } catch (e) {
                     console.log('Failure to create NFT: ', e)
-                    setCreateState('failed')
+                    setCreateState('failed') //Reset UI to Failure
                 }
 
             }

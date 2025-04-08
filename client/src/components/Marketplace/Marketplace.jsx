@@ -35,7 +35,7 @@ const Marketplace = () => {
     const wallet = useWallet();
     const { connection } = useConnection();
 
-    const {checkUserDiscount} = useGlobalVariables();
+    const { checkUserDiscount } = useGlobalVariables();
 
     const {
         nfts,
@@ -103,7 +103,7 @@ const Marketplace = () => {
                 switch (paymentTracker) {
                     case 'SOL':
                         if (nfts[selectedIndex]?.storeInfo?.price) {
-                            
+
                             //Define Payment amount in current SOL
                             const priceInSol = await convertUsdToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
 
@@ -344,6 +344,9 @@ const Marketplace = () => {
 
             // Call the function to create the NFT on the blockchain
             const resp = await createCoreNft(nft, wallet);
+
+            if (resp.data.confirmed !== true) //Check if server side confirmation failed
+                await checkTransactionStatus(resp.data.serializedSignature); //Double check blockchain on frontend
 
             const transactionSignature = resp.data.serializedSignature;
 

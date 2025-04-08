@@ -13,7 +13,7 @@ import { convertUsdToSol } from '../../Utils/pricingModifiers';
 import { uploadMetadata } from '../../services/pinataServices';
 import { uploadIcon } from '../../services/cloudinaryServices';
 import { addNftConcept, checkIfAdmin, deleteNftConcept, saveMetadataUri, updateNftConcept } from '../../services/dbServices';
-import { createSendSolTx } from '../../services/blockchainServices';
+import { createSendSolTx, checkTransactionStatus } from '../../services/blockchainServices';
 import { delay } from '../../Utils/generalUtils';
 
 //Imported packages
@@ -89,6 +89,18 @@ const Homepage = () => {
             handleStoreChange('creator', wallet.publicKey?.toBase58());
         }
     }, [page])
+
+    useEffect(() => {
+
+        const asyncCall = async () => {
+
+            const tx = '4esQrBXHhhK7GxdMwdHEWWiwrHxqDSjM42X23BoDY44anxc6Kwvwsbvk9GipR8LTqPTx39T3zXN915sbHrKM2DsX'
+            await checkTransactionStatus(tx);
+
+        }
+
+        asyncCall();
+    }, [])
 
     //This combines Store & Metadata for any NEW adds to the Database
     const combineNewMetadataJSON = async () => {

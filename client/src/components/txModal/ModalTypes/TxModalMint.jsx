@@ -60,7 +60,7 @@ const TxModalMint = ({ createNft }) => {
                     </div>
                     <div className="d-flex gap-2 align-items-center">
                         {renderCreateStateIcon(createState)}
-                        <h5 className="modal-title">Create & Send NFT</h5>
+                        <h5 className="modal-title">Mint & Transfer NFT</h5>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,19 @@ const TxModalMint = ({ createNft }) => {
                                     (<div className="text-center">
                                         Generating...</div>) :
                                     (
-                                        <button className="button-style-regular" onClick={() => createNft()}>Confirm</button>
+                                        <>
+                                            {createState !== 'started' ? (<button className="button-style-regular" onClick={() => createNft()}>Confirm</button>)
+                                                : (
+                                                    <div className="d-flex flex-column align-items-center">
+                                                        <div style={{borderBottom: '1px solid white'}}>
+                                                            DO NOT EXIT PAGE!
+                                                        </div>
+                                                        <div>
+                                                            NFT COMING SHORTLY!
+                                                        </div>
+                                                    </div>
+                                                )}
+                                        </>
                                     )}
                             </div>
                         ) : (

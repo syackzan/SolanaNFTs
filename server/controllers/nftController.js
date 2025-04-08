@@ -212,77 +212,155 @@ exports.voteForNftConcept = async (req, res) => {
   }
 };
 
-exports.createAndSendNFT = async (req, res) => {
+// exports.createAndSendNFT = async (req, res) => {
 
+//   const { nft, receiverPubKey } = req.body;
+//   console.log(receiverPubKey);
+
+//   const isValidated = await validateNFT(nft);
+
+//   console.log(isValidated);
+
+//   if (isValidated.success) {
+//     try {
+
+//       // Fetch the collection
+//       const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
+//       console.log("Collection fetched successfully:", collection);
+
+//       // Generate a new signer for the asset
+//       const assetSigner = generateSigner(umi);
+
+//       let perComputeUnit;
+//       try {
+//         perComputeUnit = await getPriorityFee();
+//       } catch (error) {
+//         console.error("Failed to fetch priority fee, using default value:", error.message);
+//         perComputeUnit = 3500000; // Fallback value
+//       }
+
+//       console.log(perComputeUnit);
+
+//       console.log(nft.storeInfo.metadataUri);
+
+//       // Build the transaction
+//       let builder = transactionBuilder()
+//         .add(setComputeUnitLimit(umi, { units: 600_000 }))
+//         .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
+//         .add(create(umi, {
+//           asset: assetSigner,
+//           collection: collection,
+//           name: nft.name,
+//           uri: nft.storeInfo.metadataUri,
+//         })).add(addPlugin(umi, {
+//           asset: assetSigner.publicKey,
+//           collection: collection,
+//           plugin: {
+//             type: 'ImmutableMetadata',
+//           },
+//         }))
+//         .add(transferV1(umi, {
+//           asset: publicKey(assetSigner.publicKey),
+//           newOwner: publicKey(receiverPubKey),
+//           collection: CORE_COLLECTION_ADDRESS
+//         }))
+
+//       // Send and confirm the transaction
+//       const { signature } = await builder.sendAndConfirm(umi);
+
+//       const serializedSignature = base58.deserialize(signature)[0];
+
+//       console.log("NFT created and sent successfully:", serializedSignature);
+
+//       // Return success response
+//       return res.status(200).json({ success: true, serializedSignature });
+//     } catch (e) {
+//       console.error("Error creating and sending NFT:", e);
+//       return res.status(500).json({ success: false, error: e.message });
+//     }
+//   } else {
+//     console.error("Error creating and sending NFT:", e);
+//     return res.status(500).json({ success: false, error: e.message });
+//   }
+// }
+
+exports.createAndSendNFT = async (req, res) => {
   const { nft, receiverPubKey } = req.body;
-  console.log(receiverPubKey);
 
   const isValidated = await validateNFT(nft);
 
-  console.log(isValidated);
-
-  if (isValidated.success) {
-    try {
-
-      // Fetch the collection
-      const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
-      console.log("Collection fetched successfully:", collection);
-
-      // Generate a new signer for the asset
-      const assetSigner = generateSigner(umi);
-
-      let perComputeUnit;
-      try {
-        perComputeUnit = await getPriorityFee();
-      } catch (error) {
-        console.error("Failed to fetch priority fee, using default value:", error.message);
-        perComputeUnit = 3500000; // Fallback value
-      }
-
-      console.log(perComputeUnit);
-
-      console.log(nft.storeInfo.metadataUri);
-
-      // Build the transaction
-      let builder = transactionBuilder()
-        .add(setComputeUnitLimit(umi, { units: 600_000 }))
-        .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
-        .add(create(umi, {
-          asset: assetSigner,
-          collection: collection,
-          name: nft.name,
-          uri: nft.storeInfo.metadataUri,
-        })).add(addPlugin(umi, {
-          asset: assetSigner.publicKey,
-          collection: collection,
-          plugin: {
-            type: 'ImmutableMetadata',
-          },
-        }))
-        .add(transferV1(umi, {
-          asset: publicKey(assetSigner.publicKey),
-          newOwner: publicKey(receiverPubKey),
-          collection: CORE_COLLECTION_ADDRESS
-        }))
-
-      // Send and confirm the transaction
-      const { signature } = await builder.sendAndConfirm(umi);
-
-      const serializedSignature = base58.deserialize(signature)[0];
-
-      console.log("NFT created and sent successfully:", serializedSignature);
-
-      // Return success response
-      return res.status(200).json({ success: true, serializedSignature });
-    } catch (e) {
-      console.error("Error creating and sending NFT:", e);
-      return res.status(500).json({ success: false, error: e.message });
-    }
-  } else {
-    console.error("Error creating and sending NFT:", e);
-    return res.status(500).json({ success: false, error: e.message });
+  if (!isValidated.success) {
+    console.error("NFT validation failed");
+    return res.status(400).json({ success: false, error: 'Invalid NFT data.' });
   }
-}
+
+  try {
+    const collection = await fetchCollection(umi, CORE_COLLECTION_ADDRESS);
+    const assetSigner = generateSigner(umi);
+
+    let perComputeUnit;
+    try {
+      perComputeUnit = await getPriorityFee();
+    } catch (error) {
+      perComputeUnit = 3500000; // fallback fee
+    }
+
+    let builder = transactionBuilder()
+      .add(setComputeUnitLimit(umi, { units: 600_000 }))
+      .add(setComputeUnitPrice(umi, { microLamports: perComputeUnit }))
+      .add(create(umi, {
+        asset: assetSigner,
+        collection,
+        name: nft.name,
+        uri: nft.storeInfo.metadataUri,
+      }))
+      .add(addPlugin(umi, {
+        asset: assetSigner.publicKey,
+        collection,
+        plugin: { type: 'ImmutableMetadata' },
+      }))
+      .add(transferV1(umi, {
+        asset: publicKey(assetSigner.publicKey),
+        newOwner: publicKey(receiverPubKey),
+        collection: CORE_COLLECTION_ADDRESS
+      }));
+
+    // Send the transaction (without confirmation yet)
+    const signature = await builder.send(umi);
+    const serializedSignature = base58.deserialize(signature)[0];
+
+    // Attempt to confirm the transaction (with timeout)
+    try {
+      await Promise.race([
+        umi.rpc.confirmTransaction(signature, {
+          strategy: { type: 'blockhash', ...(await umi.rpc.getLatestBlockhash()) },
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Confirmation timeout')), 30000)) //30000
+      ]);
+
+      console.log("Transaction confirmed on server:", serializedSignature);
+
+      // Confirmed successfully on server
+      return res.status(200).json({ success: true, serializedSignature, confirmed: true });
+
+    } catch (confirmationError) {
+      // Confirmation failed/timed out
+      console.warn("Server confirmation failed/timed out:", confirmationError.message);
+
+      // Still send signature to frontend for second confirmation attempt
+      return res.status(202).json({
+        success: true,
+        serializedSignature,
+        confirmed: false,
+        warning: 'Server confirmation timed out. Frontend must retry confirmation.'
+      });
+    }
+
+  } catch (sendError) {
+    console.error("Error sending transaction:", sendError.message);
+    return res.status(500).json({ success: false, error: sendError.message });
+  }
+};
 
 exports.getCoreNFTs = async (req, res) => {
 

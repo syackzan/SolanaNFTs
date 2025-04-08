@@ -16,11 +16,15 @@ import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core'
 import { IS_MAINNET } from '../config/config'
 import { URI_SERVER, COLLECTION_ADDRESS } from '../config/config'
 
+import { Connection, clusterApiUrl } from '@solana/web3.js';
+
 import axios from 'axios';
 
 const API_KEY = import.meta.env.VITE_SERVE_KEY;
 
 const solanaNode = IS_MAINNET ? import.meta.env.VITE_SOLANA_NODE : 'https://api.devnet.solana.com'
+
+const connection = new Connection(solanaNode, 'confirmed'); // or 'devnet'
 
 const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz" //Update to Wallet that will receive money in production
 
@@ -35,12 +39,12 @@ export const createCoreNft = async (nft, wallet) => {
         const apiUrl = `${URI_SERVER}/api/nft/createnft`;
 
         // Make the POST request to the backend
-        const signature = await axios.post(
+        const resp = await axios.post(
             apiUrl, 
             requestBody,
             {headers: { "x-api-key": API_KEY }});
-
-        return signature;
+        
+        return resp;
 
     } catch (walletError) {
         console.error("Error registering wallet adapter:", walletError);
@@ -191,3 +195,28 @@ export const getCoreNftsClient = async (walletAddress) => {
         });
       }
 }
+
+export const checkTransactionStatus = async (signature) => {
+    try {
+      const { value } = await connection.getSignatureStatuses([signature], {
+        searchTransactionHistory: true,
+      });
+  
+      const status = value?.[0];
+      const confirmation = status?.confirmationStatus;
+  
+      if (confirmation === 'confirmed' || confirmation === 'finalized') {
+        console.log('✅ Transaction confirmed:', confirmation);
+        return true;
+      } else if (status) {
+        console.log('⏳ Transaction pending:', confirmation || 'pending');
+        return false;
+      } else {
+        console.warn('❌ Transaction not found or dropped from RPC history');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error checking transaction status:', err);
+      return false;
+    }
+  };
