@@ -69,7 +69,7 @@ const Whitelist = () => {
                 <div className="d-flex justify-content-center align-items-center" style={{ width: '100%', height: '100%' }}>
                     <div >
                         <h1 className="marykate d-flex justify-content-center m-0">NFT WHITELIST</h1>
-                        <h2 className="marykate d-flex justify-content-center">[ Pre-Alpha ]</h2>
+                        {/* <h2 className="marykate d-flex justify-content-center">[ Pre-Alpha ]</h2> */}
                         <h4 className="marykate d-flex justify-content-center">Remaing Spots: {remainingSpots}</h4>
                         {wallet.publicKey ? (
                             <div className='d-flex flex-column align-items-center justify-content-center gap-4'>
