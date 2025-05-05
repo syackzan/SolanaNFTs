@@ -3,6 +3,7 @@ const {verifyApiKey} = require('../Middleware/authMiddleware');
 const botBlocker = require('../Middleware/botBlocker');
 const {verifySolPayment} = require('../Middleware/checkSolPayment');
 const {checkWhitelistSpot} = require('../Middleware/whitelistCheck');
+const {verifyAdminStatus} = require("../Middleware/adminCheck");
 const { 
     getAllNftConcepts, 
     addNftConcept, 
@@ -15,7 +16,8 @@ const {
     getCoreNFTs,
     getNftConceptById,
     trackNftTransaction,
-    getCoreNFTsDevNet } = require('../controllers/nftController');
+    getCoreNFTsDevNet,
+    updateRarityOfNfts } = require('../controllers/nftController');
 const router = express.Router();
 
 //Test Data
@@ -49,5 +51,7 @@ router.post('/createnft', verifyApiKey, verifySolPayment, checkWhitelistSpot, cr
 router.post('/getCoreNfts', getCoreNFTs);
 
 router.post('/getCoreNfts/Devnet', getCoreNFTsDevNet);
+
+router.post('/rarities', verifyApiKey, verifyAdminStatus, updateRarityOfNfts);
 
 module.exports = router;

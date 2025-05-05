@@ -6,7 +6,7 @@ import { shortenAddress } from "../../Utils/generalUtils";
 
 import { duplicateData } from "../../Utils/generalUtils";
 
-const AdminTransactionsPanel = () => {
+const AdminTransactionsPanel = ({setRenderState}) => {
 
     const {nftConcepts} = useGlobalVariables();
     
@@ -35,6 +35,7 @@ const AdminTransactionsPanel = () => {
 
     return (
         <div className="admin-transactions-container">
+            <button onClick={() => setRenderState("home")}>Back</button>
             <h2 className="admin-title">NFT Transactions</h2>
             <div className="transactions-table">
                 <div className="table-header">

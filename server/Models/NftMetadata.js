@@ -63,7 +63,7 @@ const NftMetadataSchema = new mongoose.Schema({
             type: { type: String, enum: ['create', 'buy'], required: true }, // Type of transaction
             user: { type: String, required: true }, // Wallet address or User ID
             amount: { type: Number, required: true }, // Amount spent (SOL, USD, etc.)
-            currency: { type: String, required: true, enum: ['SOL', 'USD', 'BABYBOOH'] }, // Payment currency
+            currency: { type: String, required: true, enum: ['SOL', 'USD', 'BABYBOOH', 'CARD'] }, // Payment currency
             txSignature: { type: String, required: true }, // ✅ Transaction Signature of Creating & Sending Nft
             timestamp: { type: Date, default: Date.now } // Time of transaction
         }

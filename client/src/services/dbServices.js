@@ -46,10 +46,10 @@ export const fetchSingleNftMetadata = async (nftId) => {
  */
 export const addNftConcept = async (metadataForDB) => {
     try {
-        const response = await axios.post(`${URI_SERVER}/api/nft/concepts`, 
-            metadataForDB, 
-            {headers: { "x-api-key": API_KEY }}
-    );
+        const response = await axios.post(`${URI_SERVER}/api/nft/concepts`,
+            metadataForDB,
+            { headers: { "x-api-key": API_KEY } }
+        );
         return response.data;
     } catch (error) {
         console.error("Failed to add NFT concept:", error.response?.data || error.message);
@@ -271,3 +271,33 @@ export const submitWhitelistAddress = async (address, email, x) => {
         return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
     }
 };
+
+/**
+ *Update All pricing on NFTs by Season
+ *@param {string} season - The season you want to update.
+ *@param {struct} pricingValues - New pricing values per NFT type
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const updateRarityOnAllNfts = async (season, pricingValues, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/nft/rarities`,
+            { season, pricingValues },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}

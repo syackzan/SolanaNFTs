@@ -14,15 +14,15 @@ const {
   addPlugin
 } = require('@metaplex-foundation/mpl-core');
 
-const {setComputeUnitLimit, setComputeUnitPrice} = require('@metaplex-foundation/mpl-toolbox')
+const { setComputeUnitLimit, setComputeUnitPrice } = require('@metaplex-foundation/mpl-toolbox')
 
-const { PublicKey } = require('@solana/web3.js'); 
+const { PublicKey } = require('@solana/web3.js');
 
 const { initializeUmi, initializeDevUmi } = require('../config/umiInstance');
 const { validateNFT } = require('../utils/validateNFT');
 const { getPriorityFee } = require('../utils/transactionHelpers');
 
-const { base58 } =  require("@metaplex-foundation/umi/serializers");
+const { base58 } = require("@metaplex-foundation/umi/serializers");
 
 const umi = initializeUmi();
 
@@ -129,6 +129,43 @@ exports.updateNftConcept = async (req, res) => {
   }
 };
 
+exports.updateRarityOfNfts = async (req, res) => {
+  const { season, pricingValues } = req.body;
+
+  if (typeof season !== 'number' || typeof pricingValues !== 'object') {
+    return res.status(400).json({ error: 'season (string) and pricingValues (object) are required in the request body.' });
+  }
+
+  try {
+    const nfts = await NftMetadata.find({ 'storeInfo.season': season });
+
+    let updatedCount = 0;
+
+    for (const nft of nfts) {
+      const rarityAttr = nft.attributes.find(attr => attr.trait_type.toLowerCase() === 'rarity');
+      if (!rarityAttr) continue;
+
+      const rarityKey = rarityAttr.value.toLowerCase();
+      const newPrice = pricingValues[rarityKey];
+
+      if (newPrice !== undefined) {
+        const currentPrice = nft.storeInfo.price;
+
+        if (currentPrice !== newPrice) {
+          nft.storeInfo.price = newPrice;
+          await nft.save();
+          updatedCount++;
+        }
+      }
+    }
+
+    res.json({ message: `Updated ${updatedCount} NFTs with new pricing for ${season}.` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while updating prices.' });
+  }
+}
+
 exports.saveMetadataUri = async (req, res) => {
   try {
     const { id } = req.params; // Extract the NFT ID from request parameters
@@ -176,39 +213,39 @@ exports.deleteNftConcept = async (req, res) => {
 
 exports.voteForNftConcept = async (req, res) => {
   try {
-      const { nftId, voterAddress, voteType } = req.body; // Accept voteType ("upvote" or "downvote")
+    const { nftId, voterAddress, voteType } = req.body; // Accept voteType ("upvote" or "downvote")
 
-      // Fetch the NFT by ID
-      const nft = await NftMetadata.findById(nftId);
-      if (!nft) return res.status(404).json({ error: "NFT not found" });
+    // Fetch the NFT by ID
+    const nft = await NftMetadata.findById(nftId);
+    if (!nft) return res.status(404).json({ error: "NFT not found" });
 
-      // Prevent the creator from voting on their own NFT
-      if (nft.creator === voterAddress) {
-          return res.status(403).json({ error: "You cannot vote on your own NFT" });
+    // Prevent the creator from voting on their own NFT
+    if (nft.creator === voterAddress) {
+      return res.status(403).json({ error: "You cannot vote on your own NFT" });
+    }
+
+    const hasVoted = nft.votes.voters.includes(voterAddress);
+
+    if (voteType === "upvote") {
+      if (!hasVoted) {
+        nft.votes.count += 1;
+        nft.votes.voters.push(voterAddress);
+      } else {
+        nft.votes.count = Math.max(0, nft.votes.count - 1);
+        nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
       }
-
-      const hasVoted = nft.votes.voters.includes(voterAddress);
-
-      if (voteType === "upvote") {
-          if (!hasVoted) {
-              nft.votes.count += 1;
-              nft.votes.voters.push(voterAddress);
-          } else {
-              nft.votes.count = Math.max(0, nft.votes.count - 1);
-              nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
-          }
-      } else if (voteType === "downvote") {
-          if (hasVoted) {
-              nft.votes.count = Math.max(0, nft.votes.count - 1); // Prevents negative votes
-              nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
-          }
+    } else if (voteType === "downvote") {
+      if (hasVoted) {
+        nft.votes.count = Math.max(0, nft.votes.count - 1); // Prevents negative votes
+        nft.votes.voters = nft.votes.voters.filter((voter) => voter !== voterAddress);
       }
+    }
 
-      await nft.save();
+    await nft.save();
 
-      res.json({ success: true, votes: nft.votes.count });
+    res.json({ success: true, votes: nft.votes.count });
   } catch (error) {
-      res.status(500).json({ error: "Internal Server Error", details: error.message });
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 };
 
@@ -457,41 +494,41 @@ exports.getCoreNFTsDevNet = async (req, res) => {
 // 🔹 Universal Function to Track NFT Creates & Buys
 exports.trackNftTransaction = async (req, res) => {
   try {
-      const { nftId, userId, type, amount, currency, txSignature } = req.body;
+    const { nftId, userId, type, amount, currency, txSignature } = req.body;
 
-      if (!nftId || !userId || !type || !amount || !currency || !txSignature) {
-          return res.status(400).json({ error: "Missing required fields (nftId, userId, type, amount, currency)" });
-      }
+    if (!nftId || !userId || !type || !amount || !currency || !txSignature) {
+      return res.status(400).json({ error: "Missing required fields (nftId, userId, type, amount, currency)" });
+    }
 
-      if (!['create', 'buy'].includes(type)) {
-          return res.status(400).json({ error: "Invalid transaction type. Must be 'create' or 'buy'." });
-      }
+    if (!['create', 'buy'].includes(type)) {
+      return res.status(400).json({ error: "Invalid transaction type. Must be 'create' or 'buy'." });
+    }
 
-      const nft = await NftMetadata.findById(nftId);
-      if (!nft) {
-          return res.status(404).json({ error: "NFT not found." });
-      }
+    const nft = await NftMetadata.findById(nftId);
+    if (!nft) {
+      return res.status(404).json({ error: "NFT not found." });
+    }
 
-      const updateData = {
-          $inc: { "purchases.totalCreates": 1 },
-          $push: { "purchases.transactions": { type, user: userId, amount, currency, txSignature } }
-      };
+    const updateData = {
+      $inc: { "purchases.totalCreates": 1 },
+      $push: { "purchases.transactions": { type, user: userId, amount, currency, txSignature } }
+    };
 
-      if (type === 'buy') {
-          updateData.$inc["purchases.totalBuys"] = 1;
-          updateData.$push["purchases.buyers"] = userId; // Allows multiple buys per user
-      }
+    if (type === 'buy') {
+      updateData.$inc["purchases.totalBuys"] = 1;
+      updateData.$push["purchases.buyers"] = userId; // Allows multiple buys per user
+    }
 
-      if (type === 'create') {
-          updateData.$addToSet = { "purchases.creators": userId }; // Ensures unique creator
-      }
+    if (type === 'create') {
+      updateData.$addToSet = { "purchases.creators": userId }; // Ensures unique creator
+    }
 
-      const updatedNft = await NftMetadata.findByIdAndUpdate(nftId, updateData, { new: true });
+    const updatedNft = await NftMetadata.findByIdAndUpdate(nftId, updateData, { new: true });
 
-      res.status(200).json({ message: `NFT ${type} recorded successfully`, data: updatedNft });
+    res.status(200).json({ message: `NFT ${type} recorded successfully`, data: updatedNft });
 
   } catch (error) {
-      console.error("Error tracking NFT transaction:", error);
-      res.status(500).json({ error: "Internal server error" });
+    console.error("Error tracking NFT transaction:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
