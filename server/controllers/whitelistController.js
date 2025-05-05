@@ -21,7 +21,7 @@ exports.getWhitelistAddresses = async (req, res) => {
 // Handle whitelist submission
 exports.submitAddress = async (req, res) => {
   try {
-    const { address } = req.body;
+    const { address, email, x } = req.body;
 
     // Ensure all fields are provided
     if (!address) {
@@ -42,7 +42,7 @@ exports.submitAddress = async (req, res) => {
     }
 
     // If address does not exist, create a new submission
-    const submission = new WhitelistSubmission({ address });
+    const submission = new WhitelistSubmission({ address, email, x });
     await submission.save();
 
     res.status(201).json({

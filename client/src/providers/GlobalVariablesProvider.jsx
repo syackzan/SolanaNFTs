@@ -3,6 +3,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { getCoreNftsClient } from "../services/blockchainServices";
 import { fetchAllNftConcepts, getWhitelistAddresses } from "../services/dbServices";
 import { discountPrice } from "../config/config";
+import { fetchUsdToSolPrice } from "../services/solPricingServices";
 
 // ✅ Create Context (Renamed to `GlobalVariablesContext`)
 const GlobalVariablesContext = createContext();
@@ -12,6 +13,7 @@ export const GlobalVariablesProvider = ({ children }) => {
     // Game Currency & Tokens
     const [inGameCurrency, setInGameCurrency] = useState(0);
     const [boohToken, setBoohToken] = useState(0);
+    const [approxSolToUSD, setApproxSolToUSD] = useState(1);
 
     // NFTs & Concepts
     const [userNfts, setUserNfts] = useState([]);
@@ -35,6 +37,21 @@ export const GlobalVariablesProvider = ({ children }) => {
 
         fetchUserNFTs();
     }, [wallet.publicKey]);
+
+    useEffect(() => {
+
+        const fetchSolPricing = async () => {
+            try{
+                const resp = await fetchUsdToSolPrice();
+                // const resp = .006;
+                setApproxSolToUSD(resp);
+            }catch(e){
+                console.log(e);
+            }
+        }
+
+        fetchSolPricing();
+    }, []);
 
     // ✅ Fetch All NFT Concepts (Runs once on mount)
     useEffect(() => {
@@ -67,7 +84,9 @@ export const GlobalVariablesProvider = ({ children }) => {
 
             console.log(data.whitelistAddresses);
 
-            const isWhitelisted = data.whitelistAddresses.some(item => item.address === address);
+            const isWhitelisted = data.whitelistAddresses.some(
+                (item) => item.address === address && item.amounts > 0
+              );
 
             if (isWhitelisted) {
 
@@ -103,7 +122,8 @@ export const GlobalVariablesProvider = ({ children }) => {
                 refetchNftConcepts,
                 searchItem,
                 setSearchItem,
-                checkUserDiscount
+                checkUserDiscount,
+                approxSolToUSD
             }}
         >
             {children}

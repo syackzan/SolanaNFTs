@@ -18,21 +18,31 @@ const Whitelist = () => {
 
     const [response, setResponse] = useState(''); //Tracks Whitelist submissions
     const [remainingSpots, setRemainingSpots] = useState('') //Remaing whitelist spots left
+    const [email, setEmail] = useState('');
+    const [x, setX] = useState('');
 
     useEffect(() => {
         const fetchValue = async () => {
-          try {
-            const data = await getWhitelistAddresses();
+            try {
+                const data = await getWhitelistAddresses();
 
-            const signedUp = data.whitelistAddresses.length;
-            setRemainingSpots(30 - signedUp); // Assuming { number: 42 }
-          } catch (err) {
-            console.error('Failed to fetch number:', err);
-          }
+                // Sum all 'amounts' values
+                const totalClaimed = data.whitelistAddresses.reduce(
+                    (sum, entry) => sum + (entry.amounts || 0),
+                    0
+                );
+
+                const MAX_SPOTS = 100;
+                const remaining = MAX_SPOTS - totalClaimed;
+
+                setRemainingSpots(remaining >= 0 ? remaining : 0);
+            } catch (err) {
+                console.error("Failed to fetch whitelist data:", err);
+            }
         };
-    
+
         fetchValue();
-      }, []); // empty dependency array = only run once on mount
+    }, []);
 
     const displayString = () => {
         if (isMobile) {
@@ -43,9 +53,9 @@ const Whitelist = () => {
     }
 
     const addToWhitelist = async () => {
-        const data = await submitWhitelistAddress(wallet.publicKey.toString());
+        const data = await submitWhitelistAddress(wallet.publicKey.toString(), email, x);
 
-        if(data.error){
+        if (data.error) {
             setResponse(data.error)
         } else {
             setResponse("Wallet Added");
@@ -65,6 +75,66 @@ const Whitelist = () => {
                             <div className='d-flex flex-column align-items-center justify-content-center gap-4'>
                                 <div className="address-box-whitelist">
                                     {displayString()}
+                                </div>
+                                <div style={{ width: '350px' }}>
+                                    <label
+                                        htmlFor="userInput"
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "0.5rem",
+                                            color: "#fff", // label text color
+                                            fontWeight: 600
+                                        }}
+                                    >
+                                        Enter your email: [not required]
+                                    </label>
+                                    <input
+                                        id="userInput"
+                                        type="text"
+                                        placeholder="example@email.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        style={{
+                                            padding: "0.5rem",
+                                            width: "100%",
+                                            maxWidth: "300px",
+                                            marginBottom: "0.1rem",
+                                            backgroundColor: "#111", // black input background
+                                            color: "#fff",           // white typed text
+                                            border: "1px solid #444", // subtle border
+                                            borderRadius: "4px",
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ width: '350px' }}>
+                                    <label
+                                        htmlFor="userInput"
+                                        style={{
+                                            display: "block",
+                                            marginBottom: "0.5rem",
+                                            color: "#fff", // label text color
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        Enter your X (Twitter): [not required]
+                                    </label>
+                                    <input
+                                        id="userInput"
+                                        type="text"
+                                        placeholder="@yourHandle"
+                                        value={x}
+                                        onChange={(e) => setX(e.target.value)}
+                                        style={{
+                                            padding: "0.5rem",
+                                            width: "100%",
+                                            maxWidth: "300px",
+                                            marginBottom: "1rem",
+                                            backgroundColor: "#111", // black input background
+                                            color: "#fff",           // white typed text
+                                            border: "1px solid #444", // subtle border
+                                            borderRadius: "4px",
+                                        }}
+                                    />
                                 </div>
                                 {response ?
                                     (

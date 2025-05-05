@@ -25,7 +25,7 @@ const PrintNfts = ({
 
     const wallet = useWallet();
 
-    const { userNfts } = useGlobalVariables();
+    const { userNfts, approxSolToUSD } = useGlobalVariables();
 
     const [reBuying, setReBuying] = useState({}); // Track NFTs that can be rebought
 
@@ -163,8 +163,8 @@ const PrintNfts = ({
 
                     return (
                         <div key={index} style={{ display: 'inline-block' }}>
-                            <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px', fontWeight: '600' }}>
-                                <div>Price: ${nft.storeInfo.price}</div>
+                            <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+                                <div>Cost: {nft.storeInfo.price} USDC | ~{(nft.storeInfo.price * approxSolToUSD).toFixed(4)} SOL</div>
                                 {nft.storeInfo.available ? (<div>In-store✅</div>) : (<div>In-store❌</div>)}
                                 {nft.storeInfo.metadataUri ? (<div>Metadata <FaLock /></div>) : (<div>Metadata <FaLockOpen /></div>)}
                             </div>

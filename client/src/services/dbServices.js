@@ -254,12 +254,12 @@ export const getWhitelistAddresses = async () => {
  * @param {string} address - The wallet address to submit.
  * @returns {Promise<Object>} { message, submission }
  */
-export const submitWhitelistAddress = async (address) => {
+export const submitWhitelistAddress = async (address, email, x) => {
     try {
 
         const response = await axios.post(
             `${URI_SERVER}/api/whitelist/add`,
-            { address },
+            { address, email, x },
             { headers: { "x-api-key": API_KEY } });
 
         return { success: true, message: response.data.message }; // Success response

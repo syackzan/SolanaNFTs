@@ -294,7 +294,7 @@ const SideNav = ({
                                                     handleStoreChange(key, input);
                                                 }
                                             }}
-                                            disabled={true}
+                                            disabled={!isAdmin || storeInfo.metadataUri}
                                             style={{
                                                 width: '100%',
                                                 padding: '10px',

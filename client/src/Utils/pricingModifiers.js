@@ -1,10 +1,10 @@
-import { fetchUsdToSolPrice, getSolPriceInUSD } from '../services/solPricingServices';
+import { convertUsdToSolPrice, getSolPriceInUSD } from '../services/solPricingServices';
 
 export const convertUsdToSol = async (payment, mintCosts = 0) => {
     try {
 
         console.log('Entering Pricing Method 1');
-        const paymentInSol = await fetchUsdToSolPrice(payment);
+        const paymentInSol = await convertUsdToSolPrice(payment);
 
         console.log("Captured pricing method 1");
         return Number(paymentInSol + mintCosts);

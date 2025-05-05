@@ -56,7 +56,7 @@ export const createSendSolTx = async (fromPubkeyString, payment = 0) => {
     const amount = payment;
 
     const fromPubkey = new PublicKey(fromPubkeyString);
-    const toPubkey = new PublicKey(TEST_WALLET)
+    const toPubkey = new PublicKey(TEST_WALLET);
 
     console.log("Building Send Trasaction to: ", TEST_WALLET)
 
