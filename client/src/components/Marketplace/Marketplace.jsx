@@ -186,6 +186,15 @@ const Marketplace = () => {
         try {
             const transaction = await createSendSolTx(wallet.publicKey, preCalcPayment); //Built a sent sol Transaction
             const signature = await wallet.sendTransaction(transaction, connection); //Send the transaction
+
+            // Now wait for confirmation
+            const latestBlockhash = await connection.getLatestBlockhash();
+
+            await connection.confirmTransaction({
+                signature,
+                ...latestBlockhash
+            }, 'confirmed');
+
             console.log(`Transaction signature: ${signature}`);
             return signature; //Return sig
 
@@ -228,6 +237,7 @@ const Marketplace = () => {
 
             if (paymentTracker === 'SOL') {
                 paymentTx = await payWithSol(); //Pay with sol
+
                 setTxState('complete');
             }
 
@@ -256,7 +266,7 @@ const Marketplace = () => {
                     setCreateState('started');
 
                     //TODO: HANDLE UI TRACKING OF PAYING WITH AND MINTING NFT
-                    const txSig = await handleNFTCreation(nfts[selectedIndex], wallet);
+                    const txSig = await handleNFTCreation(nfts[selectedIndex], wallet, paymentTx);
 
                     //Track Transaction
                     if (paymentTracker === 'BABYBOOH') {
@@ -308,7 +318,7 @@ const Marketplace = () => {
             };
 
             // Handle the NFT creation process
-            const txSig = await handleNFTCreation(nftToCreate, walletConstruct);
+            const txSig = await handleNFTCreation(nftToCreate, walletConstruct, 'CARD');
 
             if (!txSig) {
                 setCreateState('failed');
@@ -333,7 +343,7 @@ const Marketplace = () => {
         }
     };
 
-    const handleNFTCreation = async (nft, wallet) => {
+    const handleNFTCreation = async (nft, wallet, signature) => {
 
         try {
             // Ensure NFT and wallet are provided
@@ -343,12 +353,12 @@ const Marketplace = () => {
             }
 
             // Call the function to create the NFT on the blockchain
-            const resp = await createCoreNft(nft, wallet);
+            const resp = await createCoreNft(nft, wallet, signature);
+
+            const transactionSignature = resp.data.serializedSignature; //Set transaction signature
 
             if (resp.data.confirmed !== true) //Check if server side confirmation failed
-                await checkTransactionStatus(resp.data.serializedSignature); //Double check blockchain on frontend
-
-            const transactionSignature = resp.data.serializedSignature;
+                await checkTransactionStatus(transactionSignature); //Double check blockchain on frontend
 
             // Log the serialized transaction signature (useful for debugging)
             console.log("Serialized Transaction Signature:", transactionSignature);

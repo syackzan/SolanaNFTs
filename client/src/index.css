@@ -425,6 +425,21 @@ textarea:disabled{
 }
 
 /* Button base style */
+.button-style-regular-disabled {
+  background-color: #313131;
+  color: #ffffff;
+  border: 1px solid #555555;
+  /* Subtle border */
+  border-radius: 8px;
+  /* Rounded corners */
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: not-allowed;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Button base style */
 .button-style-delete {
   background-color: #c01b1b;
   color: #ffffff;

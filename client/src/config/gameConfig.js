@@ -59,21 +59,21 @@ export const creatorCosts = {
 // Pricing Values (Base price adjusted dynamically)
 const priceIncrease = 0; // Adjustable price increment
 export const pricingValues = {
-    common: 0.99 + priceIncrease,
-    uncommon: 1.99 + priceIncrease,
-    rare: 4.99 + priceIncrease,
-    epic: 9.99 + priceIncrease,
-    legendary: 15.99 + priceIncrease,
+    common: 5.99 + priceIncrease,
+    uncommon: 9.99 + priceIncrease,
+    rare: 24.99 + priceIncrease,
+    epic: 39.99 + priceIncrease,
+    legendary: 49.99 + priceIncrease,
 };
 
 // Talent Point Distribution Based on Rarity
 const basePercIncrease = 0; // Adjustable base percentage increase
 export const talenPointSpread = {
     common: 3 + basePercIncrease,
-    uncommon: 6 + basePercIncrease,
-    rare: 10 + basePercIncrease,
-    epic: 15 + basePercIncrease,
-    legendary: 20 + basePercIncrease,
+    uncommon: 5 + basePercIncrease,
+    rare: 7 + basePercIncrease,
+    epic: 10 + basePercIncrease,
+    legendary: 13 + basePercIncrease,
 };
 
 const baseInGameIncrease = 0

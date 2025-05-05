@@ -31,10 +31,10 @@ const TEST_WALLET = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz" //Update to W
 //CREATE AND CONNECT TO UMI WITH mplTokenMetadata Program
 const umi = createUmi(solanaNode)
 
-export const createCoreNft = async (nft, wallet) => {
+export const createCoreNft = async (nft, wallet, signature = "") => {
 
     try {
-        const requestBody = { nft, receiverPubKey: wallet.publicKey };
+        const requestBody = { nft, receiverPubKey: wallet.publicKey, signature };
 
         const apiUrl = `${URI_SERVER}/api/nft/createnft`;
 

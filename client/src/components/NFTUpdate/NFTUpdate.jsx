@@ -101,6 +101,15 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
 
             const transaction = await createSendSolTx(publicKey, defaultMintCost);
             const signature = await sendTransaction(transaction, connection);
+
+            // Now wait for confirmation
+            const latestBlockhash = await connection.getLatestBlockhash();
+
+            await connection.confirmTransaction({
+                signature,
+                ...latestBlockhash
+            }, 'confirmed');
+
             console.log(`Transaction signature: ${signature}`);
 
             setTxState('complete');
@@ -110,11 +119,11 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
 
                     setCreateState('started') //Tell UI to track start changes
 
-                    const resp = await createCoreNft(nfts[selectedIndex], wallet); //Create Core NFT
+                    const resp = await createCoreNft(nfts[selectedIndex], wallet, signature); //Create Core NFT
 
-                    if(resp.data.confirmed !== true) //Check if server side confirmation failed
+                    if (resp.data.confirmed !== true) //Check if server side confirmation failed
                         await checkTransactionStatus(resp.data.serializedSignature); //Double check blockchain on frontend
-                        
+
                     setTransactionSig(resp.data.serializedSignature); //Set transaction signature
 
                     const adminCreator = wallet.publicKey.toString() + ' [ADMIN CREATE]' //Created by Admin (this is the Admin page creator)
@@ -168,7 +177,7 @@ const NFTUpdate = ({ setInfo, setAttributes, setProperties, setStoreInfo, userRo
                 createNft={createNft}
                 createOffchainMetadata={createOffchainMetadata}
                 handleDeleteNftConcept={handleDeleteNftConcept}
-                
+
             />}
             <MobileDetailsButton />
         </div>

@@ -24,7 +24,7 @@ export const fetchUsdToSolPrice = async (amountUSD) => {
 
     const microUSD = amountUSD * 1e6; //Convert dollars to micro dollars
 
-    const usdToSolUrl = `https://public.jupiterapi.com/quote?inputMint=EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm&outputMint=So11111111111111111111111111111111111111112&amount=${microUSD}`; // 1 USD in micro-USD
+    const usdToSolUrl = `https://public.jupiterapi.com/quote?inputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&outputMint=So11111111111111111111111111111111111111112&amount=${microUSD}`; // 1 USD in micro-USD
 
     try {
         const response = await axios.get(usdToSolUrl);

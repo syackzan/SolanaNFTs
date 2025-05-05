@@ -99,7 +99,7 @@ const PrintNfts = ({
             >
                 {prelaunch ? (
                     <div>
-                        <h2 className="marykate" style={{ fontSize: '45px' }}>Pre-Alpha Launch April 7th!</h2>
+                        <h2 className="marykate" style={{ fontSize: '45px' }}>PVP NFT Launch Coming Soon!</h2>
                         <h3 className="marykate" style={{ fontSize: '35px' }}>Preview NFTs in Creator Hub</h3>
                     </div>
                 ) : (
@@ -274,8 +274,8 @@ const PrintNfts = ({
                                                 <div style={{ fontSize: "1rem", fontWeight: "500" }}>BUY WITH:</div>
                                                 <div className="d-flex gap-2">
                                                     <button onClick={() => { openModal('CARD'); setPaymentTracker('CARD'); }} className='button-style-regular'>Card</button>
-                                                    <button onClick={() => { openModal('BABYBOOH'); setPaymentTracker('BABYBOOH'); }} className='button-style-regular'>BabyBooh</button>
                                                     <button onClick={() => { openModal('SOL'); setPaymentTracker('SOL'); }} className='button-style-regular'>SOL</button>
+                                                    <button disabled={true} onClick={() => { openModal('BABYBOOH'); setPaymentTracker('BABYBOOH'); }} className='button-style-regular-disabled'>BabyBooh</button>
                                                 </div>
                                             </>
                                         )}

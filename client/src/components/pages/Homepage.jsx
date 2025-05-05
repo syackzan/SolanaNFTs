@@ -198,6 +198,14 @@ const Homepage = () => {
 
             const signature = await wallet.sendTransaction(transaction, connection);
 
+            // Now wait for confirmation
+            const latestBlockhash = await connection.getLatestBlockhash();
+
+            await connection.confirmTransaction({
+                signature,
+                ...latestBlockhash
+            }, 'confirmed');
+
             if (signature) {
                 console.log("Creator Payment Successful")
                 return true;
