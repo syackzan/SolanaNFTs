@@ -99,8 +99,9 @@ const PrintNfts = ({
             >
                 {prelaunch ? (
                     <div>
-                        <h2 className="marykate" style={{ fontSize: '45px' }}>PVP NFT Launch Coming Soon!</h2>
-                        <h3 className="marykate" style={{ fontSize: '35px' }}>Preview NFTs in Creator Hub</h3>
+                        <h2 className="marykate" style={{ fontSize: '45px' }}>No NFTs Found!</h2>
+                        {/* <h2 className="marykate" style={{ fontSize: '45px' }}>PVP NFT Launch Coming Soon!</h2>
+                        <h3 className="marykate" style={{ fontSize: '35px' }}>Preview NFTs in Creator Hub</h3> */}
                     </div>
                 ) : (
                     <h2 className="marykate" style={{ fontSize: '45px' }}>No NFTs Found!</h2>
