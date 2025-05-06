@@ -1,8 +1,6 @@
 // verifySolPayment.js
-const { Connection, clusterApiUrl } = require('@solana/web3.js');
 
-// Connect to Solana Mainnet (or Devnet if testing)
-const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+const {connection} = require("../config/solanaNetInstance");
 
 // Define your expected values
 const EXPECTED_DESTINATION = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz";
