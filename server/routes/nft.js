@@ -46,7 +46,7 @@ router.patch('/concepts/:id/vote', verifyApiKey, voteForNftConcept);
 // 🔹 Record NFT Create/Buy Transactions
 router.patch('/concepts/:id/transaction', verifyApiKey, trackNftTransaction);
 
-router.post('/createnft', verifyApiKey, checkWhitelistSpot, createAndSendNFT);
+router.post('/createnft', verifyApiKey, verifySolPayment, checkWhitelistSpot, createAndSendNFT);
 
 router.post('/getCoreNfts', getCoreNFTs);
 

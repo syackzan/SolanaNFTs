@@ -1,43 +1,89 @@
-// verifySolPayment.js
+const { connection } = require("../config/solanaNetInstance");
+const User = require("../Models/User"); // path may vary
+const { getSolUsdPrice } = require('../utils/solPriceCache');
 
-const {connection} = require("../config/solanaNetInstance");
-
-// Define your expected values
 const EXPECTED_DESTINATION = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz";
-const EXPECTED_LAMPORTS = 2000000; // Example: 0.004 SOL = 4_000_000 lamports
+const MAX_TX_AGE_SECONDS = 90;
+const USD_BUFFER = 0.75; // Accept at least 75% of expected USD value
 
 exports.verifySolPayment = async (req, res, next) => {
   try {
-    const { signature } = req.body; // Or req.query or wherever you send it
+    const { signature, receiverPubKey, nft } = req.body;
 
-    if (signature === 'CARD') {
+    console.log("[verifySolPayment] Called with signature:", signature);
+    console.log("[verifySolPayment] receiverPubKey:", receiverPubKey);
+
+    // 💳 Bypass for card payments
+    if (signature === "CARD") {
+      console.log("[verifySolPayment] Payment type is CARD — skipping verification.");
       return next();
     }
 
     if (!signature) {
-      console.log("No signature found")
+      console.warn("[verifySolPayment] No signature provided.");
       return res.status(400).json({ error: "Transaction signature is required." });
     }
 
-    const txn = await connection.getParsedTransaction(signature, { commitment: 'confirmed' });
+    // 🔁 Check for duplicate transaction
+    const alreadyUsed = nft?.purchases?.transactions?.some(
+      (tx) => tx.txSignature === signature
+    );
+    if (alreadyUsed) {
+      console.warn("[verifySolPayment] Duplicate transaction detected.");
+      return res.status(409).json({ error: "Transaction has already been used." });
+    }
+
+    console.log("[verifySolPayment] Fetching transaction from Solana...");
+    const txn = await connection.getParsedTransaction(signature, { commitment: "confirmed" });
 
     if (!txn) {
-      console.log("TXN not found or confirmed.")
+      console.warn("[verifySolPayment] Transaction not found or not confirmed.");
       return res.status(404).json({ error: "Transaction not found or not confirmed." });
     }
 
-    const instructions = txn.transaction.message.instructions;
+    const blockTime = txn.blockTime;
+    if (!blockTime) {
+      console.warn("[verifySolPayment] Transaction missing blockTime.");
+      return res.status(400).json({ error: "Transaction has no timestamp. Possibly not finalized." });
+    }
 
+    const now = Math.floor(Date.now() / 1000);
+    const age = now - blockTime;
+    console.log(`[verifySolPayment] Transaction age: ${age}s`);
+
+    if (age > MAX_TX_AGE_SECONDS) {
+      console.warn(`[verifySolPayment] Transaction too old (${age}s).`);
+      return res.status(410).json({ error: "Transaction is too old." });
+    }
+
+    const expectedUsd = nft.storeInfo.price;
+    console.log(`[verifySolPayment] NFT expected price (USD): $${expectedUsd}`);
+
+    const solUsd = await getSolUsdPrice();
+    console.log("[verifySolPayment] Current SOL/USD price:", solUsd);
+
+    if (!solUsd) {
+      console.warn("[verifySolPayment] Skipping SOL/USD price check due to fetch failure");
+      return next(); // allow the purchase anyway
+    }
+
+    const minSolRequired = (expectedUsd * USD_BUFFER) / solUsd;
+    const minLamportsRequired = Math.floor(minSolRequired * 1e9);
+    console.log(`[verifySolPayment] Min lamports required: ${minLamportsRequired}`);
+
+    const instructions = txn.transaction.message.instructions;
     let paymentVerified = false;
 
     for (const instruction of instructions) {
-      if (instruction.program === 'system' && instruction.parsed.type === 'transfer') {
+      if (instruction.program === "system" && instruction.parsed?.type === "transfer") {
         const { destination, lamports } = instruction.parsed.info;
+        console.log(`[verifySolPayment] Checking transfer to: ${destination} with ${lamports} lamports`);
 
         if (
           destination === EXPECTED_DESTINATION &&
-          lamports >= EXPECTED_LAMPORTS // >= if you want to accept a little more
+          lamports >= minLamportsRequired
         ) {
+          console.log("[verifySolPayment] ✅ Payment verified!");
           paymentVerified = true;
           break;
         }
@@ -45,14 +91,15 @@ exports.verifySolPayment = async (req, res, next) => {
     }
 
     if (!paymentVerified) {
+      console.warn("[verifySolPayment] ❌ Payment verification failed.");
       return res.status(403).json({ error: "Payment verification failed." });
     }
 
-    // Payment verified!
+    console.log("[verifySolPayment] ✅ All checks passed, continuing.");
     next();
 
   } catch (error) {
-    console.error('Error verifying SOL payment:', error);
+    console.error("[verifySolPayment] Error verifying SOL payment:", error);
     res.status(500).json({ error: "Internal server error during payment verification." });
   }
 };
