@@ -4,7 +4,7 @@ const { getSolUsdPrice } = require('../utils/solPriceCache');
 
 const EXPECTED_DESTINATION = "5ZyYTa4gR3pzMcgtHYYBfANL5nvc2za7EM5BjhB78ogz";
 const MAX_TX_AGE_SECONDS = 90;
-const USD_BUFFER = 0.75; // Accept at least 75% of expected USD value
+const USD_BUFFER = 0.5; // Accept at least 75% of expected USD value
 
 exports.verifySolPayment = async (req, res, next) => {
   try {

@@ -285,7 +285,7 @@ const PrintNfts = ({
                             ) : null}
                             <div className='d-flex justify-content-between marykate' style={{ fontSize: '1.2rem' }}>
                                 <div className='d-flex gap-2'>
-                                    <p className='m-0'>Created: {nft.purchases.totalCreates}</p>
+                                    <p className='m-0'>Minted: {nft.purchases.totalCreates}</p>
                                     {wallet?.publicKey?.toString() === nft.storeInfo.creator &&
                                         <>
                                             <p className='m-0'>|</p>
