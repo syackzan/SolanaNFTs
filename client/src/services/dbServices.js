@@ -301,3 +301,18 @@ export const updateRarityOnAllNfts = async (season, pricingValues, walletAddress
         return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
     }
 }
+
+export const getUTCTimezone = async () => {
+
+    try{
+        const response = await axios.get(`${URI_SERVER}/api/timezone/utc`);
+
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}

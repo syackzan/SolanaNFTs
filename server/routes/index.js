@@ -7,6 +7,7 @@ const gameRoutes = require('./game');
 const stripeRoutes = require('./stripe');
 const characterRoutes = require('./character');
 const whitelistRoutes = require('./whitelist');
+const timezoneRoutes = require('./time')
 
 // Combine all route files
 router.use('/upload', uploadRoutes);
@@ -16,5 +17,6 @@ router.use('/boohbrawlers', gameRoutes);
 router.use('/stripe', stripeRoutes);
 router.use('/character-submission', characterRoutes);
 router.use('/whitelist', whitelistRoutes);
+router.use('/timezone', timezoneRoutes);
 
 module.exports = router;
