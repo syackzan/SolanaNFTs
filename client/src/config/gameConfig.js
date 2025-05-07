@@ -47,6 +47,8 @@ export const propertiesData = {
     category: "image", // Default category for the file
 };
 
+export const mintCost = 0.004;
+
 // Cost Associated with Each Rarity Level
 export const creatorCosts = {
     common: 0.05,

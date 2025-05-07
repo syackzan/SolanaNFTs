@@ -10,6 +10,8 @@ import '../../css/whitelist.css';
 import { getWhitelistAddresses, submitWhitelistAddress } from '../../services/dbServices';
 import TxModal from '../txModal/TxModal';
 
+import { delay } from '../../Utils/generalUtils';
+
 const Whitelist = () => {
 
     const wallet = useWallet();
@@ -58,7 +60,12 @@ const Whitelist = () => {
         if (data.error) {
             setResponse(data.error)
         } else {
-            setResponse("Wallet Added");
+            setResponse("Wallet Added!");
+
+            setTimeout(() => {
+                window.location.href = "https://nft.boohworld.io/marketplace";
+            }, 3000); // 3 seconds
+
         }
     }
 

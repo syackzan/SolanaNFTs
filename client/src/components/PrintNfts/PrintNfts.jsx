@@ -11,6 +11,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import NftConceptVoting from '../NftConceptVoting/NftConceptVoting';
 
 import { prelaunch } from '../../config/config';
+import { mintCost } from '../../config/gameConfig';
 
 const PrintNfts = ({
     nfts,
@@ -165,7 +166,7 @@ const PrintNfts = ({
                     return (
                         <div key={index} style={{ display: 'inline-block' }}>
                             <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
-                                <div>Cost: {nft.storeInfo.price} USDC | ~{(nft.storeInfo.price * approxSolToUSD).toFixed(4)} SOL</div>
+                                <div>Cost: {nft.storeInfo.price} USDC | ~{((nft.storeInfo.price * approxSolToUSD)).toFixed(4)} SOL</div>
                                 {nft.storeInfo.available ? (<div>In-store✅</div>) : (<div>In-store❌</div>)}
                                 {nft.storeInfo.metadataUri ? (<div>Metadata <FaLock /></div>) : (<div>Metadata <FaLockOpen /></div>)}
                             </div>
