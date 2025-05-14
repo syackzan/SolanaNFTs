@@ -316,3 +316,49 @@ export const updateNFT = async (wallet, mintId, collectionId) => {
         console.error('Error setting collection:', e);
     }
 }
+
+/* CODE TO ALLOW ONLY SKINS AS DIVISION ITEMS*/
+// <>
+//     {attributes.find((attr) => attr.trait_type === "type")?.value === 'skin' ? (
+//         <>
+//             <select
+//                 value={attribute.value}
+//                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+//                 disabled={!canEditFields || (page === 'update' && !isAdmin)}
+//                 style={{
+//                     width: "100%",
+//                     padding: "10px",
+//                     borderRadius: "4px",
+//                     border: "1px solid #555",
+//                     backgroundColor: "#2E2E2E",
+//                     color: "#FFF",
+//                 }}
+//             >
+//                 <option value="">Select...</option>
+//                 {divisionOptions.map((division, i) => (
+//                     <option key={i} value={division}>
+//                         {division.charAt(0).toUpperCase() + division.slice(1)}
+//                     </option>
+//                 ))}
+//             </select>
+//         </>
+//     ) : (
+//         <>
+//             <select
+//                 value={attribute.value}
+//                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+//                 disabled={true}
+//                 style={{
+//                     width: "100%",
+//                     padding: "10px",
+//                     borderRadius: "4px",
+//                     border: "1px solid #555",
+//                     backgroundColor: "#2E2E2E",
+//                     color: "#FFF",
+//                 }}
+//             >
+//                 <option value="none">None [Skins Only]</option>
+//             </select>
+//         </>
+//     )}
+// </>

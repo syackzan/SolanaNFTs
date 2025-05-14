@@ -152,7 +152,7 @@ const SideNav = ({
     };
 
     const printStoreInfoTitles = (title) => {
-        switch (title){
+        switch (title) {
             case "goldCost":
                 return "Gold Cost";
             case "babyBoohCost":
@@ -400,23 +400,19 @@ const SideNav = ({
                     </div>
                 </div>}
 
-                {/* Attributes */}
+                {/* Attributes -  #Non Talents */}
                 <div>
                     <h4 className="marykate" style={{ fontSize: "2rem" }}>Attributes</h4>
                     {attributes.map((attribute, index) => (
                         <div key={index} style={{ marginBottom: '10px' }}>
-                            {attribute.trait_type === "damage" &&
-                                <div style={{ marginTop: '20px' }}>
-                                    <h5 className="marykate m-0" style={{ fontSize: "1.75rem" }}>Talents</h5>
-                                    <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem" }}>
-                                        <p className='m-0'>Remaining Points: {remainingPoints}</p>
-                                        {isAdmin && remainingPoints < 0 && <p className='m-0'>[Admin Only]</p>}
-                                    </div>
-                                </div>
-                            }
-                            <label style={{ display: "block", marginBottom: "5px" }}>
-                                {printAttributeTitles(attribute.trait_type)}
-                            </label>
+
+                            {/* Only show the label if NOT in attributesToTrack */}
+                            {!attributesToTrack.includes(attribute.trait_type) && (
+                                <label style={{ display: "block", marginBottom: "5px" }}>
+                                    {printAttributeTitles(attribute.trait_type)}
+                                </label>
+                            )}
+
                             {attribute.trait_type === "blockchain" ? (
                                 <select
                                     value={attribute.value}
@@ -503,50 +499,6 @@ const SideNav = ({
                                     })()}
                                 </select>
                             ) : attribute.trait_type === 'division' ? (
-                                // <>
-                                //     {attributes.find((attr) => attr.trait_type === "type")?.value === 'skin' ? (
-                                //         <>
-                                //             <select
-                                //                 value={attribute.value}
-                                //                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                //                 disabled={!canEditFields || (page === 'update' && !isAdmin)}
-                                //                 style={{
-                                //                     width: "100%",
-                                //                     padding: "10px",
-                                //                     borderRadius: "4px",
-                                //                     border: "1px solid #555",
-                                //                     backgroundColor: "#2E2E2E",
-                                //                     color: "#FFF",
-                                //                 }}
-                                //             >
-                                //                 <option value="">Select...</option>
-                                //                 {divisionOptions.map((division, i) => (
-                                //                     <option key={i} value={division}>
-                                //                         {division.charAt(0).toUpperCase() + division.slice(1)}
-                                //                     </option>
-                                //                 ))}
-                                //             </select>
-                                //         </>
-                                //     ) : (
-                                //         <>
-                                //             <select
-                                //                 value={attribute.value}
-                                //                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                //                 disabled={true}
-                                //                 style={{
-                                //                     width: "100%",
-                                //                     padding: "10px",
-                                //                     borderRadius: "4px",
-                                //                     border: "1px solid #555",
-                                //                     backgroundColor: "#2E2E2E",
-                                //                     color: "#FFF",
-                                //                 }}
-                                //             >
-                                //                 <option value="none">None [Skins Only]</option>
-                                //             </select>
-                                //         </>
-                                //     )}
-                                // </>
                                 <>
                                     <select
                                         value={attribute.value || "none"}
@@ -620,7 +572,7 @@ const SideNav = ({
                                         </option>
                                     ))}
                                 </select>
-                            ) : attributesToTrack.includes(attribute.trait_type) ? (
+                            ) : attribute.trait_type === "level" ? (
                                 <>
                                     <input
                                         type="number"
@@ -633,7 +585,7 @@ const SideNav = ({
                                                 handleAttributeChange(index, "value", "0");
                                             }
                                         }}
-                                        max={20} // Limit per attribute (if needed)
+                                        max={100} // Limit per attribute (if needed)
                                         disabled={!canEditFields}
                                         style={{
                                             width: "100%",
@@ -646,11 +598,59 @@ const SideNav = ({
                                     />
                                 </>
                             ) : (
+                                // <input
+                                //     type="text"
+                                //     value={attribute.value}
+                                //     placeholder="Enter value"
+                                //     onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                //     disabled={!canEditFields}
+                                //     style={{
+                                //         width: "100%",
+                                //         padding: "10px",
+                                //         borderRadius: "4px",
+                                //         border: "1px solid #555",
+                                //         backgroundColor: "#2E2E2E",
+                                //         color: "#FFF",
+                                //     }}
+                                // />
+                                <></>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                <div style={{ marginTop: '20px' }}>
+                    <h5 className="marykate m-0" style={{ fontSize: "1.75rem" }}>Talents</h5>
+                    <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem" }}>
+                        <p className='m-0'>Remaining Points: {remainingPoints}</p>
+                        {isAdmin && remainingPoints < 0 && <p className='m-0'>[Admin Only]</p>}
+                    </div>
+                </div>
+
+                {/* Attributes -  #Talents */}
+                <div>
+                    <h4 className="marykate" style={{ fontSize: "2rem" }}>Attributes</h4>
+                    {attributes.map((attribute, index) => {
+                        if (!attributesToTrack.includes(attribute.trait_type)) return null; // ❌ Skip non-tracked attributes
+
+                        return (
+                            <div key={index} style={{ marginBottom: '10px' }}>
+                                <label style={{ display: "block", marginBottom: "5px" }}>
+                                    {printAttributeTitles(attribute.trait_type)}
+                                </label>
                                 <input
-                                    type="text"
-                                    value={attribute.value}
-                                    placeholder="Enter value"
-                                    onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                    type="number"
+                                    value={attribute.value === undefined ? '' : attribute.value}
+                                    placeholder="0"
+                                    onChange={(e) =>
+                                        handleAttributeInputChange(index, attribute.trait_type, e.target.value)
+                                    }
+                                    onBlur={(e) => {
+                                        if (e.target.value === '') {
+                                            handleAttributeChange(index, "value", "0");
+                                        }
+                                    }}
+                                    max={100}
                                     disabled={!canEditFields}
                                     style={{
                                         width: "100%",
@@ -661,10 +661,12 @@ const SideNav = ({
                                         color: "#FFF",
                                     }}
                                 />
-                            )}
-                        </div>
-                    ))}
+                            </div>
+                        );
+                    })}
                 </div>
+
+
                 {/* Submit Button */}
                 {!isCreated && (
                     <>
