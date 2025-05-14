@@ -7,7 +7,7 @@ import AdminTransactionsPanel from "../AdminTransactions/AdminTransactionsPanel"
 
 import { useTransactionsController } from "../../providers/TransactionsProvider";
 import { useWalletAdmin } from "../../hooks/useWalletAdmin";
-import { deleteAttribute, patchAttributes, updateRarityOnAllNfts } from "../../services/dbServices";
+import { deleteAttribute, patchAttributes, replaceAttribute, updateRarityOnAllNfts } from "../../services/dbServices";
 
 import { pricingValues } from "../../config/gameConfig";
 
@@ -60,6 +60,11 @@ const Admin = () => {
         console.log(resp);
     }
 
+    const callReplace = async() => {
+        const resp = await replaceAttribute('dodge', 'evasion', wallet.publicKey.toString());
+        console.log(resp);
+    }
+
     // 🚀 Main Admin UI
     return (
         <div>
@@ -109,6 +114,7 @@ const Admin = () => {
                     <button onClick={updateNftPricing}>Update NFT Pricing</button>
                     <button onClick={() => patchAttributes([...talents, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
                     <button onClick={callDelete}>Delete Attribute</button>
+                    <button onClick={callReplace}>Replace</button>
                 </div>
             )}
 

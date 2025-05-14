@@ -95,3 +95,46 @@ exports.deleteAttributeFromAllNfts = async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while removing attribute from NFTs.' });
     }
 };
+
+exports.replaceAttributeAcrossNfts = async (req, res) => {
+  const { from, to } = req.body;
+
+  if (
+    typeof from !== 'string' || from.trim() === '' ||
+    typeof to !== 'string' || to.trim() === ''
+  ) {
+    return res.status(400).json({ error: '`from` and `to` must be non-empty strings.' });
+  }
+
+  try {
+    const nfts = await NftMetadata.find();
+    let updatedCount = 0;
+
+    for (const nft of nfts) {
+      let changed = false;
+
+      nft.attributes = nft.attributes.map(attr => {
+        if (attr.trait_type === from) {
+          changed = true;
+          return {
+            trait_type: to,
+            value: attr.value
+          };
+        }
+        return attr;
+      });
+
+      if (changed) {
+        await nft.save();
+        updatedCount++;
+      }
+    }
+
+    return res.json({
+      message: `Replaced "${from}" with "${to}" in ${updatedCount} NFTs.`
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'An error occurred while replacing attribute.' });
+  }
+};
