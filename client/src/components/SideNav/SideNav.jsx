@@ -405,7 +405,7 @@ const SideNav = ({
                     <h4 className="marykate" style={{ fontSize: "2rem" }}>Attributes</h4>
                     {attributes.map((attribute, index) => (
                         <div key={index} style={{ marginBottom: '10px' }}>
-                            {attribute.trait_type === "health" &&
+                            {attribute.trait_type === "damage" &&
                                 <div style={{ marginTop: '20px' }}>
                                     <h5 className="marykate m-0" style={{ fontSize: "1.75rem" }}>Talents</h5>
                                     <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem" }}>
