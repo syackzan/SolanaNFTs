@@ -7,9 +7,11 @@ import AdminTransactionsPanel from "../AdminTransactions/AdminTransactionsPanel"
 
 import { useTransactionsController } from "../../providers/TransactionsProvider";
 import { useWalletAdmin } from "../../hooks/useWalletAdmin";
-import { updateRarityOnAllNfts } from "../../services/dbServices";
+import { deleteAttribute, patchAttributes, updateRarityOnAllNfts } from "../../services/dbServices";
 
 import { pricingValues } from "../../config/gameConfig";
+
+import { talents } from "../../config/gameConfig";
 
 const Admin = () => {
     const { userRole, wallet } = useWalletAdmin();
@@ -50,6 +52,11 @@ const Admin = () => {
 
     const updateNftPricing = async () => {
         const resp = await updateRarityOnAllNfts(1, pricingValues, wallet.publicKey.toString());
+        console.log(resp);
+    }
+
+    const callDelete = async() => {
+        const resp = await deleteAttribute('dodge', wallet.publicKey.toString());
         console.log(resp);
     }
 
@@ -100,6 +107,8 @@ const Admin = () => {
                         ))}
                     </div>
                     <button onClick={updateNftPricing}>Update NFT Pricing</button>
+                    <button onClick={() => patchAttributes([...talents, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
+                    <button onClick={callDelete}>Delete Attribute</button>
                 </div>
             )}
 

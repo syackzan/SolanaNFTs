@@ -60,7 +60,7 @@ const ImageCarousel = () => {
                                 nft.attributes.find((attr) => attr.trait_type === "defense")
                                     ?.value || 0;
                             const dodge =
-                                nft.attributes.find((attr) => attr.trait_type === "dodge")
+                                nft.attributes.find((attr) => attr.trait_type === "dodge" || attr.trait_type === "evasion")
                                     ?.value || 0;
                             const coinMultiplier =
                                 nft.attributes.find(
@@ -90,7 +90,7 @@ const ImageCarousel = () => {
                                                             {damage > 0 ? `+${damage}%` : "-"}
                                                         </p>
                                                         <p style={{ flex: 0.55, textAlign: "left" }}>
-                                                            <strong>DODGE:</strong>{" "}
+                                                            <strong>EVASION:</strong>{" "}
                                                             {dodge > 0 ? `+${dodge}%` : "-"}
                                                         </p>
                                                     </div>

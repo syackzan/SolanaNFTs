@@ -151,6 +151,38 @@ const SideNav = ({
         setIsCreated(false);
     };
 
+    const printStoreInfoTitles = (title) => {
+        switch (title){
+            case "goldCost":
+                return "Gold Cost";
+            case "babyBoohCost":
+                return "babyBooh Cost"
+            default:
+                return capitalizeFirstLetter(title);
+        }
+    }
+
+    const printAttributeTitles = (title) => {
+        switch (title) {
+            case "subType":
+                return "Sub Type";
+            case "level":
+                return "Level Requirement"
+            case "coinMultiplier":
+                return "Coin Multiplier";
+            case "criticalStrikeDamage":
+                return "Critical Strike Damage";
+            case "specialAttack":
+                return "Special Attack";
+            case "specialDefense":
+                return "Special Defense";
+            case "gasReserve":
+                return "Gas Reserve";
+            default:
+                return capitalizeFirstLetter(title);
+        }
+    }
+
     return (
         <div className={`sidenav-styling sidenav-scrollbar ${MOBILE_SIDENAV_STYLING}`}>
             <div className={`d-flex ${IS_MOBILE_SIDENAV_OPEN ? "justify-content-between" : "justify-content-end"}`} style={{ marginBottom: '5px' }}>
@@ -211,28 +243,21 @@ const SideNav = ({
                     <h4 className="marykate" style={{ fontSize: '2rem' }}>Store Info</h4>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                         {Object.entries(storeInfo)
-                            .filter(([key]) => key !== 'metadataUri') // Filter out metadataUri
+                            .filter(([key]) => key !== 'metadataUri')
                             .map(([key, value], index) => (
                                 <div key={index} style={{ flex: '1 1 48%' }}>
                                     <label className="form-label" style={{ display: 'block', marginBottom: '5px' }}>
-                                        {capitalizeFirstLetter(key)}
+                                        {printStoreInfoTitles(key)}
                                         {key === "price" && <> [set by rarity]</>}
                                     </label>
+
                                     {key === 'available' ? (
                                         <select
                                             value={value === true ? "yes" : value === false ? "no" : ""}
                                             onChange={(e) => handleStoreChange(key, e.target.value === "yes")}
                                             required
                                             disabled={!isAdmin}
-                                            style={{
-                                                width: '100%',
-                                                padding: '10px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #555',
-                                                backgroundColor: '#2E2E2E',
-                                                color: '#FFF',
-                                            }}
-                                            placeholder='Select...'
+                                            style={inputStyle}
                                         >
                                             <option value=''>Select...</option>
                                             <option value="yes">Yes</option>
@@ -246,28 +271,14 @@ const SideNav = ({
                                             required
                                             onChange={(e) => handleStoreChange(key, e.target.value)}
                                             disabled={true}
-                                            style={{
-                                                width: '100%',
-                                                padding: '10px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #555',
-                                                backgroundColor: '#2E2E2E',
-                                                color: '#FFF',
-                                            }}
+                                            style={inputStyle}
                                         />
                                     ) : key === 'mintLimit' ? (
                                         <select
                                             value={value}
-                                            onChange={(e) => handleStoreChange(key, Number(e.target.value))} // Convert to number
+                                            onChange={(e) => handleStoreChange(key, Number(e.target.value))}
                                             required
-                                            style={{
-                                                width: '100%',
-                                                padding: '10px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #555',
-                                                backgroundColor: '#2E2E2E',
-                                                color: '#FFF',
-                                            }}
+                                            style={inputStyle}
                                             disabled={!isAdmin}
                                         >
                                             <option value="-1">∞ (Unlimited)</option>
@@ -280,29 +291,39 @@ const SideNav = ({
                                             <option value="500">500</option>
                                             <option value="1000">1000</option>
                                         </select>
+                                    ) : key === 'goldCost' || key === 'babyBoohCost' ? (
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={value === undefined || value === null ? '' : value}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                // If user clears the input, store empty string temporarily
+                                                handleStoreChange(key, val === '' ? '' : Number(val));
+                                            }}
+                                            onBlur={(e) => {
+                                                // If left empty on blur, reset to 0
+                                                if (e.target.value === '') {
+                                                    handleStoreChange(key, 0);
+                                                }
+                                            }}
+                                            disabled={!isAdmin}
+                                            style={inputStyle}
+                                        />
                                     ) : (
                                         <input
-                                            type="text" // Use "text" to handle input flexibility and control formatting
+                                            type="text"
                                             value={value || ''}
                                             placeholder={key === 'price' ? '$' : 'ex. 1'}
                                             required
                                             onChange={(e) => {
                                                 const input = e.target.value;
-
-                                                // Allow only valid USD format: digits, optional decimal point, and up to two decimals
                                                 if (/^\$?\d*\.?\d{0,2}$/.test(input)) {
                                                     handleStoreChange(key, input);
                                                 }
                                             }}
                                             disabled={!isAdmin || storeInfo.metadataUri}
-                                            style={{
-                                                width: '100%',
-                                                padding: '10px',
-                                                borderRadius: '4px',
-                                                border: '1px solid #555',
-                                                backgroundColor: '#2E2E2E',
-                                                color: '#FFF',
-                                            }}
+                                            style={inputStyle}
                                         />
                                     )}
                                 </div>
@@ -384,7 +405,7 @@ const SideNav = ({
                     <h4 className="marykate" style={{ fontSize: "2rem" }}>Attributes</h4>
                     {attributes.map((attribute, index) => (
                         <div key={index} style={{ marginBottom: '10px' }}>
-                            {attribute.trait_type === "damage" &&
+                            {attribute.trait_type === "health" &&
                                 <div style={{ marginTop: '20px' }}>
                                     <h5 className="marykate m-0" style={{ fontSize: "1.75rem" }}>Talents</h5>
                                     <div className='d-flex align-items-center button-container marykate' style={{ fontSize: "1.25rem" }}>
@@ -394,7 +415,7 @@ const SideNav = ({
                                 </div>
                             }
                             <label style={{ display: "block", marginBottom: "5px" }}>
-                                {attribute.trait_type.toUpperCase()}
+                                {printAttributeTitles(attribute.trait_type)}
                             </label>
                             {attribute.trait_type === "blockchain" ? (
                                 <select
@@ -417,7 +438,7 @@ const SideNav = ({
                             ) : attribute.trait_type === "type" ? (
                                 <select
                                     value={attribute.value}
-                                    onChange={(e) => {handleAttributeChange(index, "value", e.target.value), resetDivisionOnTypeChange()}}
+                                    onChange={(e) => { handleAttributeChange(index, "value", e.target.value), resetDivisionOnTypeChange() }}
                                     disabled={!canEditFields}
                                     style={{
                                         width: "100%",
@@ -482,49 +503,71 @@ const SideNav = ({
                                     })()}
                                 </select>
                             ) : attribute.trait_type === 'division' ? (
+                                // <>
+                                //     {attributes.find((attr) => attr.trait_type === "type")?.value === 'skin' ? (
+                                //         <>
+                                //             <select
+                                //                 value={attribute.value}
+                                //                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                //                 disabled={!canEditFields || (page === 'update' && !isAdmin)}
+                                //                 style={{
+                                //                     width: "100%",
+                                //                     padding: "10px",
+                                //                     borderRadius: "4px",
+                                //                     border: "1px solid #555",
+                                //                     backgroundColor: "#2E2E2E",
+                                //                     color: "#FFF",
+                                //                 }}
+                                //             >
+                                //                 <option value="">Select...</option>
+                                //                 {divisionOptions.map((division, i) => (
+                                //                     <option key={i} value={division}>
+                                //                         {division.charAt(0).toUpperCase() + division.slice(1)}
+                                //                     </option>
+                                //                 ))}
+                                //             </select>
+                                //         </>
+                                //     ) : (
+                                //         <>
+                                //             <select
+                                //                 value={attribute.value}
+                                //                 onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                                //                 disabled={true}
+                                //                 style={{
+                                //                     width: "100%",
+                                //                     padding: "10px",
+                                //                     borderRadius: "4px",
+                                //                     border: "1px solid #555",
+                                //                     backgroundColor: "#2E2E2E",
+                                //                     color: "#FFF",
+                                //                 }}
+                                //             >
+                                //                 <option value="none">None [Skins Only]</option>
+                                //             </select>
+                                //         </>
+                                //     )}
+                                // </>
                                 <>
-                                    {attributes.find((attr) => attr.trait_type === "type")?.value === 'skin' ? (
-                                        <>
-                                            <select
-                                                value={attribute.value}
-                                                onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                                disabled={!canEditFields || (page === 'update' && !isAdmin)}
-                                                style={{
-                                                    width: "100%",
-                                                    padding: "10px",
-                                                    borderRadius: "4px",
-                                                    border: "1px solid #555",
-                                                    backgroundColor: "#2E2E2E",
-                                                    color: "#FFF",
-                                                }}
-                                            >
-                                                <option value="">Select...</option>
-                                                {divisionOptions.map((division, i) => (
-                                                    <option key={i} value={division}>
-                                                        {division.charAt(0).toUpperCase() + division.slice(1)}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <select
-                                                value={attribute.value}
-                                                onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
-                                                disabled={true}
-                                                style={{
-                                                    width: "100%",
-                                                    padding: "10px",
-                                                    borderRadius: "4px",
-                                                    border: "1px solid #555",
-                                                    backgroundColor: "#2E2E2E",
-                                                    color: "#FFF",
-                                                }}
-                                            >
-                                                <option value="none">None [Skins Only]</option>
-                                            </select>
-                                        </>
-                                    )}
+                                    <select
+                                        value={attribute.value || "none"}
+                                        onChange={(e) => handleAttributeChange(index, "value", e.target.value || "none")}
+                                        disabled={!canEditFields || (page === 'update' && !isAdmin)}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px",
+                                            borderRadius: "4px",
+                                            border: "1px solid #555",
+                                            backgroundColor: "#2E2E2E",
+                                            color: "#FFF",
+                                        }}
+                                    >
+                                        <option value="none">None</option>
+                                        {divisionOptions.map((division, i) => (
+                                            <option key={i} value={division}>
+                                                {division.charAt(0).toUpperCase() + division.slice(1)}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </>
                             ) : attribute.trait_type === "rarity" ? (
                                 <>
@@ -701,3 +744,12 @@ const SideNav = ({
 };
 
 export default SideNav;
+
+const inputStyle = {
+    width: '100%',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #555',
+    backgroundColor: '#2E2E2E',
+    color: '#FFF',
+};

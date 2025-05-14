@@ -12,6 +12,7 @@ import NftConceptVoting from '../NftConceptVoting/NftConceptVoting';
 
 import { prelaunch } from '../../config/config';
 import { mintCost } from '../../config/gameConfig';
+import { getTraitRows } from '../../Utils/renderNftHelper';
 
 const PrintNfts = ({
     nfts,
@@ -137,6 +138,7 @@ const PrintNfts = ({
                     const division = nft.attributes.find(
                         (attr) => attr.trait_type === "division"
                     )?.value || null;
+                    const level = nft.attributes.find((attr) => attr.trait_type === "level")?.value || '1';
 
                     const divisionClassName = `division-${division}`;
 
@@ -147,18 +149,8 @@ const PrintNfts = ({
                     )?.value || "solana";
                     const nftBlockchainClass = `blockchain-${nftBlockchain}`;
 
-                    const damage = nft.attributes.find(
-                        (attr) => attr.trait_type === "damage"
-                    )?.value || 0;
-                    const defense = nft.attributes.find(
-                        (attr) => attr.trait_type === "defense"
-                    )?.value || 0;
-                    const dodge = nft.attributes.find(
-                        (attr) => attr.trait_type === "dodge"
-                    )?.value || 0;
-                    const coinMultiplier = nft.attributes.find(
-                        (attr) => attr.trait_type === "coinMultiplier"
-                    )?.value || 0;
+                    // Organize NFT Stat Attributes
+                    const traitRows = getTraitRows(nft);
 
                     const isSelected = selectedIndex === index;
                     const purchased = isPurchased(nft); // Check if the NFT is owned
@@ -190,43 +182,23 @@ const PrintNfts = ({
                                     </div>
                                     <div className="d-flex flex-column w-100">
                                         <h3 className="nft-name lazy-dog">{nft.name || "Unnamed NFT"}</h3>
-                                        <div className="nft-stats d-flex flex-column justify-content-around align-items-center h-100 w-100 marykate">
-                                            <div className="d-flex w-100">
-                                                <p
-                                                    style={{
-                                                        flex: 0.45,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    <strong>DAMAGE:</strong> {damage > 0 ? `+${damage}%` : "-"}
-                                                </p>
-                                                <p
-                                                    style={{
-                                                        flex: 0.55,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    <strong>DODGE:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
-                                                </p>
-                                            </div>
-                                            <div className="d-flex" style={{ width: '100%' }}>
-                                                <p
-                                                    style={{
-                                                        flex: 0.45,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    <strong>DEFENSE:</strong> {defense > 0 ? `+${defense}%` : "-"}
-                                                </p>
-                                                <p
-                                                    style={{
-                                                        flex: 0.55,
-                                                        textAlign: 'left',
-                                                    }}
-                                                >
-                                                    <strong>COIN BOOST:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
-                                                </p>
-                                            </div>
+                                        <div className="nft-stats d-flex flex-column  align-items-center h-100 w-100 marykate">
+                                            {/* PRINT NFT STAT ATTRIBUTES */}
+                                            {traitRows.map((row, idx) => (
+                                                <div className="d-flex w-100" key={idx}>
+                                                    {row.map((trait, j) => (
+                                                        <p
+                                                            key={j}
+                                                            style={{
+                                                                flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
+                                                                textAlign: 'left',
+                                                            }}
+                                                        >
+                                                            <strong>{trait.label}:</strong> {trait.value}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
@@ -236,6 +208,7 @@ const PrintNfts = ({
                                         <div className={nftBlockchainClass}>{nftBlockchain}</div>
                                         <div className={bannerClass}>{type}</div>
                                         <div className={bannerClass}>{subType}</div>
+                                        <div className={bannerClass}>Lvl. {level}</div>
                                     </div>
                                     {(division === "uprising" || division === "elites") &&
                                         <div className={divisionClassName}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import tempImage from '../../assets/itemBGs/tempImage.png';
 
@@ -9,6 +9,8 @@ import MobileDetailsButton from '../MobileDetailsButton/MobileDetailsButton';
 import { useTransactionsController } from '../../providers/TransactionsProvider';
 
 import TxModalManager from '../txModal/TxModalManager';
+
+import { getTraitRowsFromAttributes } from '../../Utils/renderNftHelper';
 
 const NFTPreview = ({
     info,
@@ -23,8 +25,15 @@ const NFTPreview = ({
         isModalOpen
     } = useTransactionsController();
 
+    const [traitRows, setTraitRows] = useState([]);
+
+    useEffect(() => {
+        setTraitRows(getTraitRowsFromAttributes(attributes));
+    }, [attributes]);
+
     // Determine rarity and background shadow
     const rarity = attributes.find(attr => attr.trait_type === "rarity")?.value || "Epic";
+    const type = attributes.find(attr => attr.trait_type === "type")?.value || "unknown";
     const subType = attributes.find(attr => attr.trait_type === "subType")?.value || "unknown";
 
     const rarityClass = `nft-box shadow-${rarity.toLowerCase()}`; // Convert rarity to lowercase for className
@@ -32,10 +41,7 @@ const NFTPreview = ({
     const nftBlockchain = attributes.find(attr => attr.trait_type === "blockchain")?.value || "solana";
     const nftBlockchainClass = `blockchain-${nftBlockchain}`
 
-    const damage = attributes.find(attr => attr.trait_type === "damage")?.value || 0;
-    const defense = attributes.find(attr => attr.trait_type === "defense")?.value || 0;
-    const dodge = attributes.find(attr => attr.trait_type === "dodge")?.value || 0;
-    const coinMultiplier = attributes.find(attr => attr.trait_type === "coinMultiplier")?.value || 0;
+    const level = attributes.find(attr => attr.trait_type === "level")?.value || "5";
 
 
     return (
@@ -57,48 +63,22 @@ const NFTPreview = ({
                         </div>
                         <div className="d-flex flex-column w-100">
                             <h3 className="nft-name lazy-dog">{info.name}</h3>
-                            <div className="nft-stats d-flex flex-column justify-content-around align-items-center h-100 w-100 marykate">
-                                <div
-                                    className="d-flex w-100"
-                                >
-                                    <p
-                                        style={{
-                                            flex: 0.45,
-                                            textAlign: 'left', // Optional for alignment
-                                        }}
-                                    >
-                                        <strong>DAMAGE:</strong> {damage > 0 ? `+${damage}%` : "-"}
-                                    </p>
-                                    <p
-                                        style={{
-                                            flex: 0.55,
-                                            textAlign: 'left', // Optional for alignment
-                                        }}
-                                    >
-                                        <strong>DODGE:</strong> {dodge > 0 ? `+${dodge}%` : "-"}
-                                    </p>
-                                </div>
-                                <div
-                                    className="d-flex"
-                                    style={{ width: '100%' }}
-                                >
-                                    <p
-                                        style={{
-                                            flex: 0.45,
-                                            textAlign: 'left', // Optional for alignment
-                                        }}
-                                    >
-                                        <strong>DEFENSE:</strong> {defense > 0 ? `+${defense}%` : "-"}
-                                    </p>
-                                    <p
-                                        style={{
-                                            flex: 0.55,
-                                            textAlign: 'left', // Optional for alignment
-                                        }}
-                                    >
-                                        <strong>COIN BOOST:</strong> {coinMultiplier > 0 ? `+${coinMultiplier}%` : "-"}
-                                    </p>
-                                </div>
+                            <div className="nft-stats d-flex flex-column align-items-center h-100 w-100 marykate">
+                                {traitRows.map((row, idx) => (
+                                    <div className="d-flex w-100" key={idx}>
+                                        {row.map((trait, j) => (
+                                            <p
+                                                key={j}
+                                                style={{
+                                                    flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
+                                                    textAlign: 'left',
+                                                }}
+                                            >
+                                                <strong>{trait.label}:</strong> {trait.value}
+                                            </p>
+                                        ))}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -107,7 +87,9 @@ const NFTPreview = ({
                     </div>
                     <div className="d-flex gap-3">
                         <div className={nftBlockchainClass}>{nftBlockchain}</div>
+                        <div className={bannerClass}>{type}</div>
                         <div className={bannerClass}>{subType}</div>
+                        <div className={bannerClass}>Lvl. {level}</div>
                     </div>
                 </button>
             </div>

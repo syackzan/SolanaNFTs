@@ -316,3 +316,63 @@ export const getUTCTimezone = async () => {
         return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
     }
 }
+
+/**
+ *Patch attributes on database
+ *@param {Array} attributesToAdd - The season you want to update.
+ *@param {String} walletAddress - Wallet address of admin
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const patchAttributes = async (attributesToAdd, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/patch`,
+            { attributesToAdd },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+/**
+ *Update All pricing on NFTs by Season
+ *@param {string} attribute - Attribute to remove.
+ *@param {struct} walletAddress - Wallet address of admin.
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const deleteAttribute = async (attributeToRemove, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/deleteAttri`,
+            { attributeToRemove },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}

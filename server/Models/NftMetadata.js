@@ -47,6 +47,14 @@ const NftMetadataSchema = new mongoose.Schema({
       type: Number,
       required: false
     },
+    goldCost: {
+      type: Number,
+      required: false,
+    },
+    babyBoohCost: {
+      type: Number,
+      required: false
+    },
     mintLimit: {type: Number, default: -1}
   },
   votes: {
