@@ -301,3 +301,109 @@ export const updateRarityOnAllNfts = async (season, pricingValues, walletAddress
         return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
     }
 }
+
+export const getUTCTimezone = async () => {
+
+    try{
+        const response = await axios.get(`${URI_SERVER}/api/timezone/utc`);
+
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+/**
+ *Patch attributes on database
+ *@param {Array} attributesToAdd - The season you want to update.
+ *@param {String} walletAddress - Wallet address of admin
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const patchAttributes = async (attributesToAdd, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/patch`,
+            { attributesToAdd },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+/**
+ *Update All pricing on NFTs by Season
+ *@param {string} attribute - Attribute to remove.
+ *@param {struct} walletAddress - Wallet address of admin.
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const deleteAttribute = async (attributeToRemove, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/deleteAttri`,
+            { attributeToRemove },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error updating pricing:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+/**
+ *Update All pricing on NFTs by Season
+ *@param {string} from - Attribute to remove.
+ *@param {string} to - Attribute to replace with.
+ *@param {struct} walletAddress - Wallet address of admin.
+ *@returns {Promise<Object>} {Message: success or failure}
+ */
+export const replaceAttribute = async (from, to, walletAddress) => {
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/replaceAttri`,
+            { from, to },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error to replace attribute:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}

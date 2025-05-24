@@ -8,7 +8,18 @@ export const infoData = {
 };
 
 // Talents List
-export const talents = ["damage", "defense", "dodge", "coinMultiplier"]; // Key talents used in the attributes system
+export const talents = [
+    "health",
+    "damage",
+    "defense",
+    "evasion",
+    "coinMultiplier",
+    "criticalStrikeDamage",
+    "specialAttack",
+    "specialDefense",
+    "focus",
+    "gasReserve",
+]; // Key talents used in the attributes system
 
 // Base Attributes Data
 export const attributesData = [
@@ -17,7 +28,8 @@ export const attributesData = [
     { trait_type: "subType", value: "" }, // Item sub-type
     { trait_type: "rarity", value: "common" }, // Default rarity
     { trait_type: "affinity", value: "" }, // Default affinity
-    { trait_type: "division", value: "none"}
+    { trait_type: "division", value: "none" },
+    { trait_type: "level", value: "1"} //Level Requirement
 ];
 
 // Function to dynamically add missing talents to attributesData
@@ -46,6 +58,8 @@ export const propertiesData = {
     ],
     category: "image", // Default category for the file
 };
+
+export const mintCost = 0.004;
 
 // Cost Associated with Each Rarity Level
 export const creatorCosts = {
@@ -82,7 +96,7 @@ export const inGameCurrencyCost = {
     uncommon: 50000 + baseInGameIncrease,
     rare: 150000 + baseInGameIncrease,
     epic: 300000 + baseInGameIncrease,
-    legendary: 1000000 +baseInGameIncrease
+    legendary: 1000000 + baseInGameIncrease
 }
 
 // Store Information Defaults
@@ -95,7 +109,9 @@ export const storeInfoData = {
     season: currentSeason, // Season the item belongs to
     metadataUri: '', // URI for metadata
     creator: '', // Default creator
-    mintLimit: -1 // -1 is default, and sets the mint limit to infinite
+    mintLimit: -1, // -1 is default, and sets the mint limit to infinite
+    goldCost: 0,
+    babyBoohCost: 0
 };
 
 export const sellingThreshold = {
@@ -164,7 +180,6 @@ export const rarityOptions = [
 ];
 
 export const divisionOptions = [
-    'none',
     'uprising',
     'elites'
 ]

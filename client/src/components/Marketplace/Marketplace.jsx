@@ -105,7 +105,7 @@ const Marketplace = () => {
                         if (nfts[selectedIndex]?.storeInfo?.price) {
 
                             //Define Payment amount in current SOL
-                            const priceInSol = await convertUsdToSol(nfts[selectedIndex].storeInfo.price, mintCosts);
+                            const priceInSol = await convertUsdToSol(nfts[selectedIndex].storeInfo.price); //mintCost should be 0 if purchasing
 
                             //Apply discount if any
                             const discountedPrice = await checkUserDiscount(wallet.publicKey.toString(), priceInSol.toFixed(4), 'sol');

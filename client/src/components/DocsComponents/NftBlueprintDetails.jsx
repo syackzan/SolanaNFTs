@@ -18,10 +18,16 @@ const infoData = {
 
 // Talents List
 const talents = [
+    { trait: "health", description: "Increases health", mutable: true },
     { trait: "damage", description: "Increases attack power", mutable: true },
     { trait: "defense", description: "Reduces incoming damage", mutable: true },
-    { trait: "dodge", description: "Increases evasion rate", mutable: true },
+    { trait: "evasion", description: "Increases evasion rate to evade an attack", mutable: true },
     { trait: "coinMultiplier", description: "Boosts earned in-game currency", mutable: true },
+    { trait: "critDamage", description: "Increases critical strike damage", mutable: true },
+    { trait: "focus", description: "Increases amount of fatigue regen", mutable: true },
+    { trait: "gasReserve", description: "Boosts amount of accumulated gas total", mutable: true },
+    { trait: "specialAttack", description: "Increases spell damage", mutable: true },
+    { trait: "specialDefense", description: "Reduces spell damage", mutable: true },
 ];
 
 // Base Attributes Data
