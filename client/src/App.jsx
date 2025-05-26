@@ -26,7 +26,7 @@ function App() {
             <Route path='/docs' element={<CreatorHubDocs />} />
             <Route path='/character-submit' element={<CharacterSubmission />} />
             <Route path='/admin' element={<Admin />} />
-            <Route path={whitelistpath} element={<Whitelist />} />
+            {/* <Route path={whitelistpath} element={<Whitelist />} /> */}
           </Routes>
         </Router>
   )

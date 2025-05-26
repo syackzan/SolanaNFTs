@@ -54,3 +54,39 @@ exports.submitAddress = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 };
+
+// Handle whitelist deduction
+exports.deductUsage = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required." });
+    }
+
+    // Find the whitelist entry by email
+    const entry = await WhitelistSubmission.findOne({ email });
+
+    if (!entry) {
+      return res.status(404).json({ error: "Whitelist entry not found." });
+    }
+
+    if (entry.amounts <= 0) {
+      return res.status(403).json({ error: "No remaining whitelist uses." });
+    }
+
+    // Deduct usage
+    entry.amounts -= 1;
+    await entry.save();
+
+    res.status(200).json({
+      message: "Whitelist usage deducted successfully.",
+      remaining: entry.amounts,
+      entry
+    });
+
+  } catch (error) {
+    console.error("Error deducting whitelist usage:", error);
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
+  }
+};

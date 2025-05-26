@@ -177,13 +177,19 @@ export const rarityOptions = [
     'rare',
     'epic',
     'legendary',
+    'unique',
+    'event'
 ];
 
 export const divisionOptions = [
-    'uprising',
+    'crebel',
     'elites'
 ]
 
 export const defaultMintCost = .004;
 
 export const submissionCost = 24.99;
+
+export const newStats = {
+    strength: ''
+}
