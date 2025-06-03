@@ -111,6 +111,9 @@ const SideNav = ({
         (isAdmin && !isMetadataLocked) ||
         (userRole === 'member' && isCreator && !isMetadataLocked);
 
+    const canEditFieldsWhenLocked =
+        (isAdmin) || (userRole === "member" && isCreator && !isMetadataLocked)
+
     // List of attributes to track for talents
     const attributesToTrack = talents;
 
@@ -586,7 +589,7 @@ const SideNav = ({
                                             }
                                         }}
                                         max={100} // Limit per attribute (if needed)
-                                        disabled={!canEditFields}
+                                        disabled={!canEditFieldsWhenLocked}
                                         style={{
                                             width: "100%",
                                             padding: "10px",
