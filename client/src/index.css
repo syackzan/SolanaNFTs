@@ -794,6 +794,15 @@ textarea:focus::placeholder {
   background: linear-gradient(135deg, #ffffff, #d1b3ff, #8000ff);
 }
 
+.division-crebel{
+  font-size: 14px;
+  padding: 0px 2px;
+  border-radius: 5px;
+  font-weight: 500;
+  color: black;
+  background: linear-gradient(135deg, #ffffff, #d1b3ff, #8000ff);
+}
+
 .blockchain-solana {
   font-size: 14px;
   padding: 0px 2px;

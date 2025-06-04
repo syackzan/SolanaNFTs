@@ -210,9 +210,9 @@ const PrintNfts = ({
                                         <div className={bannerClass}>{subType}</div>
                                         <div className={bannerClass}>Lvl. {level}</div>
                                     </div>
-                                    {(division === "crebel" || division === "elites") &&
+                                    {(division === "crebel" || division === "elites" || division == "uprising") &&
                                         <div className={divisionClassName}>
-                                            {division}
+                                            {division === "uprising" ? "crebel" : division}
                                         </div>
                                     }
                                 </div>
