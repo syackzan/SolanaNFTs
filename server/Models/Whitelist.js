@@ -4,8 +4,7 @@ const WhitelistSubmissionSchema = new mongoose.Schema(
   {
     address: {
       type: String,
-      required: true,
-      unique: true
+      required: false,
     },
     amounts: {
       type: Number,

@@ -24,9 +24,9 @@ exports.submitAddress = async (req, res) => {
     const { address, email, x } = req.body;
 
     // Ensure all fields are provided
-    if (!address) {
-      return res.status(400).json({ error: "Address is required." });
-    }
+    // if (!address) {
+    //   return res.status(400).json({ error: "Address is required." });
+    // }
 
     // Check if the total number of submissions has reached the limit (30)
     const submissionCount = await WhitelistSubmission.countDocuments();
@@ -35,7 +35,7 @@ exports.submitAddress = async (req, res) => {
     }
 
     // Check if the address already exists
-    const existingSubmission = await WhitelistSubmission.findOne({ address });
+    const existingSubmission = await WhitelistSubmission.findOne({ email });
 
     if (existingSubmission) {
       return res.status(409).json({ error: "Address already submitted." }); // HTTP 409: Conflict

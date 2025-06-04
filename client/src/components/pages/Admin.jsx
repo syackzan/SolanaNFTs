@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "../../css/admin.css"; // Import CSS file for styling
 
+import EmailList from '../../Utils/tempData';
 import Navbar from "../Navbar/Navbar";
 import TxModalManager from '../txModal/TxModalManager';
 import AdminTransactionsPanel from "../AdminTransactions/AdminTransactionsPanel";
 
 import { useTransactionsController } from "../../providers/TransactionsProvider";
 import { useWalletAdmin } from "../../hooks/useWalletAdmin";
-import { deleteAttribute, patchAttributes, replaceAttribute, updateRarityOnAllNfts } from "../../services/dbServices";
+import { deleteAttribute, patchAttributes, replaceAttribute, submitWhitelistAddress, updateRarityOnAllNfts } from "../../services/dbServices";
 
 import { pricingValues } from "../../config/gameConfig";
 
@@ -50,17 +51,29 @@ const Admin = () => {
         );
     }
 
+    const addToWarpacksList = async () => {
+        try {
+            for (const email of EmailList) {
+                console.log(email);
+                const resp = await submitWhitelistAddress(email, email, email);
+                console.log(resp);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     const updateNftPricing = async () => {
         const resp = await updateRarityOnAllNfts(1, pricingValues, wallet.publicKey.toString());
         console.log(resp);
     }
 
-    const callDelete = async() => {
+    const callDelete = async () => {
         const resp = await deleteAttribute('dodge', wallet.publicKey.toString());
         console.log(resp);
     }
 
-    const callReplace = async() => {
+    const callReplace = async () => {
         const resp = await replaceAttribute('dodge', 'evasion', wallet.publicKey.toString());
         console.log(resp);
     }
@@ -84,6 +97,12 @@ const Admin = () => {
                     >
                         NFT Transactions
                     </button>
+                    <button
+                        onClick={() => setRenderState('whitelist')}
+                        style={{ width: '200px', height: '80px', fontSize: '20px' }}
+                    >
+                        Whitelist
+                    </button>
                 </div>
             )}
 
@@ -98,6 +117,12 @@ const Admin = () => {
                 <div className="admin-panel-container">
                     <AdminTransactionsPanel setRenderState={setRenderState} />
                     <button className="mt-3" onClick={() => setRenderState('home')}>← Back</button>
+                </div>
+            )}
+
+            {renderState === 'whitelist' && (
+                <div className="admin-panel-container">
+                    <button onClick={addToWarpacksList}>Add To Warpacks</button>
                 </div>
             )}
 
