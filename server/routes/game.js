@@ -1,11 +1,13 @@
 const express = require('express');
 const {verifyApiKey} = require('../Middleware/authMiddleware')
-const {getInGameCurrency, deductInGameCurrency} = require('../controllers/gameController');
+const {getInGameCurrency, deductInGameCurrency, fetchRollQualityData} = require('../controllers/gameController');
 const router = express.Router();
 
 //Test Data
 router.get('/usercoins', verifyApiKey, getInGameCurrency);
 
 router.post('/deductcoins', verifyApiKey, deductInGameCurrency);
+
+router.post('/rollquality', fetchRollQualityData);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const NftMetadata = require('../Models/NftMetadata'); // adjust path if needed
+const { rollSecureRandomInt, applyAttributes, fetchRollQualityHelper } = require('../utils/gameHelpers');
 
 exports.patchMissingAttributes = async (req, res) => {
     const { attributesToAdd } = req.body;
@@ -138,3 +139,43 @@ exports.replaceAttributeAcrossNfts = async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while replacing attribute.' });
   }
 };
+
+exports.rollForAllServerItems = async (req, res) => {
+    try {
+        // Get all NFT documents
+        const allNfts = await NftMetadata.find();
+
+        if (!allNfts.length) {
+            return res.status(404).json({ message: 'No NFTs found.' });
+        }
+
+        // Loop and update each NFT
+        for (const nft of allNfts) {
+
+            const seedNumber = rollSecureRandomInt();
+            const rollQuality = Math.floor(Math.random() * (100 - 90 + 1)) + 90;
+
+            const rarityAttribute = nft.attributes.find(type => type.trait_type === "rarity");
+            const result = await fetchRollQualityHelper(seedNumber, rollQuality, rarityAttribute?.value);
+
+            nft.attributes = applyAttributes(nft.attributes, result.output);
+
+            // Optionally store seed or roll info in storeInfo
+            if (nft.storeInfo) {
+                nft.storeInfo.statsSeedRoll = seedNumber; // or use actual seed number
+                nft.storeInfo.rollQuality = rollQuality; // or actual quality
+            }
+
+            console.log("NFT updated");
+
+            await nft.save();
+            console.log(nft._id);
+            return;
+        }
+
+        res.status(200).json({ message: 'All NFTs updated with rolled attributes.' });
+    } catch (error) {
+        console.error("Error in rollForAllServerItems:", error);
+        res.status(500).json({ error: 'Failed to update NFTs.' });
+    }
+}

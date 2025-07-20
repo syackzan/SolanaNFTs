@@ -55,6 +55,14 @@ const NftMetadataSchema = new mongoose.Schema({
       type: Number,
       required: false
     },
+    rollQuality: {
+      type: Number,
+      required: false
+    },
+    statsSeedRoll: {
+      type: Number,
+      required: false
+    },
     mintLimit: {type: Number, default: -1}
   },
   votes: {

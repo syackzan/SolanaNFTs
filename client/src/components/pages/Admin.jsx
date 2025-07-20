@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../../css/admin.css"; // Import CSS file for styling
 
 import EmailList from '../../Utils/tempData';
@@ -8,11 +8,11 @@ import AdminTransactionsPanel from "../AdminTransactions/AdminTransactionsPanel"
 
 import { useTransactionsController } from "../../providers/TransactionsProvider";
 import { useWalletAdmin } from "../../hooks/useWalletAdmin";
-import { deleteAttribute, patchAttributes, replaceAttribute, submitWhitelistAddress, updateRarityOnAllNfts } from "../../services/dbServices";
+import { deleteAttribute, patchAttributes, replaceAttribute, rollAllServerItems, submitWhitelistAddress, updateRarityOnAllNfts } from "../../services/dbServices";
 
 import { pricingValues } from "../../config/gameConfig";
 
-import { talents } from "../../config/gameConfig";
+import { combinedTraits } from "../../config/gameConfig";
 
 const Admin = () => {
     const { userRole, wallet } = useWalletAdmin();
@@ -78,6 +78,11 @@ const Admin = () => {
         console.log(resp);
     }
 
+    const rollCurrentItems = async() => {
+        const resp = await rollAllServerItems(wallet.publicKey.toString());
+        console.log(resp.data);
+    }
+
     // 🚀 Main Admin UI
     return (
         <div>
@@ -137,7 +142,9 @@ const Admin = () => {
                         ))}
                     </div>
                     <button onClick={updateNftPricing}>Update NFT Pricing</button>
-                    <button onClick={() => patchAttributes([...talents, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
+                    <button onClick={() => patchAttributes([...combinedTraits, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
+                    <button onClick={rollCurrentItems}>Roll Current Items</button>
+                    {/* <button onClick={() => replaceServerMetadata()}>Replace Metadata</button> */}
                     <button onClick={callDelete}>Delete Attribute</button>
                     <button onClick={callReplace}>Replace</button>
                 </div>

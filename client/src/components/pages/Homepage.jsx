@@ -14,7 +14,7 @@ import { uploadMetadata } from '../../services/pinataServices';
 import { uploadIcon } from '../../services/cloudinaryServices';
 import { addNftConcept, checkIfAdmin, deleteNftConcept, saveMetadataUri, updateNftConcept } from '../../services/dbServices';
 import { createSendSolTx, checkTransactionStatus } from '../../services/blockchainServices';
-import { delay } from '../../Utils/generalUtils';
+import { applyAttributes, delay, rollSecureRandomInt } from '../../Utils/generalUtils';
 
 //Imported packages
 import { useConnection } from '@solana/wallet-adapter-react';
@@ -31,6 +31,7 @@ import { useWalletAdmin } from '../../hooks/useWalletAdmin';
 import { useNftConceptForm } from '../../hooks/useNftConceptForm';
 
 import axios from 'axios';
+import { fetchRollQualityData } from '../../services/gameServices';
 
 const Homepage = () => {
 
@@ -94,9 +95,10 @@ const Homepage = () => {
 
         const asyncCall = async () => {
 
-            const tx = '4esQrBXHhhK7GxdMwdHEWWiwrHxqDSjM42X23BoDY44anxc6Kwvwsbvk9GipR8LTqPTx39T3zXN915sbHrKM2DsX'
-            await checkTransactionStatus(tx);
-
+            // const seedNumber = rollSecureRandomInt();
+            // const rolledData = await fetchRollQualityData(seedNumber, 1, "common");
+            
+            // console.log(rolledData);
         }
 
         asyncCall();
@@ -141,11 +143,35 @@ const Homepage = () => {
             category: "image"
         }
 
+        //Get Random Int
+        const seedNumber = rollSecureRandomInt();
+        console.log(seedNumber);
+
+        // Create the updated object locally
+        const updatedStoreInfo = {
+        ...storeInfo,
+        statsRollSeed: seedNumber
+        };
+
+        setStoreInfo(updatedStoreInfo);
+
+        const rarityAttribute = attributes.find(type => type.trait_type === "rarity");
+
+        //Get roll quality data
+        const rolledAttributes = await fetchRollQualityData(seedNumber, storeInfo.rollQuality, rarityAttribute?.value);
+        console.log(rarityAttribute);
+        
+        //Update Attributes
+        const appliedAttributes = applyAttributes(attributes, rolledAttributes);
+
+        setAttributes(appliedAttributes);
+         
+        //Combine Metadata
         const metadataCombined = {
             ...hardInfo,
-            attributes,
+            attributes: appliedAttributes,
             properties: hardProperties,
-            storeInfo,
+            storeInfo: updatedStoreInfo,
         }
 
         return metadataCombined;
@@ -245,10 +271,12 @@ const Homepage = () => {
             
             setCreateState('started');
 
-            // 🔹 Step 2: Prepare Metadata
+            // Step 2: Prepare Metadata
             const metadataForDB = await combineNewMetadataJSON();
 
-            // 🔹 Step 3: Submit to Database
+            console.log(metadataForDB);
+
+            // Step 3: Submit to Database
             const data = await addNftConcept(metadataForDB);
             if (!data) {
                 throw new Error("Failed to save NFT metadata to the database.");
@@ -257,7 +285,7 @@ const Homepage = () => {
             setNewMetadata(data);
             console.log("✅ NFT Metadata created successfully:", data);
     
-            // 🔹 Step 4: Refresh UI
+            // Step 4: Refresh UI
             refetchNftConcepts(); //Get New NFT Concepts from Database
 
             setCreateState('complete'); //Track UI State

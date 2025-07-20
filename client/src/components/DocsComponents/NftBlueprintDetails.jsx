@@ -17,7 +17,7 @@ const infoData = {
 };
 
 // Talents List
-const talents = [
+const statTypes = [
     { trait: "health", description: "Increases health", mutable: true },
     { trait: "damage", description: "Increases attack power", mutable: true },
     { trait: "defense", description: "Reduces incoming damage", mutable: true },
@@ -124,7 +124,7 @@ const NftBlueprintDetails = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {talents.map((talent, index) => (
+                    {statTypes.map((talent, index) => (
                         <tr key={index}>
                             <td>{talent.trait}</td>
                             <td>{talent.description}</td>

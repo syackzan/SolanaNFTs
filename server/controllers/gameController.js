@@ -1,10 +1,10 @@
 const axios = require('axios');
+const { fetchRollQualityHelper } = require('../utils/gameHelpers');
 
 exports.getInGameCurrency = async (req, res) => {
     try {
         // Extract the address from query parameters
         const { address } = req.query;
-
         if (!address) {
             return res.status(400).json({ error: "Address is required" });
         }
@@ -18,9 +18,6 @@ exports.getInGameCurrency = async (req, res) => {
                 Authorization: `Bearer ${process.env.TOKEN_BEARER}`,
             },
         });
-
-        // console.log("External API Response:", response.data.balances[0].balance);
-
         // Return the data as a response
         res.status(200).json(response.data.balances[0].balance);
     } catch (error) {
@@ -94,3 +91,23 @@ exports.deductInGameCurrency = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
+exports.fetchRollQualityData = async (req, res) => {
+    try {
+        const { seedNumber, rollQuality, rarity } = req.body;
+        const result = await fetchRollQualityHelper(seedNumber, rollQuality, rarity);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error.response) {
+            console.error("API Error Response:", error.response.status, error.response.data);
+            res.status(error.response.status).json({ error: error.response.data || "External API Error" });
+        } else if (error.request) {
+            console.error("No response received from API:", error.request);
+            res.status(502).json({ error: "No response from external API" });
+        } else {
+            console.error("Request setup error:", error.message);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+};
+

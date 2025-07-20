@@ -49,3 +49,69 @@ export const shortenAddress = (address, chars = 4) => {
     if (!address) return '';
     return `${address.slice(0, chars)}...${address.slice(-chars)}`;
 };
+
+export const rollSecureRandomInt = () => {
+  const min = -2147483648;
+  const max = 2147483648;
+
+  const range = max - min + 1;
+  const randomBuffer = new Uint32Array(1);
+  window.crypto.getRandomValues(randomBuffer);
+
+  const randomFraction = randomBuffer[0] / 0xFFFFFFFF;
+  return Math.floor(randomFraction * range) + min;
+}
+
+/**
+ * Maps rolled attribute fields from Unity to trait_types and applies them.
+ *
+ * @param {Array<{ trait_type: string, value: string | number }>} attributes - Base metadata attributes.
+ * @param {Object} rolledAttributes - Response from Unity's API.
+ * @returns {Array} Updated attribute array with applied rolled values.
+ */
+export const applyAttributes = (attributes, rolledAttributes) => {
+  const rolledMap = {
+    strengthRolled: "strengthModifier",
+    vitalityRolled: "vitalityModifier",
+    agilityRolled: "agilityModifier",
+    resilienceRolled: "resilienceModifier",
+    focusRolled: "focusModifier",
+    fearRolled: "fearModifier",
+    specialAttackRolled: "specialAttackModifier",
+    specialDefenseRolled: "specialDefenseModifier",
+    luckRolled: "luckModifier",
+    healthRolled: 'health',
+    damageRolled: 'damage',
+    defenseRolled: 'defense',
+    evasionRolled: 'evasion',
+    coinMultiplierRolled: 'coinMultiplier',
+    criticalStrikeDamageRolled: 'criticalStrikeDamage',
+    criticalStrikeChanceRolled: 'criticalStrikeChance',
+    focus: 'focus',
+    gasReserve: 'gasReserve',
+    specialAttack: 'specialAttack',
+    specialDefense: 'specialDefense'
+
+    // Add others if needed
+  };
+
+  return attributes.map(attr => {
+    // Check if there's a rolled version that maps to this trait_type
+    const matchedEntry = Object.entries(rolledMap).find(
+      ([rolledKey, traitType]) => traitType === attr.trait_type
+    );
+
+    if (matchedEntry) {
+      const [rolledKey] = matchedEntry;
+      if (rolledKey in rolledAttributes) {
+        return {
+          ...attr,
+          value: rolledAttributes[rolledKey].toString(), // keep consistent as string
+        };
+      }
+    }
+
+    // If not rolled, leave unchanged
+    return attr;
+  });
+};

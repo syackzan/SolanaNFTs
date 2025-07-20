@@ -1,8 +1,8 @@
-import { talents } from "../config/gameConfig";
+import { stats, combinedTraits } from "../config/gameConfig";
 
 //Add "dodge" to talents, since this exists on old metadata
 //But has sense been converted to "evasion"
-talents.push("dodge");
+stats.push("dodge");
 
 const traitLabels = {
   health: "HEALTH",
@@ -15,20 +15,21 @@ const traitLabels = {
   specialAttack: "SPECIAL ATK",
   specialDefense: "SPECIAL DEF",
   focus: "FOCUS",
-  gasReserve: "GAS RESERVE"
+  gasReserve: "GAS RESERVE",
+  strength: "STRENGTH"
 };
 
 export function getTraitRows(nft) {
   if (!nft?.attributes) return [];
 
   const stats = Object.fromEntries(
-    talents.map(trait => {
+    combinedTraits.map(trait => {
       const value = nft.attributes.find(attr => attr.trait_type === trait)?.value || 0;
       return [trait, value];
     })
   );
 
-  const displayTraits = talents
+  const displayTraits = combinedTraits
     .filter(trait => stats[trait] > 0)
     .map(trait => ({
       label: traitLabels[trait] || trait.toUpperCase(),
@@ -51,17 +52,17 @@ export function getTraitRows(nft) {
  */
 export function getTraitRowsFromAttributes(attributes = []) {
   const stats = Object.fromEntries(
-    talents.map(trait => {
+    combinedTraits.map(trait => {
       const value = attributes.find(attr => attr.trait_type === trait)?.value || 0;
       return [trait, value];
     })
   );
 
-  const displayTraits = talents
+  const displayTraits = combinedTraits
     .filter(trait => stats[trait] > 0)
     .map(trait => ({
       label: traitLabels[trait] || trait.toUpperCase(),
-      value: `+${stats[trait]}%`
+      value: stats.includes(trait) ? `+${stats[trait]}%` : `+${stats[trait]}`
     }));
 
   const rows = [];
