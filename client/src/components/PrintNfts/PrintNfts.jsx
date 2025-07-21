@@ -172,33 +172,76 @@ const PrintNfts = ({
                                 onClick={() => { setEditData(nft), setSelectedIndex(index) }}
                                 disabled={isBuyDisabled(nft)}
                             >
-                                <div className="d-flex" style={{ marginBottom: '10px' }}>
-                                    <div className="d-flex justify-content-center align-items-center">
+                                <div className="d-flex flex-column" style={{ marginBottom: '10px' }}>
+                                    <div className="d-flex justify-content-start align-items-center">
                                         <img
                                             src={nft.image || "/path/to/default-image.png"}
                                             alt={nft.name || "NFT"}
                                             style={{ width: "100px", height: "100px" }}
                                         />
+                                        <h3 className="nft-name">{nft.name || "Unnamed NFT"}</h3>
                                     </div>
                                     <div className="d-flex flex-column w-100">
-                                        <h3 className="nft-name lazy-dog">{nft.name || "Unnamed NFT"}</h3>
-                                        <div className="nft-stats d-flex flex-column  align-items-center h-100 w-100 marykate">
+                                        <div className="nft-stats d-flex flex-column  align-items-center h-100 w-100">
                                             {/* PRINT NFT STAT ATTRIBUTES */}
-                                            {traitRows.map((row, idx) => (
-                                                <div className="d-flex w-100" key={idx}>
-                                                    {row.map((trait, j) => (
-                                                        <p
-                                                            key={j}
-                                                            style={{
-                                                                flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
-                                                                textAlign: 'left',
-                                                            }}
-                                                        >
-                                                            <strong>{trait.label}:</strong> {trait.value}
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            ))}
+                                            {(() => {
+                                                const modifierRows = [];
+                                                const boosterRows = [];
+
+                                                traitRows.forEach(row => {
+                                                    const modifierTraits = row.filter(trait => trait.context === 'modifier');
+                                                    const boosterTraits = row.filter(trait => trait.context !== 'modifier');
+
+                                                    if (modifierTraits.length) modifierRows.push(modifierTraits);
+                                                    if (boosterTraits.length) boosterRows.push(boosterTraits);
+                                                });
+
+                                                return (
+                                                    <>
+                                                        {modifierRows.length > 0 && (
+                                                            <>
+                                                                <h5>Stat Modifiers</h5>
+                                                                {modifierRows.map((row, idx) => (
+                                                                    <div className="d-flex w-100" key={`mod-${idx}`}>
+                                                                        {row.map((trait, j) => (
+                                                                            <p
+                                                                                key={j}
+                                                                                style={{
+                                                                                    flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
+                                                                                    textAlign: 'left',
+                                                                                }}
+                                                                            >
+                                                                                <strong>{trait.label}:</strong> {trait.value}
+                                                                            </p>
+                                                                        ))}
+                                                                    </div>
+                                                                ))}
+                                                            </>
+                                                        )}
+
+                                                        {boosterRows.length > 0 && (
+                                                            <>
+                                                                <h5>Direct Boosters</h5>
+                                                                {boosterRows.map((row, idx) => (
+                                                                    <div className="d-flex w-100" key={`boost-${idx}`}>
+                                                                        {row.map((trait, j) => (
+                                                                            <p
+                                                                                key={j}
+                                                                                style={{
+                                                                                    flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
+                                                                                    textAlign: 'left',
+                                                                                }}
+                                                                            >
+                                                                                <strong>{trait.label}:</strong> {trait.value}
+                                                                            </p>
+                                                                        ))}
+                                                                    </div>
+                                                                ))}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
                                     </div>
                                 </div>
@@ -208,7 +251,7 @@ const PrintNfts = ({
                                         <div className={nftBlockchainClass}>{nftBlockchain}</div>
                                         <div className={bannerClass}>{type}</div>
                                         <div className={bannerClass}>{subType}</div>
-                                        <div className={bannerClass}>Lvl. {level}</div>
+                                        <div className={bannerClass}>Roll: {nft.storeInfo?.rollQuality}</div>
                                     </div>
                                     {(division === "crebel" || division === "elites" || division == "uprising") &&
                                         <div className={divisionClassName}>

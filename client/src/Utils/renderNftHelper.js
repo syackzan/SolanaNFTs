@@ -1,28 +1,61 @@
-import { stats, combinedTraits } from "../config/gameConfig";
+import { stats, statModifiers, combinedTraits } from "../config/gameConfig";
 
 //Add "dodge" to talents, since this exists on old metadata
 //But has sense been converted to "evasion"
 stats.push("dodge");
 
 const traitLabels = {
-  health: "HEALTH",
-  damage: "DAMAGE",
-  defense: "DEFENSE",
-  evasion: "EVASION",
-  dodge: "EVASION",
-  coinMultiplier: "COIN BOOST",
-  criticalStrikeDamage: "CRIT DAMAGE",
-  specialAttack: "SPECIAL ATK",
-  specialDefense: "SPECIAL DEF",
-  focus: "FOCUS",
-  gasReserve: "GAS RESERVE",
-  strength: "STRENGTH"
+  health: "Health",
+  damage: "Damage",
+  defense: "Defense",
+  evasion: "Evasion",
+  dodge: "Evasion",
+  coinMultiplier: "Coin Boost",
+  criticalStrikeDamage: "Crit Damage",
+  specialAttack: "Special Atk",
+  specialDefense: "Special Def",
+  focus: "Focus",
+  gasReserve: "Gas Reserve",
+  strength: "Strength",
+  strengthModifier: "Strength",
+  vitalityModifier:  "Vitality",
+  agilityModifier:  "Agility",
+  resilienceModifier:  "Resilience",
+  focusModifier: "Focus",
+  fearModifier: "Fear",
+  specialAttackModifier: "Special Atk",
+  specialDefenseModifier: "Special Def",
+  luckModifier: "Luck"
 };
+
+const traitContext = {
+  health: "boost",
+  damage: "boost",
+  defense: "boost",
+  evasion: "boost",
+  dodge: "boost",
+  coinMultiplier: "boost",
+  criticalStrikeDamage: "boost",
+  specialAttack: "boost",
+  specialDefense: "boost",
+  focus: "boost",
+  gasReserve: "boost",
+  strength: "modifier",
+  strengthModifier: "modifier",
+  vitalityModifier:  "modifier",
+  agilityModifier:  "modifier",
+  resilienceModifier:  "modifier",
+  focusModifier: "modifier",
+  fearModifier: "modifier",
+  specialAttackModifier: "modifier",
+  specialDefenseModifier: "modifier",
+  luckModifier: "modifier"
+}
 
 export function getTraitRows(nft) {
   if (!nft?.attributes) return [];
 
-  const stats = Object.fromEntries(
+  const entryStats = Object.fromEntries(
     combinedTraits.map(trait => {
       const value = nft.attributes.find(attr => attr.trait_type === trait)?.value || 0;
       return [trait, value];
@@ -30,10 +63,11 @@ export function getTraitRows(nft) {
   );
 
   const displayTraits = combinedTraits
-    .filter(trait => stats[trait] > 0)
+    .filter(trait => entryStats[trait] > 0)
     .map(trait => ({
       label: traitLabels[trait] || trait.toUpperCase(),
-      value: `+${stats[trait]}%`
+      value: statModifiers.includes(trait) ? `+${entryStats[trait]}` : `+${entryStats[trait]}%`,
+      context: traitContext[trait] || null
     }));
 
   // Group into rows of 2
@@ -51,7 +85,7 @@ export function getTraitRows(nft) {
  * @returns {Array<Array<{ label: string, value: string }>>}
  */
 export function getTraitRowsFromAttributes(attributes = []) {
-  const stats = Object.fromEntries(
+  const entryStats = Object.fromEntries(
     combinedTraits.map(trait => {
       const value = attributes.find(attr => attr.trait_type === trait)?.value || 0;
       return [trait, value];
@@ -59,10 +93,11 @@ export function getTraitRowsFromAttributes(attributes = []) {
   );
 
   const displayTraits = combinedTraits
-    .filter(trait => stats[trait] > 0)
+    .filter(trait => entryStats[trait] > 0)
     .map(trait => ({
       label: traitLabels[trait] || trait.toUpperCase(),
-      value: stats.includes(trait) ? `+${stats[trait]}%` : `+${stats[trait]}`
+      value: statModifiers.includes(trait) ? `+${entryStats[trait]}` : `+${entryStats[trait]}%`,
+      context: traitContext[trait] || null
     }));
 
   const rows = [];

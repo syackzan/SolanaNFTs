@@ -8,7 +8,7 @@ import AdminTransactionsPanel from "../AdminTransactions/AdminTransactionsPanel"
 
 import { useTransactionsController } from "../../providers/TransactionsProvider";
 import { useWalletAdmin } from "../../hooks/useWalletAdmin";
-import { deleteAttribute, patchAttributes, replaceAttribute, rollAllServerItems, submitWhitelistAddress, updateRarityOnAllNfts } from "../../services/dbServices";
+import { deleteAttribute, patchAttributes, replaceAttribute, rollAllServerItems, submitWhitelistAddress, updateBlueprintMetadata, updateRarityOnAllNfts } from "../../services/dbServices";
 
 import { pricingValues } from "../../config/gameConfig";
 
@@ -78,8 +78,13 @@ const Admin = () => {
         console.log(resp);
     }
 
-    const rollCurrentItems = async() => {
+    const rollCurrentItems = async () => {
         const resp = await rollAllServerItems(wallet.publicKey.toString());
+        console.log(resp.data);
+    }
+
+    const replaceServerMetadata = async () => {
+        const resp = await updateBlueprintMetadata(wallet.publicKey.toString());
         console.log(resp.data);
     }
 
@@ -141,12 +146,14 @@ const Admin = () => {
                             </div>
                         ))}
                     </div>
-                    <button onClick={updateNftPricing}>Update NFT Pricing</button>
-                    <button onClick={() => patchAttributes([...combinedTraits, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
-                    <button onClick={rollCurrentItems}>Roll Current Items</button>
-                    {/* <button onClick={() => replaceServerMetadata()}>Replace Metadata</button> */}
-                    <button onClick={callDelete}>Delete Attribute</button>
-                    <button onClick={callReplace}>Replace</button>
+                    <div className="d-flex flex-column gap-2 align-items-center justify-content-center" style={{width: '300px'}}>
+                        <button onClick={updateNftPricing}>Update NFT Pricing</button>
+                        {/* <button onClick={() => patchAttributes([...combinedTraits, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
+                        <button onClick={rollCurrentItems}>Roll Current Items</button>
+                        <button onClick={() => replaceServerMetadata()}>Replace Metadata</button> */}
+                        <button onClick={callDelete}>Delete Attribute</button>
+                        <button onClick={callReplace}>Replace</button>
+                    </div>
                 </div>
             )}
 
