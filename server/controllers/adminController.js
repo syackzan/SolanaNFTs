@@ -194,6 +194,14 @@ exports.replaceBlueprintMetadata = async (req, res) => {
         // Loop and update each NFT
         for (const nft of allNfts) {
 
+            const newAgeAttributes = Array.isArray(nft.attributes)
+                    ? [
+                        ...nft.attributes.filter(attr => attr.value !== "0"),
+                        ...(nft.storeInfo?.rollQuality ? [{ trait_type: "rollQuality", value: nft.storeInfo.rollQuality }] : []),
+                        ...(nft.storeInfo?.statsSeedRoll ? [{ trait_type: "statsSeedRoll", value: nft.storeInfo.statsSeedRoll }] : [])
+                    ]
+                    : [];
+
             //Set Up Metadata
             const newOffchainMetadata = {
                 name: nft.name,
@@ -201,9 +209,7 @@ exports.replaceBlueprintMetadata = async (req, res) => {
                 description: nft.description,
                 image: nft.image,
                 external_link: nft.external_link,
-                attributes: Array.isArray(nft.attributes)
-                    ? nft.attributes.filter(attr => attr.value !== "0")
-                    : [],
+                attributes: newAgeAttributes,
                 properties: nft.properties,
             };
 

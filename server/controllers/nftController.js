@@ -470,15 +470,43 @@ exports.getCoreNFTsDevNet = async (req, res) => {
       };
     });
 
-    console.log(sanitizedAssets);
+    const simplifiedAssets = await Promise.all(
+      sanitizedAssets.map(async asset => {
+        try {
+          const response = await fetch(asset.uri);
+          const metadata = await response.json();
+          
+          const attributes = Array.isArray(metadata.attributes) ? metadata.attributes : [];
+
+          const rollQualityAttr = attributes.find(attr => attr.trait_type === 'rollQuality');
+          const statsSeedRollAttr = attributes.find(attr => attr.trait_type === 'statsSeedRoll');
+
+          return {
+            name: asset.name,
+            statsSeedRoll: statsSeedRollAttr?.value ?? null,
+            rollQuality: rollQualityAttr?.value ?? null,
+            mint: asset.publicKey,
+          };
+        } catch (err) {
+          console.error(`Failed to fetch metadata for asset ${asset.publicKey}`, err);
+          return {
+            name: asset.name,
+            statsSeedRoll: null,
+            rollQuality: null,
+            mint: asset.publicKey,
+          };
+        }
+      })
+    );
 
     // Return the assets as a response
     res.status(200).json({
       success: true,
       message: 'Assets fetched successfully',
       address: ownerType.toString(), // Return the address as a string
-      data: sanitizedAssets,
+      data: simplifiedAssets,
     });
+
   } catch (error) {
     console.error('Error fetching assets:', error);
 

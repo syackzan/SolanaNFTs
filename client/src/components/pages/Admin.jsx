@@ -148,9 +148,9 @@ const Admin = () => {
                     </div>
                     <div className="d-flex flex-column gap-2 align-items-center justify-content-center" style={{width: '300px'}}>
                         <button onClick={updateNftPricing}>Update NFT Pricing</button>
-                        {/* <button onClick={() => patchAttributes([...combinedTraits, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
+                        <button onClick={() => patchAttributes([...combinedTraits, 'level'], wallet.publicKey.toString())}>Patch Attributes</button>
                         <button onClick={rollCurrentItems}>Roll Current Items</button>
-                        <button onClick={() => replaceServerMetadata()}>Replace Metadata</button> */}
+                        <button onClick={() => replaceServerMetadata()}>Replace Metadata</button>
                         <button onClick={callDelete}>Delete Attribute</button>
                         <button onClick={callReplace}>Replace</button>
                     </div>

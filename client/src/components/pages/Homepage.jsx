@@ -32,6 +32,7 @@ import { useNftConceptForm } from '../../hooks/useNftConceptForm';
 
 import axios from 'axios';
 import { fetchRollQualityData } from '../../services/gameServices';
+import { getCoreNftsServerDevnet } from '../../archived/GetNFTsUtils';
 
 const Homepage = () => {
 
@@ -91,18 +92,17 @@ const Homepage = () => {
         }
     }, [page])
 
+    //THIS EFFECT IS FOR TESTING APIS
     useEffect(() => {
 
         const asyncCall = async () => {
 
-            // const seedNumber = rollSecureRandomInt();
-            // const rolledData = await fetchRollQualityData(seedNumber, 1, "common");
-            
-            // console.log(rolledData);
+            const resp = await getCoreNftsServerDevnet(wallet.publicKey?.toBase58());
+            console.log(resp?.data);
         }
 
         asyncCall();
-    }, [])
+    }, [wallet])
 
     //This combines Store & Metadata for any NEW adds to the Database
     const combineNewMetadataJSON = async () => {
