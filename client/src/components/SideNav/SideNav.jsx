@@ -11,8 +11,9 @@ import {
     rarityOptions,
     pricingValues,
     talenPointSpread,
-    talents,
-    divisionOptions
+    stats,
+    divisionOptions,
+    combinedTraits
 } from '../../config/gameConfig';
 
 import { useScreen } from "../../providers/ScreenProvider";
@@ -115,7 +116,7 @@ const SideNav = ({
         (isAdmin) || (userRole === "member" && isCreator && !isMetadataLocked)
 
     // List of attributes to track for talents
-    const attributesToTrack = talents;
+    const attributesToTrack = combinedTraits;
 
     // Calculate remaining points for talent allocation
     const remainingPoints = maxTalentPoints - attributes
@@ -166,6 +167,11 @@ const SideNav = ({
     }
 
     const printAttributeTitles = (title) => {
+
+        if (title.endsWith("Modifier")) {
+            return capitalizeFirstLetter(title.replace(/([A-Za-z]+)Modifier/, "$1 Modifier"));
+        }
+
         switch (title) {
             case "subType":
                 return "Sub Type";
@@ -181,6 +187,8 @@ const SideNav = ({
                 return "Special Defense";
             case "gasReserve":
                 return "Gas Reserve";
+            case "criticalStrikeChance":
+                return "Critical Strike Chance"
             default:
                 return capitalizeFirstLetter(title);
         }
@@ -313,6 +321,9 @@ const SideNav = ({
                                             disabled={!isAdmin}
                                             style={inputStyle}
                                         />
+                                    ) : key === "statsRollSeed" ? (
+                                        // Print Nothing
+                                        <></>
                                     ) : (
                                         <input
                                             type="text"
@@ -325,7 +336,7 @@ const SideNav = ({
                                                     handleStoreChange(key, input);
                                                 }
                                             }}
-                                            disabled={!isAdmin || storeInfo.metadataUri}
+                                            disabled={storeInfo.metadataUri}
                                             style={inputStyle}
                                         />
                                     )}
@@ -654,7 +665,7 @@ const SideNav = ({
                                         }
                                     }}
                                     max={100}
-                                    disabled={!canEditFields}
+                                    disabled={!canEditFieldsWhenLocked}
                                     style={{
                                         width: "100%",
                                         padding: "10px",

@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 
 import {
-    infoData,
-    attributesData,
-    talents,
     rarityOptions,
     talenPointSpread,
     pricingValues,

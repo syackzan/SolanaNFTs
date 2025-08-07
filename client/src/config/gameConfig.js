@@ -8,18 +8,34 @@ export const infoData = {
 };
 
 // Talents List
-export const talents = [
+export const stats = [
     "health",
     "damage",
     "defense",
+    "speed",
     "evasion",
     "coinMultiplier",
     "criticalStrikeDamage",
-    "specialAttack",
-    "specialDefense",
+    "criticalStrikeChance",
     "focus",
     "gasReserve",
+    "specialAttack",
+    "specialDefense",
 ]; // Key talents used in the attributes system
+
+export const statModifiers = [
+    "strengthModifier",
+    "vitalityModifier",
+    "agilityModifier",
+    "resilienceModifier",
+    "focusModifier",
+    "fearModifier",
+    "specialAttackModifier",
+    "specialDefenseModifier",
+    "luckModifier"
+]
+
+export const combinedTraits = Array.from(new Set([...statModifiers, ...stats]));
 
 // Base Attributes Data
 export const attributesData = [
@@ -36,11 +52,11 @@ export const attributesData = [
 export const getAttributesData = () => {
     // Extract existing talents from attributesData
     const existingTalents = attributesData
-        .filter(attr => talents.includes(attr.trait_type))
+        .filter(attr => stats.includes(attr.trait_type))
         .map(attr => attr.trait_type);
 
     // Add any missing talents with default values
-    const newTalents = talents
+    const newTalents = combinedTraits
         .filter(talent => !existingTalents.includes(talent))
         .map(talent => ({ trait_type: talent, value: "0" }));
 
@@ -111,7 +127,9 @@ export const storeInfoData = {
     creator: '', // Default creator
     mintLimit: -1, // -1 is default, and sets the mint limit to infinite
     goldCost: 0,
-    babyBoohCost: 0
+    babyBoohCost: 0,
+    rollQuality: 0,
+    statsRollSeed: 95
 };
 
 export const sellingThreshold = {

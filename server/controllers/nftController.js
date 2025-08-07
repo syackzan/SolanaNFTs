@@ -400,19 +400,16 @@ exports.createAndSendNFT = async (req, res) => {
 };
 
 exports.getCoreNFTs = async (req, res) => {
-
   console.log(req.body.walletPublicKey);
 
   try {
     // Extract wallet public key from the request
     const ownerType = new PublicKey(req.body.walletPublicKey); // Ensure `walletPublicKey` is sent in the request body
 
-    // Fetch assets owned by the specified wallet
+    // Fetch assets owned by the specified wallet using mainnet umi
     const fetchedAssets = await fetchAssetsByOwner(umi, ownerType, {
       skipDerivePlugins: false,
     });
-
-    // console.log('Fetched assets:', assetsByOwner);
 
     // Remove unnecessary fields (rentEpoch, lamports, pluginHeader, immutableMetadata)
     const sanitizedAssets = fetchedAssets.map(({ header, pluginHeader, immutableMetadata, ...asset }) => {
@@ -423,19 +420,46 @@ exports.getCoreNFTs = async (req, res) => {
       };
     });
 
-    console.log(sanitizedAssets);
+    // Simplify assets by fetching metadata from URI
+    const simplifiedAssets = await Promise.all(
+      sanitizedAssets.map(async asset => {
+        try {
+          const response = await fetch(asset.uri);
+          const metadata = await response.json();
 
-    // Return the assets as a response
+          const attributes = Array.isArray(metadata.attributes) ? metadata.attributes : [];
+
+          const rollQualityAttr = attributes.find(attr => attr.trait_type === 'rollQuality');
+          const statsSeedRollAttr = attributes.find(attr => attr.trait_type === 'statsSeedRoll');
+
+          return {
+            name: asset.name,
+            statsSeedRoll: statsSeedRollAttr?.value ?? null,
+            rollQuality: rollQualityAttr?.value ?? null,
+            mint: asset.publicKey,
+          };
+        } catch (err) {
+          console.error(`Failed to fetch metadata for asset ${asset.publicKey}`, err);
+          return {
+            name: asset.name,
+            statsSeedRoll: null,
+            rollQuality: null,
+            mint: asset.publicKey,
+          };
+        }
+      })
+    );
+
+    // Return the simplified assets
     res.status(200).json({
       success: true,
       message: 'Assets fetched successfully',
-      address: ownerType.toString(), // Return the address as a string
-      data: sanitizedAssets,
+      address: ownerType.toString(),
+      data: simplifiedAssets,
     });
   } catch (error) {
     console.error('Error fetching assets:', error);
 
-    // Return an error response
     res.status(500).json({
       success: false,
       message: 'Failed to fetch assets',
@@ -470,15 +494,43 @@ exports.getCoreNFTsDevNet = async (req, res) => {
       };
     });
 
-    console.log(sanitizedAssets);
+    const simplifiedAssets = await Promise.all(
+      sanitizedAssets.map(async asset => {
+        try {
+          const response = await fetch(asset.uri);
+          const metadata = await response.json();
+
+          const attributes = Array.isArray(metadata.attributes) ? metadata.attributes : [];
+
+          const rollQualityAttr = attributes.find(attr => attr.trait_type === 'rollQuality');
+          const statsSeedRollAttr = attributes.find(attr => attr.trait_type === 'statsSeedRoll');
+
+          return {
+            name: asset.name,
+            statsSeedRoll: statsSeedRollAttr?.value ?? null,
+            rollQuality: rollQualityAttr?.value ?? null,
+            mint: asset.publicKey,
+          };
+        } catch (err) {
+          console.error(`Failed to fetch metadata for asset ${asset.publicKey}`, err);
+          return {
+            name: asset.name,
+            statsSeedRoll: null,
+            rollQuality: null,
+            mint: asset.publicKey,
+          };
+        }
+      })
+    );
 
     // Return the assets as a response
     res.status(200).json({
       success: true,
       message: 'Assets fetched successfully',
       address: ownerType.toString(), // Return the address as a string
-      data: sanitizedAssets,
+      data: simplifiedAssets,
     });
+
   } catch (error) {
     console.error('Error fetching assets:', error);
 

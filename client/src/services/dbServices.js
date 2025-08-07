@@ -304,7 +304,7 @@ export const updateRarityOnAllNfts = async (season, pricingValues, walletAddress
 
 export const getUTCTimezone = async () => {
 
-    try{
+    try {
         const response = await axios.get(`${URI_SERVER}/api/timezone/utc`);
 
         console.log(response.data);
@@ -390,6 +390,56 @@ export const replaceAttribute = async (from, to, walletAddress) => {
         const response = await axios.post(
             `${URI_SERVER}/api/xyz/replaceAttri`,
             { from, to },
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error to replace attribute:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+export const rollAllServerItems = async (walletAddress) => {
+
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/rollallitems`,
+            {}, // empty body, if you're not sending anything
+            {
+                headers: {
+                    "x-api-key": API_KEY,
+                    "wallet-address": walletAddress
+                }
+            }
+        );
+
+        return { success: true, message: response.data.message }; // Success response
+
+    } catch (error) {
+        console.error("Error to replace attribute:", error.response?.data || error.message);
+
+        // Return error instead of throwing
+        return { success: false, error: error.response?.data?.error || "An unexpected error occurred" };
+    }
+}
+
+export const updateBlueprintMetadata = async (walletAddress) => {
+
+    try {
+
+        const response = await axios.post(
+            `${URI_SERVER}/api/xyz/replaceBlueprintMD`,
+            {}, // empty body, if you're not sending anything
             {
                 headers: {
                     "x-api-key": API_KEY,
