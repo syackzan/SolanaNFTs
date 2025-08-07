@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 import { checkTransactionStatus, createCoreNft, createSendSolTx } from '../../services/blockchainServices';
 
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';

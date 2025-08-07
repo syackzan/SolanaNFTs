@@ -665,7 +665,7 @@ const SideNav = ({
                                         }
                                     }}
                                     max={100}
-                                    disabled={!canEditFields}
+                                    disabled={!canEditFieldsWhenLocked}
                                     style={{
                                         width: "100%",
                                         padding: "10px",

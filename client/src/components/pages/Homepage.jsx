@@ -14,7 +14,7 @@ import { uploadMetadata } from '../../services/pinataServices';
 import { uploadIcon } from '../../services/cloudinaryServices';
 import { addNftConcept, checkIfAdmin, deleteNftConcept, saveMetadataUri, updateNftConcept } from '../../services/dbServices';
 import { createSendSolTx, checkTransactionStatus } from '../../services/blockchainServices';
-import { applyAttributes, delay, rollSecureRandomInt } from '../../Utils/generalUtils';
+import { applyAttributes, cleanAttributes, delay, rollSecureRandomInt } from '../../Utils/generalUtils';
 
 //Imported packages
 import { useConnection } from '@solana/wallet-adapter-react';
@@ -159,10 +159,10 @@ const Homepage = () => {
 
         //Get roll quality data
         const rolledAttributes = await fetchRollQualityData(seedNumber, storeInfo.rollQuality, rarityAttribute?.value);
-        console.log(rarityAttribute);
+        console.log(rolledAttributes);
         
         //Update Attributes
-        const appliedAttributes = applyAttributes(attributes, rolledAttributes);
+        const appliedAttributes = applyAttributes(attributes, rolledAttributes, seedNumber, storeInfo.rollQuality);
 
         setAttributes(appliedAttributes);
          
@@ -192,9 +192,12 @@ const Homepage = () => {
 
     //This combines metadata for URI upload
     const combineOffchainMetatdata = async () => {
+
+        const cleanedAttributes = cleanAttributes(attributes);
+
         const metadataCombined = {
             ...info,
-            attributes,
+            cleanedAttributes,
             properties,
         }
 

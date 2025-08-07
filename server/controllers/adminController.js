@@ -172,7 +172,6 @@ exports.rollForAllServerItems = async (req, res) => {
 
             await nft.save();
             console.log(nft._id);
-            return;
         }
 
         res.status(200).json({ message: 'All NFTs updated with rolled attributes.' });

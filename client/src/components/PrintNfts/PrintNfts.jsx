@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { FaLock } from "react-icons/fa";
 import { FaLockOpen } from "react-icons/fa";
@@ -11,7 +11,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import NftConceptVoting from '../NftConceptVoting/NftConceptVoting';
 
 import { prelaunch } from '../../config/config';
-import { mintCost } from '../../config/gameConfig';
 import { getTraitRows } from '../../Utils/renderNftHelper';
 
 const PrintNfts = ({
@@ -221,7 +220,7 @@ const PrintNfts = ({
 
                                                         {boosterRows.length > 0 && (
                                                             <>
-                                                                <h5>Direct Boosters</h5>
+                                                                <h5>Enhancements</h5>
                                                                 {boosterRows.map((row, idx) => (
                                                                     <div className="d-flex w-100" key={`boost-${idx}`}>
                                                                         {row.map((trait, j) => (
