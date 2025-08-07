@@ -184,16 +184,22 @@ const PrintNfts = ({
                                         <div className="nft-stats d-flex flex-column  align-items-center h-100 w-100">
                                             {/* PRINT NFT STAT ATTRIBUTES */}
                                             {(() => {
-                                                const modifierRows = [];
-                                                const boosterRows = [];
+                                                // const modifierRows = [];
+                                                // const boosterRows = [];
 
-                                                traitRows.forEach(row => {
-                                                    const modifierTraits = row.filter(trait => trait.context === 'modifier');
-                                                    const boosterTraits = row.filter(trait => trait.context !== 'modifier');
+                                                function chunkArray(arr, size) {
+                                                    const chunks = [];
+                                                    for (let i = 0; i < arr.length; i += size) {
+                                                        chunks.push(arr.slice(i, i + size));
+                                                    }
+                                                    return chunks;
+                                                }
 
-                                                    if (modifierTraits.length) modifierRows.push(modifierTraits);
-                                                    if (boosterTraits.length) boosterRows.push(boosterTraits);
-                                                });
+                                                const allModifiers = traitRows.flat().filter(trait => trait.context === 'modifier');
+                                                const allBoosters = traitRows.flat().filter(trait => trait.context !== 'modifier');
+
+                                                const modifierRows = chunkArray(allModifiers, 2);
+                                                const boosterRows = chunkArray(allBoosters, 2);
 
                                                 return (
                                                     <>
@@ -227,9 +233,10 @@ const PrintNfts = ({
                                                                             <p
                                                                                 key={j}
                                                                                 style={{
-                                                                                    flex: row.length === 1 ? 1 : j === 0 ? 0.45 : 0.55,
+                                                                                    flex: 1,
                                                                                     textAlign: 'left',
                                                                                 }}
+                                                                                className="booster-trait"
                                                                             >
                                                                                 <strong>{trait.label}:</strong> {trait.value}
                                                                             </p>

@@ -664,6 +664,10 @@ textarea:focus::placeholder {
   font-weight: 400;
 }
 
+.nft-stats p.booster-trait strong {
+  color: #cd4ed8; /* or whatever color you want for Enhancements */
+}
+
 .nft-box {
   all: unset;
   padding: 15px;
